@@ -1,0 +1,2 @@
+{:require [debux.cs.core]
+ :compiler-options {:asset-path "js/main.out"}}
