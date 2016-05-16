@@ -1,15 +1,15 @@
 (set-env!
   :project 'philoskim/debux
-  :version "0.2.0"
+  :version "0.2.1"
 
   :source-paths #{"src"}
   :resource-paths #{"src" "html"}
 
-  :dependencies '[[org.clojure/clojure "1.8.0"]
-                  [org.clojure/clojurescript "1.7.228"]
+  :dependencies '[[org.clojure/clojure "1.8.0" :scope "provided"]
+                  [org.clojure/clojurescript "1.8.51" :scope "provided"]
 
                   [adzerk/boot-cljs "1.7.228-1" :scope "test"]       ; CLJS compiler
-                  [adzerk/boot-reload "0.4.4" :scope "test"]         ; live reload
+                  [adzerk/boot-reload "0.4.6" :scope "test"]         ; live reload
                   [adzerk/boot-cljs-repl "0.3.0" :scope "test"]      ; add bREPL
                   [com.cemerick/piggieback "0.2.1" :scope "test"]    ; needed by bREPL 
                   [weasel "0.7.0" :scope "test"]                     ; needed by bREPL
@@ -21,6 +21,9 @@
          '[adzerk.boot-reload :refer [reload]]
          '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]]
          '[adzerk.bootlaces :refer [bootlaces! build-jar push-release]])
+
+(def +version+ "0.2.1")
+(bootlaces! +version+)
 
 (task-options!
   pom {:project (get-env :project)
@@ -40,16 +43,5 @@
     (watch)
     (reload)
     (cljs-repl)
-    (cljs) ))
-
-(deftask build
-  "Build and install the JAR file"
-  []
-  (comp
-    ;(merge-env! :resource-paths #{"src"})
-    (pom)
-    (jar)
-    (install) ))
-
-(bootlaces! (get-env :version))
-
+    (cljs)
+    (target) ))

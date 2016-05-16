@@ -3,7 +3,7 @@
 
 ;; These vars are actually defined in debux.cs/core.cljs file. 
 (declare blanks insert-blanks println-dbg pprint-dbg
-         println-cgroup println-cgroup-end pprint-clog
+         println-clog println-cgroup println-cgroup-end pprint-clog
          pp-comp pp-subform
          changed? get-style style* ^:dynamic *indent-size*)
 
@@ -186,7 +186,7 @@
         js    (:js opts2)
         style (:style opts2)
         
-        subforms2 (map insert-first subforms (repeat 'name))
+        subforms2 (map insert-last subforms (repeat 'name))
         pairs  (map (fn [fst snd n]
                       `(pp-subform '~fst ~snd ~n ~clog ~js))
                     subforms subforms2 (repeat n))]
@@ -232,7 +232,7 @@
         style (:style opts2)
         
         pairs     (partition 2 bindings)
-        syms      (map (fn [sym] `(pp-subform '~sym ~sym ~n ~clog ~js))
+        syms      (map (fn [sym] `(let [& '&] (pp-subform '~sym ~sym ~n ~clog ~js)))
                        (take-nth 2 bindings))
         pps       (map (fn [s e] [s e]) (repeat '_) syms)
         bindings2 (interleave pairs pps)]
@@ -251,14 +251,14 @@
                 (println-clog "=>")
                 (pprint-clog return# ~js)
                 (println-cgroup-end)) 
-            (binding [*print-length* (or ~n 100)
-                      *indent-size*  (+ 2 *indent-size*)]
-              (println-dbg (str "\ndbg: (let " '~bindings " ...)"
-                                (and ~msg (str "   <" ~msg ">"))
-                                (and ~once (str "   (:once mode)"))))
-              (let ~(vec (apply concat bindings2)) ~@body)
-              (println-dbg "=>")
-              (pprint-dbg return#) ))))
+              (binding [*print-length* (or ~n 100)
+                        *indent-size*  (+ 2 *indent-size*)]
+                (println-dbg (str "\ndbg: (let " '~bindings " ...)"
+                                  (and ~msg (str "   <" ~msg ">"))
+                                  (and ~once (str "   (:once mode)"))))
+                (let ~(vec (apply concat bindings2)) ~@body)
+                (println-dbg "=>")
+                (pprint-dbg return#) ))))
         return#) ))
 
 (defmacro ^:private dbg-comp

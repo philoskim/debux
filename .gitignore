@@ -3,6 +3,9 @@
 /out
 .nrepl-history
 
+/example/target
+/example/resources/public/js
+
 *~
 *#
 .#*

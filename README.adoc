@@ -1,10 +1,12 @@
-# debux
+# Debux
 :source-language: clojure
 :source-highlighter: coderay
 :sectnums:
 :imagesdir: ./doc/img
 
-Debux is a simple but useful library for debugging Clojure and ClojureScript. I wrote this library to debug my own Clojure(Script) code and to analyze other developer's Clojure(Script) code.
+*Debux* is a simple but useful library for debugging Clojure and ClojureScript. I wrote
+this library to debug my own Clojure(Script) code and to analyze other developer's
+one.
 
 
 ## Prerequisites
@@ -20,7 +22,7 @@ To include *debux* in your project, simply add the following to your *project.cl
 
 [source]
 ....
-[philoskim/debux "0.2.0"]
+[philoskim/debux "0.2.1"]
 ....
 
 
@@ -35,21 +37,31 @@ In Clojure, the following line has to be included in your file to use *debux* li
 (use 'debux.core)
 ....
 
-In ClojureScript, the following `(:require ...)` line has to be included in your file to use *debux* library.
+In ClojureScript, the following `(:require pass:q[...])` line has to be included in your
+file to use *debux* library.
 
 
 [source]
 ....
 (ns example.core
-  (:require [debux.cs.core :refer-macros [clog dbg]]))
+  (:require [debux.cs.core :refer-macros [clog dbg break]]))
 ....
+
   
-  
+## Change Logs
+
+* Version 0.2.1:
+** Fixed: An error fixed when using `(clog (pass:q[->> .....]))`
+** Fixed: An error fixed when using `(dbg (let [[a *&* b] [10 20 30]] pass:q[......]))`
+** Added: `break` usage  
+
+
 ## New features added in version 0.2.0
   
 ### Debugging thread macro `pass:[->]` or `pass:[->>]`
 
-When debugging the thread-first macro `pass:[->]` or thread-last macro `pass:[->>]`, debux prints every expression in the thread macros.
+When debugging the thread-first macro `pass:[->]` or thread-last macro `pass:[->>]`, `dbg`
+prints every expression in the thread macros.
 
 This is an example of thread-first macro `pass:[->]`.
   
@@ -213,23 +225,26 @@ When debugging `let` form,
 
 [source]
 ....
-(dbg (let [c (+ 1 2)
-           [d e] [5 6]]
-       (-> (+ d e) (- c))))
-; => 8
+(dbg (let [a (take 5 (range))
+           {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}
+           [e f g & h] ["a" "b" "c" "d" "e"]]
+        [a b c d e f g h]))
+; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 ....
 
 each binding will be printed.
   
 .REPL output: 
 ....
-dbg: (let [c (+ 1 2) [d e] [5 6]] ...)
-  c =>
-    3
-  [d e] =>
-    [5 6]
+dbg: (let [a (take 5 (range)) {:keys [b c d], :or {d 10, b 20, c 30}} {:c 50, :d 100} [e f g & h] ["a" "b" "c" "d" "e"]] ...)
+  a =>
+    (0 1 2 3 4)
+  {:keys [b c d], :or {d 10, b 20, c 30}} =>
+    {:keys [20 50 100], :or {100 10, 20 20, 50 30}}
+  [e f g & h] =>
+    ["a" "b" "c" & ("d" "e")]
 =>
-  8
+  [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 ....
 
 When debugging `comp` form,
@@ -313,10 +328,12 @@ Sometimes you need to see several forms evaluated. To do so, a literal vector fo
 
 [source]
 ....
-(let [a (take 5 (range))
-      {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}
-      [e f g & h] ["a" "b" "c" "d" "e"]]
+
+(defn my-fun
+  [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
   (dbg [a b c d e f g h]))
+
+(my-fun (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"]) 
 ; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 ....
 
@@ -487,10 +504,14 @@ dbg: i =>
 
 ## Usage in ClojureScript on Browser Console
 
-You can use `dbg` or `clog` macro in REPL window like *weasel* in ClojureScript. However, you should use `clog` instead of `dbg`, because `clog` macro uses the `console.log` fuction of browser's developer tools to style the form. The evaluated result of `dbg` macro will go to the REPL window, and that of `clog` macro will go to the browser's console.
+You can use `dbg` or `clog` macro in REPL window like
+link:https://github.com/tomjakubowski/weasel[weasel] in ClojureScript. However, you should
+use `clog` instead of `dbg`, because `clog` macro uses the `console.log` fuction of
+browser's developer tools to style the form. The evaluated result of `dbg` macro will go
+to the REPL window, and that of `clog` macro will go to the browser's console.
 
 
-The following `(:require ...)` line has to be included in your file to use *debux* library in ClojureScript.
+The following `(:require pass:q[...])` line has to be included in your file to use *debux* library in ClojureScript.
 
 
 [source]
@@ -532,6 +553,16 @@ You can style the form, using the following predefined keywords.
 (clog (+ 10 20) :style :warn "warn style")
 (clog (+ 10 20) :style :info "info style")
 (clog (+ 10 20) :style :debug "debug style")
+(clog (+ 10 20) "debug style is default")
+....
+  
+Or in brief
+
+....  
+(clog (+ 10 20) :s :e "error style")
+(clog (+ 10 20) :s :w "warn style")
+(clog (+ 10 20) :s :i "info style")
+(clog (+ 10 20) :s :d "debug style")
 (clog (+ 10 20) "debug style is default")
 ....
 
@@ -588,7 +619,10 @@ If you add `:once` (or `:o` in brief) option after the form, the same evaluated 
 
 image::clog-4.png[]
 
+* Notice that `(:once mode)` string is appended after the evaluated result to indicate
+  `once` mode.
 
+   
 ### `:js` option
 
 If `:js` option is added after the form, the JavaScript object will be printed as well, so you can inspect the internal structures of ClojureScript data types.
@@ -600,30 +634,61 @@ If `:js` option is added after the form, the JavaScript object will be printed a
 image::clog-5.png[]
 
 
-## Usage in ClojureScript on Browser REPL
+## `break`
 
-You can use both `dbg` and `clog` macros on the browser REPL like *weasel*. The following is an example about runing the browser REPL *weasel*.
+You can use `break` to set the breakpoint in the sourc code like this. After that you can
+inspect the callstack, locals, etc. in the browser's DevTool window.
 
 [source]
 ....
-;; project.clj
-(defproject example "0.2.0-SNAPSHOT"
+(defn my-fun2
+  [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
+  (break)
+  (clog [a b c d e f g h]))
+
+(my-fun2 (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"]) 
+....
+
+image:break.png[]
+  
+  
+When using `break`, you can `:if expression` like this.
+
+[source]
+....
+(defn my-fun3 []
+  (let [a 10
+        b 20]
+    (dotimes [i 1000]
+      (break :if (= i 999)))))
+
+(my-fun3)
+....
+
+image:break-if.png[]
+  
+
+## Usage in ClojureScript on Browser REPL
+
+You can use both `dbg` and `clog` macros on the browser REPL. The following is an example about
+runing the link:https://github.com/bhauman/lein-figwheel[Figwheel].
+
+[source]
+....
+(defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.7.228"]
-                 [com.cemerick/piggieback "0.2.1"]
-                 [weasel "0.7.0"]
-                 [philoskim/debux "0.2.0"]]
-  :plugins [[lein-cljsbuild "1.0.5"]
-            [lein-figwheel "0.3.7"]]
+                 [org.clojure/clojurescript "1.8.51"]
+                 [philoskim/debux "0.2.1"]]
+  :plugins [[lein-cljsbuild "1.1.3"]
+            [lein-figwheel  "0.5.1"]]
   :source-paths ["src/clj"]
   :clean-targets ^{:protect false}
                  ["resources/public/js/app.js"
                   "resources/public/js/app.js.map"]
-  :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
   :cljsbuild {:builds [{:id "dev"
                         :source-paths ["src/cljs"]
                         :figwheel true
-                        :compiler {:main "example.brepl"
+                        :compiler {:main example.core
                                    :asset-path "js/out"
                                    :output-to "resources/public/js/app.js"
                                    :output-dir "resources/public/js/out"
@@ -632,38 +697,55 @@ You can use both `dbg` and `clog` macros on the browser REPL like *weasel*. The 
 ....
 
 
-[source]
-....
-;; example/brepl.cljs
-(ns example.brepl
-  (:require [cljs.debux :refer-macros [dbg clog break]]
-            [weasel.repl :as ws-repl] ))
-
-(ws-repl/connect "ws://localhost:9001")
-....
-
-Aftr that, you have to evaluate the following forms in your REPL window to run the browser REPL *weasel*.
+ANd then run figwheel like this on terminal window.
 
 [listing]
 ----
-user> (require '[weasel.repl.websocket :as ws]
-               '[cemerick.piggieback :as pback])
-nil
+$ lein figwheel
+Figwheel: Validating the configuration found in project.clj
 
-user> (pback/cljs-repl (ws/repl-env :port 9001))
-<< started Weasel server on ws://127.0.0.1:9001 >>
-<< waiting for client to connect ...
+Figwheel: Configuration Valid. Starting Figwheel ...
+Figwheel: Starting server at http://localhost:3449
+Port 3449 is already being used. Are you running another Figwheel instance? If you want to run two Figwheel instances add a new :server-port (i.e. :server-port 3450) to Figwheel's config options in your project.clj
+Figwheel: Watching build - dev
+Compiling "resources/public/js/app.js" from ["src/cljs"]...
+Successfully compiled "resources/public/js/app.js" in 2.257 seconds.
+Launching ClojureScript REPL for build: dev
+Figwheel Controls:
+          (stop-autobuild)                ;; stops Figwheel autobuilder
+          (start-autobuild [id ...])      ;; starts autobuilder focused on optional ids
+          (switch-to-build id ...)        ;; switches autobuilder to different build
+          (reset-autobuild)               ;; stops, cleans, and starts autobuilder
+          (reload-config)                 ;; reloads build config and resets autobuild
+          (build-once [id ...])           ;; builds source one time
+          (clean-builds [id ..])          ;; deletes compiled cljs target files
+          (print-config [id ...])         ;; prints out build configurations
+          (fig-status)                    ;; displays current state of system
+  Switch REPL build focus:
+          :cljs/quit                      ;; allows you to switch REPL to another build
+    Docs: (doc function-name-here)
+    Exit: Control+C or :cljs/quit
+ Results: Stored in vars *1, *2, *3, *e holds last exception object
+Prompt will show when Figwheel connects to your application
 ----
 
-Refresh your browser's page, and then you will see the following in your REPL window.
+After that, connect to `http://localhost:3449` on your borwser.
 
 [listing]
 ----
-<< waiting for client to connect ... connected! >>
 To quit, type: :cljs/quit
-cljs.user>
-----
+cljs.user=> (require '[debux.cs.core :refer-macros [clog dbg break]])        
+nil
   
+cljs.user=> (dbg (+ 1 2))
+
+dbg: (+ 1 2) =>
+  3
+3
+  
+cljs.user=> 
+----
+
 Now you can do anything in this REPL as in the Clojure REPL. When you evaluate `dbg` macro in your ClojureScript source code, the result will go to the REPL window and when you evaluate `clog` macro in your ClojureScript source code, the result will go to your browser's console window.
 
 

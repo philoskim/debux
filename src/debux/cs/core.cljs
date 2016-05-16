@@ -78,7 +78,8 @@
 
 (defn pprint-clog 
   [return js]
-  (let [pp (str/trim (with-out-str (cljs.pprint/pprint return)))]
+  (let [&  '&
+        pp (str/trim (with-out-str (cljs.pprint/pprint return)))]
     (.log js/console pp)
     (when js
       (.log js/console "%O" return) )))
