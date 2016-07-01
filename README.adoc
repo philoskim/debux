@@ -29,7 +29,7 @@ To include *debux* in your project, simply add the following to your *project.cl
 
 ## How to use
  
-In Clojure, the following line has to be included in your file to use *debux* library.
+In Clojure, the following line should be included in your file to use *debux* library.
 
 
 [source]
@@ -51,7 +51,7 @@ file to use *debux* library.
 ## Change Logs
 
 * Version 0.2.1:
-** Fixed: An error fixed when using `(clog (pass:q[->> .....]))`
+** Fixed: An error fixed when using `(clog (pass:q[->> ......]))`
 ** Fixed: An error fixed when using `(dbg (let [[a *&* b] [10 20 30]] pass:q[......]))`
 ** Added: `break` usage  
 
@@ -652,7 +652,7 @@ inspect the callstack, locals, etc. in the browser's DevTool window.
 image:break.png[]
   
   
-When using `break`, you can `:if expression` like this.
+When using `break`, you can use `:if expression` like this.
 
 [source]
 ....
