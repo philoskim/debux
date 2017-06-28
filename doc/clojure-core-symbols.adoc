@@ -1,0 +1,45 @@
+= clojure.core symbols 
+:sectnums:
+:source-language: clojure 
+
+== Special forms
+
+[source]
+....
+(keys (sort (. clojure.lang.Compiler specials)))
+; => (& . case* catch def deftype* do finally fn* if let* letfn* loop* monitor-enter
+;     monitor-exit new quote recur reify* set! throw try var clojure.core/import*)
+
+(count (keys (sort (. clojure.lang.Compiler specials))))
+; => 24
+....
+
+
+== Macro symbols
+
+[source]
+....
+(->> (ns-publics 'clojure.core)
+     vals
+     (filter #(get-in (meta %) [:macro]))
+     (map str)
+     sort)
+; ("->" "->>" ".." "amap" "and" "areduce" "as->" "assert" "binding" "bound-fn" "case"
+;  "comment" "cond" "cond->" "cond->>" "condp" "declare" "definline" "definterface"
+;  "defmacro" "defmethod" "defmulti" "defn" "defn-" "defonce" "defprotocol" "defrecord"
+;  "defstruct" "deftype" "delay" "doseq" "dosync" "dotimes" "doto" "extend-protocol"
+;  "extend-type" "fn" "for" "future" "gen-class" "gen-interface" "if-let" "if-not"
+;  "if-some" "import" "io!" "lazy-cat" "lazy-seq" "let" "letfn" "locking" "loop" "memfn"
+;  "ns" "or" "proxy" "proxy-super" "pvalues" "refer-clojure" "reify" "some->" "some->>"
+;  "sync" "time" "vswap!" "when" "when-first" "when-let" "when-not" "when-some" "while"
+;  "with-bindings" "with-in-str" "with-loading-context" "with-local-vars" "with-open"
+;  "with-out-str" "with-precision" "with-redefs")
+
+(->> (ns-publics 'clojure.core)
+     vals
+     (filter #(get-in (meta %) [:macro]))
+     count)
+; => 79
+....
+
+

@@ -1,0 +1,755 @@
+# Debux
+:source-language: clojure
+:source-highlighter: coderay
+:sectnums:
+:imagesdir: ./img
+
+*Debux* is a simple but useful library for debugging Clojure and ClojureScript. I wrote
+this library to debug my own Clojure(Script) code and to analyze other developer's
+one.
+
+
+## Prerequisites
+
+* clojure 1.7.0 or later
+* clojurescript 0.0-3308 or later
+
+
+## Installation
+
+To include *debux* in your project, simply add the following to your *project.clj* dependencies:
+
+
+[source]
+....
+[philoskim/debux "0.2.1"]
+....
+
+
+
+## How to use
+ 
+In Clojure, the following line has to be included in your file to use *debux* library.
+
+
+[source]
+....
+(use 'debux.core)
+....
+
+In ClojureScript, the following `(:require pass:q[...])` line has to be included in your
+file to use *debux* library.
+
+
+[source]
+....
+(ns example.core
+  (:require [debux.cs.core :refer-macros [clog dbg break]]))
+....
+
+  
+## Change Logs
+
+* Version 0.2.1:
+** Fixed: An error fixed when using `(clog (pass:q[->> .....]))`
+** Fixed: An error fixed when using `(dbg (let [[a *&* b] [10 20 30]] pass:q[......]))`
+** Added: `break` usage  
+
+
+## New features added in version 0.2.0
+  
+### Debugging thread macro `pass:[->]` or `pass:[->>]`
+
+When debugging the thread-first macro `pass:[->]` or thread-last macro `pass:[->>]`, `dbg`
+prints every expression in the thread macros.
+
+This is an example of thread-first macro `pass:[->]`.
+  
+[source]
+....
+(dbg (-> "a b c d"
+         .toUpperCase
+         (.replace "A" "X")
+         (.split " ")
+         first))
+;=> "X"
+....
+
+.REPL output:
+[listing]
+----
+dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first)
+  "a b c d" =>
+    "a b c d"
+  .toUpperCase =>
+    "A B C D"
+  (.replace "A" "X") =>
+    "X B C D"
+  (.split " ") =>
+    ["X", "B", "C", "D"]
+  first =>
+    "X"
+=>
+  "X"
+----
+ 
+Another example.
+
+[source]
+....
+(def person 
+  {:name "Mark Volkmann"
+   :address {:street "644 Glen Summit"
+             :city "St. Charles"
+             :state "Missouri"
+             :zip 63304}
+   :employer {:name "Object Computing, Inc."
+              :address {:street "12140 Woodcrest Dr."
+                        :city "Creve Coeur"
+                        :state "Missouri"
+                        :zip 63141}}})
+
+(dbg (-> person :employer :address :city))
+; => "Creve Coeur"
+....
+
+.REPL output: 
+....
+dbg: (-> person :employer :address :city)
+  person =>
+    {:name "Mark Volkmann",
+     :address
+     {:street "644 Glen Summit",
+      :city "St. Charles",
+      :state "Missouri",
+      :zip 63304},
+     :employer
+     {:name "Object Computing, Inc.",
+      :address
+      {:street "12140 Woodcrest Dr.",
+       :city "Creve Coeur",
+       :state "Missouri",
+       :zip 63141}}}
+  :employer =>
+    {:name "Object Computing, Inc.",
+     :address
+     {:street "12140 Woodcrest Dr.",
+      :city "Creve Coeur",
+      :state "Missouri",
+      :zip 63141}}
+  :address =>
+    {:street "12140 Woodcrest Dr.",
+     :city "Creve Coeur",
+     :state "Missouri",
+     :zip 63141}
+  :city =>
+    "Creve Coeur"
+=>
+  "Creve Coeur"
+....
+   
+This is an example of thread-last macro `pass:[->>]`.
+  
+[source]
+....
+(def c 5)
+
+(dbg (->> c (+ 3) (/ 2) (- 1)))
+; => 3/4
+....
+  
+.REPL output:
+....
+dbg: (->> c (+ 3) (/ 2) (- 1))
+  c =>
+    5
+  (+ 3) =>
+    8
+  (/ 2) =>
+    1/4
+  (- 1) =>
+    3/4
+=>
+  3/4
+....
+
+If you want to debug one of the expressions in the thread macro `pass:[->]` or `pass:[->>]`, don't do it like this. You will have some exception.
+
+[source]
+....
+(-> {:a [1 2]}
+    (dbg (get :a))
+    (conj 3))
+; => java.lang.IllegalArgumentException
+;    Don't know how to create ISeq from: java.lang.Long
+....
+
+Instead, do it like this.
+
+[source]
+....
+(-> {:a [1 2]}
+    (get :a)
+    dbg
+    (conj 3))
+; => [1 2 3]
+....
+
+.REPL output:
+....
+dbg: (get {:a [1 2]} :a) =>
+  [1 2]
+....
+
+Another example.
+  
+[source]
+....
+(->> [-1 0 1 2]
+     (filter pos?)
+     (map inc)
+     dbg
+     (map str))
+; => ("2" "3")
+....
+  
+.REPL output:
+....
+dbg: (map inc (filter pos? [-1 0 1 2])) =>
+  (2 3)
+....
+  
+### Debugging `let` or `comp` form
+
+When debugging `let` form,
+
+[source]
+....
+(dbg (let [a (take 5 (range))
+           {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}
+           [e f g & h] ["a" "b" "c" "d" "e"]]
+        [a b c d e f g h]))
+; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
+....
+
+each binding will be printed.
+  
+.REPL output: 
+....
+dbg: (let [a (take 5 (range)) {:keys [b c d], :or {d 10, b 20, c 30}} {:c 50, :d 100} [e f g & h] ["a" "b" "c" "d" "e"]] ...)
+  a =>
+    (0 1 2 3 4)
+  {:keys [b c d], :or {d 10, b 20, c 30}} =>
+    {:keys [20 50 100], :or {100 10, 20 20, 50 30}}
+  [e f g & h] =>
+    ["a" "b" "c" & ("d" "e")]
+=>
+  [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
+....
+
+When debugging `comp` form,
+
+[source]
+....
+(def c (dbg (comp inc inc +)))
+
+(c 10 20)
+; => 32
+....
+the result of each function will be printed.
+  
+.REPL output: 
+....
+dbg: (comp inc inc +)
+  + =>
+    30
+  inc =>
+    31
+  inc =>
+    32
+=>
+  32
+....
+
+  
+## Usage in Clojure
+
+In the first place, the following line has to be included in your file to use *debux* library in Clojure.
+
+
+[source]
+....
+(use 'debux.core)
+....
+
+
+### Basic usage
+
+This is a simple example. The macro `dbg` prints an original form and pretty-prints the evaluated value on the REPL window. Then it returns the value without interfering with the code execution.
+
+If you wrap the code with `dbg` like this,
+  
+[source]
+....
+(* 2 (dbg (+ 10 20)))
+; => 60
+....
+
+the following will be printed in the REPL window.
+
+.REPL output:  
+....
+dbg: (+ 10 20) =>
+  30
+....
+
+#### Nested `dbg`
+
+The `dbg` macro can be nested.
+
+[source]
+....
+(dbg (* 2 (dbg (+ 10 20))))
+; => 60
+....
+
+.REPL output:
+....
+dbg: (+ 10 20) =>
+  30
+
+dbg: (* 2 (dbg (+ 10 20))) =>
+  60
+....
+
+#### Debugging several forms
+
+Sometimes you need to see several forms evaluated. To do so, a literal vector form can be used like this.
+
+[source]
+....
+
+(defn my-fun
+  [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
+  (dbg [a b c d e f g h]))
+
+(my-fun (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"]) 
+; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
+....
+
+.REPL output:
+....
+dbg: [a b c d e f g h] =>
+  {:a (0 1 2 3 4),
+   :b 20,
+   :c 50,
+   :d 100,
+   :e "a",
+   :f "b",
+   :g "c",
+   :h ("d" "e")}
+....
+
+Notice that the printed value is a map, not a vector and the form is prepended with colon to differenciate the form from the evaluated value.
+
+Further examples:
+
+[source]
+....
+(def a 10)
+(def b 20)
+
+(dbg [a b [a b] :c])
+; => [10 20 [10 20] :c]
+....
+  
+.REPL output:
+....
+dbg: [a b [a b] :c] =>
+  {:a 10, :b 20, :[a b] [10 20], ::c :c}
+....
+
+### Various options
+
+The various options can be added and combinated in any order after the form.
+
+
+#### String option
+
+You can add your own message in a string and it will be printed betwen less-than and more-than sign like this.
+
+
+[source]
+....
+(dbg (repeat 5 (dbg (repeat 5 "x")
+                    "inner repeat"))
+     "outer repeat")
+; => (("x" "x" "x" "x" "x")
+;     ("x" "x" "x" "x" "x")
+;     ("x" "x" "x" "x" "x")
+;     ("x" "x" "x" "x" "x")
+;     ("x" "x" "x" "x" "x"))
+....
+  
+.REPL output:
+....
+dbg: (repeat 5 "x")   <inner repeat> =>
+  ("x" "x" "x" "x" "x")
+
+dbg: (repeat 5 (dbg (repeat 5 "x") "inner repeat"))   <outer repeat> =>
+  (("x" "x" "x" "x" "x")
+   ("x" "x" "x" "x" "x")
+   ("x" "x" "x" "x" "x")
+   ("x" "x" "x" "x" "x")
+   ("x" "x" "x" "x" "x"))
+....
+
+
+#### Number option
+
+If you don't specify the number after the form, debux will print only 100 items in each collection by default.
+
+[source]
+....
+(dbg (range 200))
+; => (0 1 2 ... 199)
+....
+
+.REPL output:
+[listing]
+----
+dbg: (range 200) =>
+  (0 1 2 3 4
+   ......
+   98 99 ...)
+----
+
+So, if you want to print more than 100 items, specify the number option explicitly.
+
+....
+(dbg (range 200) 200)
+; => (0 1 2 ... 199)
+....
+
+.REPL output:
+[listing]
+----
+dbg: (range 200) =>
+  (0 1 2 3 4
+   ......
+   198 199)
+----
+
+Especially in the case of evaluating an *infinite lazy-seq*, you have to specify the number of the elements to print, to avoid the `OutOfMemoryError`.
+
+[source]
+....
+(dbg (range) 5)
+; => (0 1 2 3 4)
+....
+
+.REPL output:
+....
+dbg: (range) =>
+  (0 1 2 3 4)
+....
+
+If you omit the number in evaluating an infinite lazy-seq, it will print default 100 elements but cannnot avoid `OutOfMemoryError`.
+  
+[source]
+....
+(dbg (range))
+; => Unhandled java.lang.OutOfMemoryError   Java heap space
+....
+  
+.REPL output:
+....
+dbg: (range) =>
+  (0 1 2 3 4 5 6 7 8 9
+   ......
+   98 99 ...)
+....
+
+So Be careful! You have to limit the number of realized infinite lazy-seq explicitly by the number option.
+
+  
+#### `:if` `expression` option
+
+You can set `:if` `expression` like this.
+
+[source]
+....
+(for [i (range 10)]
+  (dbg i :if (even? i)))
+; => (0 1 2 3 4 5 6 7 8 9)
+....
+  
+.REPL output:
+....
+dbg: i =>
+  0
+
+dbg: i =>
+  2
+
+dbg: i =>
+  4
+
+dbg: i =>
+  6
+
+dbg: i =>
+  8
+....
+
+## Usage in ClojureScript on Browser Console
+
+You can use `dbg` or `clog` macro in REPL window like
+link:https://github.com/tomjakubowski/weasel[weasel] in ClojureScript. However, you should
+use `clog` instead of `dbg`, because `clog` macro uses the `console.log` fuction of
+browser's developer tools to style the form. The evaluated result of `dbg` macro will go
+to the REPL window, and that of `clog` macro will go to the browser's console.
+
+
+The following `(:require pass:q[...])` line has to be included in your file to use *debux* library in ClojureScript.
+
+
+[source]
+....
+(ns example.core
+  (:require [debux.cs.core :as d :refer-macros [clog dbg break]]))
+
+
+(clog (repeat 5 (clog (repeat 5 "x")
+                      "inner repeat"))
+      "outer repeat")
+....
+
+image::clog-1.png[]
+
+
+Besides 'Usage in Clojure' features, you can use additional options in `clog` macro.
+
+### CSS Styling
+
+#### Predefined style keywords
+
+You can style the form, using the following predefined keywords.
+
+[cols="^,^", options="header", width="30"]
+|===
+
+| keyword | abbreviation
+| :style  | :s
+| :error  | :e
+| :warn   | :w
+| :info   | :i
+| :debug  | :d
+
+|===
+
+....
+(clog (+ 10 20) :style :error "error style")
+(clog (+ 10 20) :style :warn "warn style")
+(clog (+ 10 20) :style :info "info style")
+(clog (+ 10 20) :style :debug "debug style")
+(clog (+ 10 20) "debug style is default")
+....
+  
+Or in brief
+
+....  
+(clog (+ 10 20) :s :e "error style")
+(clog (+ 10 20) :s :w "warn style")
+(clog (+ 10 20) :s :i "info style")
+(clog (+ 10 20) :s :d "debug style")
+(clog (+ 10 20) "debug style is default")
+....
+
+image::clog-2.png[]
+
+
+#### User-defined style
+
+You can redefine the predefined styles or define your own new style like this.
+
+
+[source]
+....
+(d/merge-style {:warn "background: #9400D3; color: white"
+                :love "background: #FF1493; color: white"})
+
+(clog (+ 10 20) :style :warn "warn style changed")
+(clog (+ 10 20) :style :love "love style")
+
+;; You can style the form directly in string format in any way you want.
+(clog (+ 10 20) :style "color:orange; background:blue; font-size: 14pt")
+....
+
+image::clog-3.png[]
+
+
+### `:once` option
+
+If you add `:once` (or `:o` in brief) option after the form, the same evaluated value will not be printed. This is a very useful feature, when you are debugging a game programming, where successive multiple frames usually have the same evaluated value.
+
+
+[source]
+....
+(def a (atom 10))
+
+;; This will be printed.
+(clog @a :once)
+
+;; This will not be printed,
+;; because the evaluated value is the same as before.
+(clog @a :once)
+
+
+(reset! a 20)
+
+;; This will be printed,
+;; because the evaluated value is not the same as before.
+(clog @a :once)
+
+;; This will not be printed,
+;; because the evaluated value is the same as before.
+(clog @a :once)
+....
+
+image::clog-4.png[]
+
+* Notice that `(:once mode)` string is appended after the evaluated result to indicate
+  `once` mode.
+
+   
+### `:js` option
+
+If `:js` option is added after the form, the JavaScript object will be printed as well, so you can inspect the internal structures of ClojureScript data types.
+
+....
+(clog {:a 10 :b 20} :js)
+....
+
+image::clog-5.png[]
+
+
+## `break`
+
+You can use `break` to set the breakpoint in the sourc code like this. After that you can
+inspect the callstack, locals, etc. in the browser's DevTool window.
+
+[source]
+....
+(defn my-fun2
+  [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
+  (break)
+  (clog [a b c d e f g h]))
+
+(my-fun2 (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"]) 
+....
+
+image:break.png[]
+  
+  
+When using `break`, you can `:if expression` like this.
+
+[source]
+....
+(defn my-fun3 []
+  (let [a 10
+        b 20]
+    (dotimes [i 1000]
+      (break :if (= i 999)))))
+
+(my-fun3)
+....
+
+image:break-if.png[]
+  
+
+## Usage in ClojureScript on Browser REPL
+
+You can use both `dbg` and `clog` macros on the browser REPL. The following is an example about
+runing the link:https://github.com/bhauman/lein-figwheel[Figwheel].
+
+[source]
+....
+(defproject example "0.1.0-SNAPSHOT"
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [org.clojure/clojurescript "1.8.51"]
+                 [philoskim/debux "0.2.1"]]
+  :plugins [[lein-cljsbuild "1.1.3"]
+            [lein-figwheel  "0.5.1"]]
+  :source-paths ["src/clj"]
+  :clean-targets ^{:protect false}
+                 ["resources/public/js/app.js"
+                  "resources/public/js/app.js.map"]
+  :cljsbuild {:builds [{:id "dev"
+                        :source-paths ["src/cljs"]
+                        :figwheel true
+                        :compiler {:main example.core
+                                   :asset-path "js/out"
+                                   :output-to "resources/public/js/app.js"
+                                   :output-dir "resources/public/js/out"
+                                   :source-map true
+                                   :optimizations :none} }]})
+....
+
+
+ANd then run figwheel like this on terminal window.
+
+[listing]
+----
+$ lein figwheel
+Figwheel: Validating the configuration found in project.clj
+
+Figwheel: Configuration Valid. Starting Figwheel ...
+Figwheel: Starting server at http://localhost:3449
+Port 3449 is already being used. Are you running another Figwheel instance? If you want to run two Figwheel instances add a new :server-port (i.e. :server-port 3450) to Figwheel's config options in your project.clj
+Figwheel: Watching build - dev
+Compiling "resources/public/js/app.js" from ["src/cljs"]...
+Successfully compiled "resources/public/js/app.js" in 2.257 seconds.
+Launching ClojureScript REPL for build: dev
+Figwheel Controls:
+          (stop-autobuild)                ;; stops Figwheel autobuilder
+          (start-autobuild [id ...])      ;; starts autobuilder focused on optional ids
+          (switch-to-build id ...)        ;; switches autobuilder to different build
+          (reset-autobuild)               ;; stops, cleans, and starts autobuilder
+          (reload-config)                 ;; reloads build config and resets autobuild
+          (build-once [id ...])           ;; builds source one time
+          (clean-builds [id ..])          ;; deletes compiled cljs target files
+          (print-config [id ...])         ;; prints out build configurations
+          (fig-status)                    ;; displays current state of system
+  Switch REPL build focus:
+          :cljs/quit                      ;; allows you to switch REPL to another build
+    Docs: (doc function-name-here)
+    Exit: Control+C or :cljs/quit
+ Results: Stored in vars *1, *2, *3, *e holds last exception object
+Prompt will show when Figwheel connects to your application
+----
+
+After that, connect to `http://localhost:3449` on your borwser.
+
+[listing]
+----
+To quit, type: :cljs/quit
+cljs.user=> (require '[debux.cs.core :refer-macros [clog dbg break]])        
+nil
+  
+cljs.user=> (dbg (+ 1 2))
+
+dbg: (+ 1 2) =>
+  3
+3
+  
+cljs.user=> 
+----
+
+Now you can do anything in this REPL as in the Clojure REPL. When you evaluate `dbg` macro in your ClojureScript source code, the result will go to the REPL window and when you evaluate `clog` macro in your ClojureScript source code, the result will go to your browser's console window.
+
+
+## License
+Copyright © 2015--2016 Young Tae Kim
+
+Distributed under the Eclipse Public License either version 1.0 or any later version.

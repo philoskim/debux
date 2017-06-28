@@ -1,0 +1,36 @@
+(defproject philoskim/debux "0.3.0"
+  :description "MES Project"
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [org.clojure/clojurescript "1.9.660"]
+                 [clojure-future-spec "1.9.0-alpha17"]
+                 [cljsjs/react "15.4.2-2"]
+                 [reagent "0.6.2" :exclusions [cljsjs/react]]
+                 [philoskim/debux2 "0.2.1"]]
+
+  :min-lein-version "2.6.0"
+
+  :plugins [[lein-cljsbuild "1.1.6"]
+            [lein-figwheel "0.5.10"]]
+
+  ;:source-paths ["src"]
+  :test-paths ["test/clj" "test/cljs"]
+
+  :clean-targets ^{:protect false}
+  ["target"
+   "resources/public/js/out"
+   "resources/public/js/main.js"]
+
+  :cljsbuild
+  {:builds
+   [{:id "dev"
+     :source-paths ["src"]
+     :figwheel     {:on-jsload "debux.cs.test.main/mount-root"}
+     :compiler {:main debux.cs.test.main
+                :output-to "resources/public/js/main.js"
+                :output-dir "resources/public/js/out/"
+                :asset-path "js/out/"
+                :optimizations :none
+                :source-map true
+                :pretty-print true
+                :cache-analysis true} }]})
+                

@@ -2,9 +2,13 @@
 .nrepl-port
 /out
 .nrepl-history
+/pom.xml
 
-/example/target
-/example/resources/public/js
+example/target
+example/resources/public/js
+example/figwheel_server.log
+
+resources/public/js/
 
 *~
 *#

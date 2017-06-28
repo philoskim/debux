@@ -1,9 +1,9 @@
 (ns example.core
-  (:require [debux.cs.core :as d :refer-macros [clog dbg break]]))
+  (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
 
-(clog (repeat 5 (clog (repeat 5 "x")
-                      "inner repeat"))
-      "outer repeat")
+  
+(clog (repeat 5 "x") "5 times repeat")
+(clogn (repeat 5 (repeat 5 "x")) "25 times repeat")
 
 ;;---------------
 ;; CSS styling
@@ -69,33 +69,24 @@
 ;; break 
 ;;---------------
 
+;; (break)
+;; (break "hello world")
+;; (break :if (< 10 20) "10 is less than 20")
+;; (break :if (> 10 20) "this will not be printed")
+
 (defn my-fun2
   [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
-  (break)
+  (break "in my-func2")
   (clog [a b c d e f g h]))
 
-;; (my-fun2 (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"]) 
+;; (my-fun2 (take 5 (range))
+;;          {:c 50 :d 100}
+;;          ["a" "b" "c" "d" "e"]) 
 
 (defn my-fun3 []
   (let [a 10
         b 20]
     (dotimes [i 1000]
-      (break :if (= i 999)))))
+      (break :if (= i 999) "in my-func3"))))
 
 ;; (my-fun3)
-;(enable-console-print!)
-
-
-(clog (-> 10
-          (+ 20)))
-
-(clog (->> 10
-          (+ 20)))
-
-(clog (let [a 10
-            [b & c] [20 30 40]]
-        [a b c]))
-
-(def c (clog (comp inc inc +)))
-
-(c 10 20)
