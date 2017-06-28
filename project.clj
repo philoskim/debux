@@ -1,14 +1,11 @@
-(defproject philoskim/debux "0.3.0"
+(defproject philoskim/debux "0.3.1"
   :description "Debux library for debugging Clojure and ClojureScript"
   :url "https://github.com/philoskim/debux"
   :license {"Eclipse Public License"
             "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.660"]
-                 [clojure-future-spec "1.9.0-alpha17"]
-                 [cljsjs/react "15.4.2-2"]
-                 [reagent "0.6.2" :exclusions [cljsjs/react]]
-                 [philoskim/debux2 "0.2.1"]]
+                 [org.clojure/clojurescript "1.9.562"]
+                 [clojure-future-spec "1.9.0-alpha17"]]
 
   :min-lein-version "2.6.0"
 
