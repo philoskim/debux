@@ -3,6 +3,7 @@
 /out
 .nrepl-history
 /pom.xml
+/pom.xml.asc
 
 example/target
 example/resources/public/js

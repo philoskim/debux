@@ -51,7 +51,34 @@ file to use *debux* library.
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
 ....
 
-  
+{empty} +
+ 
+[cols="^1m,^1m,^1m,^1m,^1m,^1m", options="header"]
+.Debugging API use
+|===
+
+|               | dbg | dbgn | clog | clogn | break
+| Clojure       | O   |   O  |  X   |  X    |   X
+| ClojureScript | O   |   O  |  O   |  O    |   O 
+
+|===
+
+* Legend: `O` (supported), `X` (not supported)
+
+
+[cols="^1m,^1m,^1m", options="header"]
+.Macro registering API use
+|===
+
+|               | register-macros! | show-macros
+| Clojure       |        O         |      O
+| ClojureScript |        X         |      X
+
+|===
+
+Refer to <<how-to-register>> about details.
+
+
 ## New feature added in version 0.3.1
 
 The two new macros `dbgn` which is for Clojure/CloujureScript REPL and `clogn` which is
@@ -954,10 +981,14 @@ dbgn: (. (java.util.Date.) getMonth) =>
   caused the error and then register the macro by using `register-macros!` and see the
   registerd macros by using `show-macros`.
 
-* Unfortunately, it is impossible to register your own macros in ClojureScript, because
-  you cannot change compile-time states in ClojureScript run-time environment. However, it
-  may be possible in bootstrapped ClojureScript, so I prepared the same API but didn't
-  test it yet.
+* I tried to implement `register-macros!` in ClojureScript in several ways but all failed
+  unfortunately. In my conclusion, it is impossible to register your own macros in
+  ClojureScript, because you cannot change compile-time
+  states(`debux.cs.util2/macro-types*` in my source code) in ClojureScript run-time
+  environment. However, it may be possible in bootstrapped ClojureScript, so I prepared
+  the same API but didn't test it yet. If you have a solution on this problem, please let
+  me know about it through _Issues_ menu on this site, or pull request is welcome!
+
 
 [source]
 .API
@@ -1369,41 +1400,6 @@ When using `break`, you can use `:if expression` like this.
 
 image:break-4.png[]
 
-
-
-## `break`
-
-You can use `break` to set the breakpoint in the sourc code like this. After that you can
-inspect the callstack, locals, etc. in the browser's DevTool window.
-
-[source]
-....
-(defn my-fun2
-  [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
-  (break)
-  (clog [a b c d e f g h]))
-
-(my-fun2 (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"]) 
-....
-
-image:break.png[]
-  
-  
-When using `break`, you can use `:if expression` like this.
-
-[source]
-....
-(defn my-fun3 []
-  (let [a 10
-        b 20]
-    (dotimes [i 1000]
-      (break :if (= i 999)))))
-
-(my-fun3)
-....
-
-image:break-if.png[]
-  
 
 ## Usage in ClojureScript on Browser REPL
 
