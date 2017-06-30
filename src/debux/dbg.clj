@@ -2,45 +2,9 @@
   (:require [clojure.set :as set]
             [clojure.zip :as z]
             [debux.macro-spec :as ms :refer [skip]]
+            [debux.macro-types :as mt]
             [debux.skip :as sk]
-            [debux.util :as ut]))
-
-;;; macro management
-(def ^:private macro-types*
-  (atom {:def-type `#{def defonce}
-         :defn-type `#{defn defn-}
-         :fn-type `#{fn fn*}
-
-         :let-type
-         `#{let binding dotimes if-let if-some when when-first when-let
-            when-some with-in-str with-local-vars with-open with-out-str
-            with-redefs}
-         :letfn-type `#{letfn}
-         
-         :for-type `#{for doseq}
-         :case-type `#{case}
-
-         :skip-arg-1-type `#{set! with-precision}
-         :skip-arg-2-type `#{as->}
-         :skip-arg-1-2-type `#{}
-         :skip-arg-1-3-type `#{defmethod}
-         :skip-arg-2-3-type `#{amap areduce}
-         :skip-form-itself-type
-         `#{catch comment declare definline definterface defmacro defmulti
-            defprotocol defrecord defstruct deftype extend-protocol
-            extend-type finally gen-class gen-interface import loop memfn new
-            ns proxy proxy-super quote refer-clojure reify sync var throw}
-
-         :expand-type
-         `#{clojure.core/.. -> ->> doto cond-> cond->> condp import some-> some->>}
-         :dot-type `#{.} }))
-
-(defn register-macros! [macro-type symbols]
-  (swap! macro-types* update macro-type
-                             #(set/union % (set symbols)) ))
-(defn show-macros
-  ([] @macro-types*)
-  ([macro-type] (get @macro-types* macro-type)))
+            [debux.util :as ut] ))
 
 
 ;;; dbg macro
@@ -82,85 +46,85 @@
         (recur (ut/right-or-next loc))
 
         (and (seq? node) (symbol? (first node)))
-        (let [sym (ut/ns-symbol (first node))]
+        (let [sym (mt/ns-symbol (first node))]
+          ;(ut/d sym)
           (cond
-            ((:def-type @macro-types*) sym)
+            ((:def-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-def node))
                 z/next
                 recur)
 
-            ((:defn-type @macro-types*) sym)
+            ((:defn-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-defn node))
                 z/next
                 recur)
 
-            ((:fn-type @macro-types*) sym)
+            ((:fn-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-fn node))
                 z/next
                 recur)
             
 
-            ((:let-type @macro-types*) sym)
+            ((:let-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-let node))
                 z/next
                 recur)
 
-            ((:letfn-type @macro-types*) sym)
+            ((:letfn-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-letfn node))
                 z/next
                 recur)
             
                         
-            ((:for-type @macro-types*) sym)
+            ((:for-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-for node))
                 z/next
                 recur)
 
-            ((:case-type @macro-types*) sym)
+            ((:case-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-case node))
                 z/next
                 recur)
             
 
-            ((:skip-arg-1-type @macro-types*) sym)
+            ((:skip-arg-1-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1 node))
                 z/next
                 recur)
 
-            ((:skip-arg-2-type @macro-types*) sym)
+            ((:skip-arg-2-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-arg-2 node))
                 z/next
                 recur)
             
-            ((:skip-arg-1-2-type @macro-types*) sym)
+            ((:skip-arg-1-2-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1-2 node))
                 z/next
                 recur)
             
-            ((:skip-arg-2-3-type @macro-types*) sym)
+            ((:skip-arg-2-3-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-arg-2-3 node))
                 z/next
                 recur)
             
-            ((:skip-arg-1-3-type @macro-types*) sym)
+            ((:skip-arg-1-3-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1-3 node))
                 z/next
                 recur)
             
-            ((:skip-form-itself-type @macro-types*) sym)
+            ((:skip-form-itself-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-form-itself node))
                 ut/right-or-next
                 recur)
             
 
-            ((:expand-type @macro-types*) sym)
+            ((:expand-type @mt/macro-types*) sym)
             (-> (z/replace loc (seq (macroexpand-1 node)))
                 recur)
 
-            ((:dot-type @macro-types*) sym)
+            ((:dot-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-dot node))
-                z/down
-                z/right
+                z/down z/right
                 recur)
 
             :else
@@ -185,7 +149,7 @@
         ;; refer to skip.clj about inserting :dbg-count option.
         (and (seq? node)
              (symbol? (first node))
-             (`#{defn defn-} (ut/ns-symbol (first node))))
+             (`#{defn defn-} (mt/ns-symbol (first node))))
         (recur (-> (-> loc z/down z/next)))
 
         ;; in case of the first symbol except defn/defn-/def
@@ -403,7 +367,10 @@
 
 (dbgn (.. "fooBAR" toLowerCase toUpperCase (contains "ooba")))
 (dbgn (. (. (. "fooBAR" toLowerCase) toUpperCase) (contains "ooba")))
-(dbgn (. "fooBAR" toLowerCase))
+(dbgn (. "fooBAR" (contains "oo")))
+(dbgn (. (str "oop") (contains "oo")))
+
+
 (dbgn (. System getProperties))
 
 (dbgn (.. "fooBAR" toLowerCase toUpperCase (contains "ooba")))

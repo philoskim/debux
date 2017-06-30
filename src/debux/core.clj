@@ -1,9 +1,10 @@
 (ns debux.core
   (:require [debux.dbg :as dbg]
+            [debux.macro-types :as mt]
             [debux.util :as ut]))
 
-(def register-macros! dbg/register-macros!)
-(def show-macros dbg/show-macros)
+(def register-macros! mt/register-macros!)
+(def show-macros mt/show-macros)
 
 (defmacro dbg [form & opts]
   (let [opts' (ut/parse-opts opts)]

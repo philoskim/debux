@@ -1,16 +1,10 @@
-(ns debux.cs.util2
+(ns debux.cs.util
   "util for clojurescript only"
   (:require [clojure.string :as str]
             [clojure.set :as set]
             #?(:cljs [cljs.pprint :as pp])
             [cljs.analyzer.api :as ana]
             [debux.util :as ut] ))
-
-(defn ns-symbol [sym] 
-  (let [{:keys [name]} (ana/resolve {} sym)
-        [ns name] (str/split (str name) #"/")]
-    (symbol (str/replace ns "cljs.core" "clojure.core")
-            name) ))
 
 ;;; caching
 (def ^:private prev-returns* (atom {}))
@@ -97,46 +91,13 @@
 #?(:cljs
    (defn clog-result-with-indent
      [result indent-level & [js-mode]]
-     (let [pprint  (str/trim (with-out-str (pp/pprint result)))]
-       (.log js/console (->> (str/split pprint #"\n")
+     (let [pprint  (str/trim (with-out-str (pp/pprint result)))
+           pprint' (if (fn? result)
+                     (str (first (str/split pprint #" " 2)) "]")
+                     pprint)]
+       (.log js/console (->> (str/split pprint' #"\n")
                              ut/prepend-blanks
                              (mapv #(ut/prepend-bars % indent-level))
                              (str/join "\n") ))
        (when js-mode
          (.log js/console "%O" result) ))))
-
-
-;;; macro management
-(def macro-types*
-  (atom {:def-type `#{def defonce}
-         :defn-type `#{defn defn-}
-         :fn-type `#{fn fn*}
-
-         :let-type
-         `#{let binding dotimes if-let if-some when when-first when-let
-            when-some with-out-str with-redefs}
-         :letfn-type `#{letfn}
-         
-         :for-type `#{for doseq}
-         :case-type `#{case}
-
-         :skip-arg-1-type `#{set!}
-         :skip-arg-2-type `#{as->}
-         :skip-arg-1-2-type `#{}
-         :skip-arg-2-3-type `#{amap areduce}
-         :skip-arg-1-3-type `#{defmethod}
-         :skip-form-itself-type
-         `#{catch comment declare defmacro defmulti defprotocol defrecord
-            deftype extend-protocol extend-type finally import loop memfn new
-            ns quote refer-clojure reify var throw}
-
-         :expand-type
-         `#{clojure.core/.. -> ->> doto cond-> cond->> condp import some-> some->>}
-         :dot-type `#{.} }))
-
-(defn register-macros! [macro-type symbols]
-  (swap! macro-types* update macro-type #(set/union % (set symbols))))
-
-(defn show-macros
-  ([] @macro-types*)
-  ([macro-type] (get @macro-types* macro-type)))

@@ -62,7 +62,31 @@
     <dependency>
       <groupId>philoskim</groupId>
       <artifactId>debux</artifactId>
-      <version>0.3.0</version>
+      <version>0.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cemerick</groupId>
+      <artifactId>piggieback</artifactId>
+      <version>0.2.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>tools.nrepl</artifactId>
+      <version>0.2.10</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>figwheel-sidecar</groupId>
+      <artifactId>figwheel-sidecar</artifactId>
+      <version>0.5.10</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>criterium</groupId>
+      <artifactId>criterium</artifactId>
+      <version>0.4.4</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

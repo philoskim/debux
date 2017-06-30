@@ -1,10 +1,12 @@
 (ns debux.cs.clog
   (:require [clojure.set :as set]
             [clojure.zip :as z]
+            [cljs.analyzer :as analyzer]
             [debux.macro-spec :as ms :refer [skip]]
             [debux.skip :as sk]
             [debux.util :as ut]
-            [debux.cs.util2 :as ut2]))
+            [debux.cs.util :as cs.ut]
+            [debux.cs.macro-types :as mt] ))
 
 
 ;;; clog macro
@@ -20,16 +22,16 @@
                    (ut/take-n result# n#)
                    result#)]
      (when (or (nil? condition#) condition#)
-       (when (or (and ~once (ut2/changed? (str '~form " " '~opts) (str result#)))
+       (when (or (and ~once (cs.ut/changed? (str '~form " " '~opts) (str result#)))
                  (not ~once))
          (swap! ut/indent-level* inc)
          (let [title# (str "%cclog: %c " (pr-str '~form)
                            " %c" (and ~msg (str "   <" ~msg ">"))
                            " =>" (and ~once "   (:once mode)"))
                style# (or ~style :debug)]
-           (ut2/cgroup title# style#)
-           (ut2/clog-result-with-indent result# @ut/indent-level* ~js)
-           (ut2/cgroup-end))
+           (cs.ut/cgroup title# style#)
+           (cs.ut/clog-result-with-indent result# @ut/indent-level* ~js)
+           (cs.ut/cgroup-end))
          (swap! ut/indent-level* dec)))
      result#))
 
@@ -50,82 +52,82 @@
         (recur (ut/right-or-next loc))
 
         (and (seq? node) (symbol? (first node)))
-        (let [sym (ut2/ns-symbol (first node))]
+        (let [sym (mt/ns-symbol (first node))]
           (cond
-            ((:def-type @ut2/macro-types*) sym)
+            ((:def-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-def node))
                 z/next
                 recur)
 
-            ((:defn-type @ut2/macro-types*) sym)
+            ((:defn-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-defn node))
                 z/next
                 recur)
 
-            ((:fn-type @ut2/macro-types*) sym)
+            ((:fn-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-fn node))
                 z/next
                 recur)
             
 
-            ((:let-type @ut2/macro-types*) sym)
+            ((:let-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-let node))
                 z/next
                 recur)
 
-            ((:letfn-type @ut2/macro-types*) sym)
+            ((:letfn-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-letfn node))
                 z/next
                 recur)
             
                         
-            ((:for-type @ut2/macro-types*) sym)
+            ((:for-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-for node))
                 z/next
                 recur)
 
-            ((:case-type @ut2/macro-types*) sym)
+            ((:case-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-case node))
                 z/next
                 recur)
             
 
-            ((:skip-arg-1-type @ut2/macro-types*) sym)
+            ((:skip-arg-1-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1 node))
                 z/next
                 recur)
 
-            ((:skip-arg-2-type @ut2/macro-types*) sym)
+            ((:skip-arg-2-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-arg-2 node))
                 z/next
                 recur)
             
-            ((:skip-arg-1-2-type @ut2/macro-types*) sym)
+            ((:skip-arg-1-2-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1-2 node))
                 z/next
                 recur)
             
-            ((:skip-arg-2-3-type @ut2/macro-types*) sym)
+            ((:skip-arg-2-3-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-arg-2-3 node))
                 z/next
                 recur)
             
-            ((:skip-arg-1-3-type @ut2/macro-types*) sym)
+            ((:skip-arg-1-3-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1-3 node))
                 z/next
                 recur)
             
-            ((:skip-form-itself-type @ut2/macro-types*) sym)
+            ((:skip-form-itself-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-form-itself node))
                 ut/right-or-next
                 recur)
             
 
-            ((:expand-type @ut2/macro-types*) sym)
-            (-> (z/replace loc (seq (macroexpand-1 node)))
+            ((:expand-type @mt/macro-types*) sym)
+            (-> (z/replace loc (seq (analyzer/macroexpand-1 {} node)))
                 recur)
 
-            ((:dot-type @ut2/macro-types*) sym)
+            ((:dot-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-dot node))
                 z/down
                 z/right
@@ -152,7 +154,7 @@
         ;; in case that the first symbol is defn/defn-
         (and (seq? node)
              (symbol? (first node))
-             (`#{defn defn-} (ut2/ns-symbol (first node))))
+             (`#{defn defn-} (mt/ns-symbol (first node))))
         (recur (-> (-> loc z/down z/next)))
 
         ;; in case of the first symbol except defn/defn-/def
@@ -211,9 +213,9 @@
          result# (if (coll? result#)
                    (ut/take-n result# n#)
                    result#)]
-     (ut2/clog-form-with-indent (ut2/form-header '~(remove-d form) msg#)
+     (cs.ut/clog-form-with-indent (cs.ut/form-header '~(remove-d form) msg#)
                                   form-style# @ut/indent-level*)
-     (ut2/clog-result-with-indent result# @ut/indent-level*)
+     (cs.ut/clog-result-with-indent result# @ut/indent-level*)
      result#))
 
 
@@ -249,12 +251,12 @@
                            " =>")
                style# (or ~style :debug)]
            (ut/prog2
-             (ut2/cgroup title# style#) 
+             (cs.ut/cgroup title# style#) 
              ~(-> form
                   insert-skip
                   insert-d
                   remove-skip)
-             (ut2/cgroup-end) )))
+             (cs.ut/cgroup-end) )))
        (swap! ut/indent-level* dec) )))
 
 

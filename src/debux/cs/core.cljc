@@ -1,16 +1,15 @@
 (ns debux.cs.core
   #?(:cljs (:require-macros [debux.cs.dbg :as dbg]
-                            [debux.cs.clog :as clog]))
-  (:require [clojure.set :as set]
-            [debux.util :as ut]
-            [debux.cs.util2 :as ut2]))
+                            [debux.cs.clog :as clog]
+                            [debux.cs.macro-types :as mt] ))
+  (:require [debux.util :as ut]
+            [debux.cs.util :as cs.ut] ))
+
 
 #?(:cljs (enable-console-print!))
 
-(def register-macros! ut2/register-macros!)
-(def show-macros ut2/show-macros)
-(def merge-style ut2/merge-style)
 
+;;; debugging APIs
 (defmacro dbg [form & opts]
   (let [opts' (ut/parse-opts opts)]
     `(debux.cs.dbg/dbg ~form ~opts')))
@@ -31,25 +30,16 @@
   (let [opts' (ut/parse-opts opts)]
     `(debux.cs.clog/break ~opts')))
 
-;; (defmacro register-macros! [macro-type symbols]
-;;   `(swap! ut2/macro-types* update ~macro-type #(set/union % (set ~symbols))))
 
-;; (defmacro show-macros
-;;   ([] `(identity @ut2/macro-types*))
-;;   ([macro-type] `(get @ut2/macro-types* ~macro-type)))
+;;; macro registering APIs
+(defmacro register-macros! [macro-type symbols]
+  `(debux.cs.macro-types/register-macros! ~macro-type ~symbols))
 
-
-(comment
-
-(clog {:a 10 :b 20} :js)
-
+(defmacro show-macros
+  ([] `(debux.cs.macro-types/show-macros))
+  ([macro-type] `(debux.cs.macro-types/show-macros ~macro-type)))
   
-(dbg (-> 10 inc inc) "aaa")
-(dbgn (let [a 10] (+ a 20)) "bbb")
 
-(def f (comp inc inc +))
-(dbg (f 10 20))
-
-) ; end of comment
-
+;;; style option API
+(def merge-style cs.ut/merge-style)
 

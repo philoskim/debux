@@ -4,12 +4,13 @@
 .nrepl-history
 /pom.xml
 /pom.xml.asc
+figwheel_server.log
 
-example/target
-example/resources/public/js
-example/figwheel_server.log
+/example/target
+/example/resources/public/js
+/example/figwheel_server.log
 
-resources/public/js/
+/resources/public/js/
 
 *~
 *#

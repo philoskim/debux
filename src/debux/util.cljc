@@ -14,7 +14,7 @@
    <form any> a form to be evaluated"
   [form]
   `(let [return# ~form]
-     (println ">> dbg_:" (pr-str '~form) "=>\n" return# "<<")
+     (println ">> dbg_:" (pr-str '~form) "=>\n" (pr-str return#) "<<")
      return#))
 
 
@@ -75,6 +75,20 @@
   [result indent-level]
   (let [pprint (str/trim (with-out-str (pp/pprint result)))]
     (println (->> (str/split pprint #"\n")
+                   prepend-blanks
+                   (mapv #(prepend-bars % indent-level))
+                   (str/join "\n")))
+    (flush) ))
+
+;; for cljs dbg/dbgn macro
+(defn pprint-result-with-indent-for-cljs
+  [result indent-level]
+  (let [pprint (str/trim (with-out-str (pp/pprint result)))
+        pprint' (if (fn? result)
+                  (str (first (str/split pprint #" " 2)) "]")
+                  pprint)
+        ]
+    (println (->> (str/split pprint' #"\n")
                    prepend-blanks
                    (mapv #(prepend-bars % indent-level))
                    (str/join "\n")))
