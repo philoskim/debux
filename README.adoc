@@ -25,7 +25,7 @@ To include *debux* in your project, simply add the following to your *project.cl
 
 [source]
 ....
-[philoskim/debux "0.3.2"]
+[philoskim/debux "0.3.3"]
 ....
 
 
@@ -80,6 +80,9 @@ Refer to <<register-macros>> about details.
 
 
 ## Change logs
+
+* Version 0.3.3
+** Fixed: `when` listed in `:let-type` by mistake is deleted.
 
 * Version 0.3.2
 ** Fixed: The `dbgn/clog` related several bugs on ClojureScript are removed.
@@ -1423,7 +1426,7 @@ an example about runing the link:https://github.com/bhauman/lein-figwheel[figwhe
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.562"]
-                 [philoskim/debux "0.3.2"]]
+                 [philoskim/debux "0.3.3"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

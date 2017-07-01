@@ -5,7 +5,6 @@
   (:require [debux.util :as ut]
             [debux.cs.util :as cs.ut] ))
 
-
 #?(:cljs (enable-console-print!))
 
 

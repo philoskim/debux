@@ -26,7 +26,7 @@
          :fn-type `#{fn fn*}
 
          :let-type
-         `#{let binding dotimes if-let if-some when when-first when-let
+         `#{let binding dotimes if-let if-some when-first when-let
             when-some with-out-str with-redefs}
          :letfn-type `#{letfn}
          
@@ -41,7 +41,7 @@
          :skip-form-itself-type
          `#{catch comment declare defmacro defmulti defprotocol defrecord
             deftype extend-protocol extend-type finally import loop memfn new
-            quote refer-clojure reify var throw}
+            quote recur refer-clojure reify var throw}
 
          :expand-type
          `#{clojure.core/.. -> ->> doto cond-> cond->> condp import some-> some->>}
@@ -52,6 +52,6 @@
   `(swap! macro-types* update ~macro-type #(set/union % (set ~symbols))))
 
 (defmacro show-macros
-  ([] `(identity ~@macro-types*)
-  ([macro-type] `(get @macro-types* ~macro-type))))
+  ([] `(identity ~(deref macro-types*)))
+  ([macro-type] `(get ~(deref macro-types*) ~macro-type)))
 

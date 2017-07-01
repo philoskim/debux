@@ -1,8 +1,8 @@
 (ns debux.skip
   (:require [clojure.zip :as z]
-            #?(:clj [clojure.spec.alpha :as s]
+            #?(:clj  [clojure.spec.alpha :as s]
                :cljs [cljs.spec.alpha :as s])
-            [debux.macro-spec :as ms :refer [skip]]
+            [debux.macro-specs :as ms :refer [skip]]
             [debux.util :as ut] ))
 
 ;;; :def-type
@@ -120,7 +120,6 @@
   [[name arg1 arg2 arg3 & body]]
   (list* name arg1 `(skip ~arg2) `(skip ~arg3) body))
 
-; (insert-skip-arg-1 '(with-precision 10 (/ 1M 6)))
 
 ;;; :skip-form-itself-type
 (defn insert-skip-form-itself

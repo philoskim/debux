@@ -1,7 +1,7 @@
 (ns debux.dbg
   (:require [clojure.set :as set]
             [clojure.zip :as z]
-            [debux.macro-spec :as ms :refer [skip]]
+            [debux.macro-specs :as ms :refer [skip]]
             [debux.macro-types :as mt]
             [debux.skip :as sk]
             [debux.util :as ut] ))
@@ -9,9 +9,7 @@
 
 ;;; dbg macro
 (defmacro dbg
-  "The macro for debuggng and analyzing Clojure source code.
-   <form any> a form to be evaluated
-   <opts (<opt any>)> the options to control the evaluation way"
+  "DeBuG an outer-most form."
   [form & [{:keys [n msg condition] :as opts}]]
   `(let [n# ~(or n 100)
          condition# ~condition
@@ -146,7 +144,6 @@
         (recur (ut/right-or-next loc))
 
         ;; in case that the first symbol is defn/defn-
-        ;; refer to skip.clj about inserting :dbg-count option.
         (and (seq? node)
              (symbol? (first node))
              (`#{defn defn-} (mt/ns-symbol (first node))))
@@ -234,7 +231,7 @@
 
 ;;; dbgn
 (defmacro dbgn
-  "dbg for nested forms"
+  "DeBuG every Nested forms of a form.s"
   [form & [{:keys [condition] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~opts
          condition#         ~condition]
@@ -253,22 +250,6 @@
 
 
 (comment
-
-(defmulti greeting
-  (fn [x] (:language x)))
-
-(dbgn (defmethod greeting :english [map]
-        (str "English greeting: " (:greeting map))))
-
-(dbgn (defmethod greeting :french [map]
-        (str "English greeting: " (:greeting map))))
-
-(def english-map {:language :english :greeting "Hello!"})
-(def french-map {:language :french :greeting "Bonjour!"})
-
-(greeting {:language :english :greeting "Hello!"})
-(greeting {:language :french :greeting "Bonjour!"})
-
 
 (dbgn (defn fun [m]
         (:aaa m)))
@@ -355,6 +336,22 @@
 
 (dbgn 'a)
 (dbgn #'+)
+
+(defmulti greeting
+  (fn [x] (:language x)))
+
+(dbgn (defmethod greeting :english [map]
+        (str "English greeting: " (:greeting map))))
+
+(dbgn (defmethod greeting :french [map]
+        (str "English greeting: " (:greeting map))))
+
+(def english-map {:language :english :greeting "Hello!"})
+(def french-map {:language :french :greeting "Bonjour!"})
+
+(greeting {:language :english :greeting "Hello!"})
+(greeting {:language :french :greeting "Bonjour!"})
+
 
 (macroexpand-1 '(.. System (getProperties) (get "os.name")))
 (dbgn (.. System (getProperties) (get "os.name")))

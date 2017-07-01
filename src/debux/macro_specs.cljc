@@ -1,6 +1,6 @@
-(ns debux.macro-spec
-  "clojure.core macro spec"
-  (:require #?(:clj [clojure.spec.alpha :as s]
+(ns debux.macro-specs
+  "clojure.core macro specs"
+  (:require #?(:clj  [clojure.spec.alpha :as s]
                :cljs [cljs.spec.alpha :as s])
             #?(:clj [clojure.future :refer :all])
             [debux.util :as ut] ))
@@ -53,10 +53,6 @@
   (s/cat :name (s/? ::name)
          :bs (s/alt :arity-1 ::args+body
                     :arity-n (s/cat :bodies (s/+ (s/spec ::args+body))))))
-
-
-
-
 
 (comment
 

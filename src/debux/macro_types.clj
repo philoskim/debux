@@ -1,7 +1,7 @@
 (ns debux.macro-types
   (:require [clojure.set :as set]))
 
-
+;;; ns-symbol
 (defn- var->symbol [v]
   (let [m    (meta v)
         ns   (str (ns-name (:ns m)))
@@ -21,7 +21,7 @@
          :fn-type `#{fn fn*}
 
          :let-type
-         `#{let binding dotimes if-let if-some when when-first when-let
+         `#{let binding dotimes if-let if-some when-first when-let
             when-some with-in-str with-local-vars with-open with-out-str
             with-redefs}
          :letfn-type `#{letfn}
@@ -37,11 +37,13 @@
          :skip-form-itself-type
          `#{catch comment declare definline definterface defmacro defmulti
             defprotocol defrecord defstruct deftype extend-protocol
-            extend-type finally gen-class gen-interface import loop memfn new
-            ns proxy proxy-super quote refer-clojure reify sync var throw}
+            extend-type finally gen-class gen-interface import loop memfn
+            new ns proxy proxy-super quote recur refer-clojure reify sync
+            var throw}
 
          :expand-type
-         `#{clojure.core/.. -> ->> doto cond-> cond->> condp import some-> some->>}
+         `#{clojure.core/.. -> ->> doto cond-> cond->> condp import 
+            some-> some->>}
          :dot-type `#{.} }))
 
 (defn register-macros! [macro-type symbols]

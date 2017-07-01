@@ -2,16 +2,14 @@
   (:require [clojure.set :as set]
             [clojure.zip :as z]
             [cljs.analyzer :as analyzer]
-            [debux.macro-spec :as ms :refer [skip]]
+            [debux.macro-specs :as ms :refer [skip]]
             [debux.skip :as sk]
             [debux.util :as ut]
             [debux.cs.macro-types :as mt] ))
 
 ;;; dbg macro
 (defmacro dbg
-  "The macro for debuggng and analyzing Clojure source code.
-   <form any> a form to be evaluated
-   <opts (<opt any>)> the options to control the evaluation way"
+  "DeBuG an outer-most form."
   [form & [{:keys [n msg condition] :as opts}]]
   `(let [n# ~(or n 100)
          condition# ~condition
@@ -233,7 +231,7 @@
 
 ;;; dbgn
 (defmacro dbgn
-  "dbg for nested forms"
+  "DeBuG every Nested forms of a form."
   [form & [{:keys [condition] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :style :js :once)
          condition#         ~condition]
