@@ -827,12 +827,13 @@ dbgn: (areduce xs i ret (float 0) (+ ret (aget xs i))) =>
 
 #### `:skip-form-itself-type` example
 
-This type of macros have too complex to parse, so `dbgn/clogn` skips form itself and does nothing.
+This type of macros have too complex to parse, so `dbgn/clogn` skips form itself and does
+nothing.
   
 
 #### `:expand-type` example
 
-This type of macros will be exhaustively expanded and then the output will be printed.
+This type of macros will be expanded and then the output will be printed.
 
 [source]
 ....
@@ -1013,7 +1014,7 @@ dbgn: (. (java.util.Date.) getMonth) =>
 ....
 
 NOTE: *backquote* (pass:q[`]) must be used in front of a vector of symbols, instead of
-*quote* (pass:q[`]).
+*quote* (pass:q[']).
 
 
 [listing]
