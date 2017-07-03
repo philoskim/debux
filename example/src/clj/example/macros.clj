@@ -49,8 +49,8 @@
 
 
 ;;; :fn-type example
-(dbgn (reduce (fn [acc i] (+ acc i)) 0 [1 2 3 4 5]))
-(dbgn (map #(* % 10) [1 2 3 4 5]))
+(dbgn (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]))
+(dbgn (map #(* % 10) [1 5 9]))
 
 
 

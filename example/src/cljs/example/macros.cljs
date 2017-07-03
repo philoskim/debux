@@ -48,8 +48,8 @@
 
 
 ;;; :fn-type example
-(clogn (reduce (fn [acc i] (+ acc i)) 0 [1 2 3 4 5]))
-(clogn (map #(* % 10) [1 2 3 4 5]))
+(clogn (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]))
+(clogn (map #(* % 10) [1 5 9]))
 
 
 

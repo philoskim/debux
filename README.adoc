@@ -82,10 +82,10 @@ Refer to <<register-macros>> about details.
 ## Change logs
 
 * Version 0.3.3
-** Fixed: `when` listed in `:let-type` by mistake is deleted.
+** Fixed: The error of `when` listed in `:let-type` by mistake is deleted.
 
 * Version 0.3.2
-** Fixed: The `dbgn/clog` related several bugs on ClojureScript are removed.
+** Fixed: The `dbgn/clogn` related several bugs on ClojureScript are removed.
 
 * Version 0.3.1
 ** Fixed: The error-causing dependency `philoskim/debux2 "0.2.1"` is removed.
@@ -187,9 +187,8 @@ NOTE: However, `dbgn/clogn` cannot handle `recur` special form because of the
 | :def-type   | def defonce
 | :defn-type  | defn defn-
 | :fn-type    | fn fn*
-| :let-type   | let binding dotimes if-let if-some when when-first when-let
-                when-some with-in-str with-local-vars with-open with-out-str
-                with-redefs
+| :let-type   | let binding dotimes if-let if-some when-first when-let when-some
+                with-in-str with-local-vars with-open with-out-str with-redefs
 | :letfn-type | letfn
 | :for-type   | for doseq
 | :case-type  | case
@@ -382,18 +381,18 @@ have optional function name. So it is a little different from `:defn-type` macro
 
 [source]
 ....
-(dbgn (reduce (fn [acc i] (+ acc i)) 0 [1 2 3 4 5]))
+(dbgn (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]))
 ; => 15
 ....
 
 [listing]
 .REPL output
 ----
-dbgn: (reduce (fn [acc i] (+ acc i)) 0 [1 2 3 4 5]) =>
+dbgn: (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]) =>
 | (fn [acc i] (+ acc i)) =>
 |   #function[example.core/eval25034/result--24229--auto----25035]
-| [1 2 3 4 5] =>
-|   [1 2 3 4 5]
+| [1 5 9] =>
+|   [1 5 9]
 | acc =>
 |   0
 | i =>
@@ -403,28 +402,16 @@ dbgn: (reduce (fn [acc i] (+ acc i)) 0 [1 2 3 4 5]) =>
 | acc =>
 |   1
 | i =>
-|   2
-| (+ acc i) =>
-|   3
-| acc =>
-|   3
-| i =>
-|   3
-| (+ acc i) =>
-|   6
-| acc =>
-|   6
-| i =>
-|   4
-| (+ acc i) =>
-|   10
-| acc =>
-|   10
-| i =>
 |   5
 | (+ acc i) =>
+|   6
+| acc =>
+|   6
+| i =>
+|   9
+| (+ acc i) =>
 |   15
-| (reduce (fn [acc i] (+ acc i)) 0 [1 2 3 4 5]) =>
+| (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]) =>
 |   15
 ----
 
@@ -434,40 +421,32 @@ dbgn: (reduce (fn [acc i] (+ acc i)) 0 [1 2 3 4 5]) =>
 
 [source]
 ....
-(dbgn (map #(* % 10) [1 2 3 4 5]))
-; => (10 20 30 40 50)
+(dbgn (map #(* % 10) [1 5 9]))
+; => (10 50 90)
 ....
 
 [listing]
 .REPL output
 ----
-dbgn: (map (fn* [p1__25079#] (* p1__25079# 10)) [1 2 3 4 5]) =>
+dbgn: (map (fn* [p1__25079#] (* p1__25079# 10)) [1 5 9]) =>
 | (fn* [p1__25079#] (* p1__25079# 10)) =>
 |   #function[example.core/eval25080/result--24229--auto----25081]
-| [1 2 3 4 5] =>
-|   [1 2 3 4 5]
-| (map (fn* [p1__25079#] (* p1__25079# 10)) [1 2 3 4 5]) =>
+| [1 5 9] =>
+|   [1 5 9]
+| (map (fn* [p1__25079#] (* p1__25079# 10)) [1 5 9]) =>
 |   | p1__25079# =>
 |   |   1
 |   | (* p1__25079# 10) =>
 |   |   10
 |   | p1__25079# =>
-|   |   2
-|   | (* p1__25079# 10) =>
-|   |   20
-|   | p1__25079# =>
-|   |   3
-|   | (* p1__25079# 10) =>
-|   |   30
-|   | p1__25079# =>
-|   |   4
-|   | (* p1__25079# 10) =>
-|   |   40
-|   | p1__25079# =>
 |   |   5
 |   | (* p1__25079# 10) =>
 |   |   50
-|   (10 20 30 40 50)
+|   | p1__25079# =>
+|   |   9
+|   | (* p1__25079# 10) =>
+|   |   90
+|   (10 50 90)
 ----
  
 
