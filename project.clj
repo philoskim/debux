@@ -1,4 +1,4 @@
-(defproject philoskim/debux "0.3.3"
+(defproject philoskim/debux "0.3.4"
   :description "Debux library for debugging Clojure and ClojureScript"
   :url "https://github.com/philoskim/debux"
   :license {"Eclipse Public License"
@@ -23,8 +23,8 @@
   :cljsbuild
   {:builds
    [{:id "dev"
-     :source-paths ["src"]
-     :figwheel     {:on-jsload "debux.cs.test.main/mount-root"}
+     :source-paths ["src" "dev"]
+     :figwheel true
      :compiler {:main debux.cs.test.main
                 :output-to "resources/public/js/main.js"
                 :output-dir "resources/public/js/out/"

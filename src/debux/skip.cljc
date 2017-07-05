@@ -134,30 +134,4 @@
     `(~name ~arg1' (skip ~arg2)) ))
 
 
-(comment
-
-(insert-skip-in-dot '(. (. "fooBAR" toLowerCase) toUpperCase))
-(insert-skip-in-dot '(. System getProperties))
-
-(def f3
-  '(fn add1 [x y]
-     (+ x y)))
-
-(def f4
-  '(fn add2
-     ([] 0)
-     ([x] x)
-     ([x y] (+ x y))
-     ([x y & zs] (apply + x y zs))))
-
-(def f5 '#(+ % %2))
-
-
-(insert-skip-in-fn f3)
-(insert-skip-in-fn f4)
-(insert-skip-in-fn f5)
-
-) ; end of comment
-
-
 

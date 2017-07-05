@@ -129,7 +129,7 @@
   (if (string? v) (pr-str v) v))
 
 
-;;; etc
+;;; parse options
 (defn parse-opts
   "Parses <opts> into a map.
    <opts (<arg any>*)>
@@ -172,12 +172,11 @@
       (seq? coll) n-coll
       :else (into (empty coll) n-coll))))
 
-(comment
-  
-(take-n {:a 10 :b 20} 10)
-(take-n [:a 10 :b 20] 10)
-(take-n #{:a 10 :b 20} 10)
-(take-n '(:a 10 :b 20) 10)
 
-) ; end of comment
+;;; quote the value parts of a map
+(defn quote-val [[k v]]
+  `[~k '~v])
 
+(defn quote-vals [m]
+  (->> (map quote-val m)
+       (into {})))

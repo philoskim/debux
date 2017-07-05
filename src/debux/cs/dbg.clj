@@ -32,7 +32,7 @@
 ;;; insert skip
 (defn- insert-skip
    "Marks the form to skip."
-  [form]
+  [form env]
   (loop [loc (ut/sequential-zip form)]
     (let [node (z/node loc)]
       ;(dbg node)
@@ -44,7 +44,7 @@
         (recur (ut/right-or-next loc))
 
         (and (seq? node) (symbol? (first node)))
-        (let [sym (mt/ns-symbol (first node))]
+        (let [sym (mt/ns-symbol env (first node))]
           ;(ut/d sym)
           (cond
             ((:def-type @mt/macro-types*) sym)
@@ -132,7 +132,7 @@
 
 
 ;;; insert/remove d 
-(defn- insert-d [form]
+(defn- insert-d [form env]
   (loop [loc (ut/sequential-zip form)]
     (let [node (z/node loc)]
       ;(dbg node)
@@ -146,7 +146,7 @@
         ;; in case that the first symbol is defn/defn-
         (and (seq? node)
              (symbol? (first node))
-             (`#{defn defn-} (mt/ns-symbol (first node))))
+             (`#{defn defn-} (mt/ns-symbol env (first node))))
         (recur (-> (-> loc z/down z/next)))
 
         ;; in case of the first symbol except defn/defn-/def
@@ -241,140 +241,9 @@
          (ut/prog2
            (println "\ndbgn:" (pr-str '~form) "=>")
           ~(-> form
-               insert-skip
-               insert-d
+               (insert-skip &env)
+               (insert-d &env)
                remove-skip) ))
        (swap! ut/indent-level* dec)
        (println)
        (flush) )))
-
-
-(comment
-
-  (dbgn (defn fun [m]
-        (:aaa m)))
-
-(fun {:aaa 100})
-
-
-(def a 10) (def b 20)
-(d (+ (d a) (d b)))
-
-(dbgn (defn sub [a b] (- a b)) {:msg "hhhh"})
-(dbgn (defn mul [m1 m2] (* m1 m2)))
-(dbgn (defn sub [s1 s2] (- s1 (mul s2 10))))
-(dbgn (defn- add [a1 a2] (+ 100 (sub a1 a2))))
-
-(dbgn (defn lazy [] (range 200)))
-(d b)
-
-(macroexpand-1 '(dbgn (defn- add [a b] (+ a b))))
-
-(dbgn (defn- add [a b] a b {:a a :b b} (+ a b)))
-
-(dbgn (defn- add [a b] a b #{a b} (+ a b)))
-
-(dbgn (defn- add [a b] [a b] (+ a b)))
-
-(dbgn (defn- add ([] 0)
-                ([a] a)
-                ([a b] (+ a b))))
-
-(def fn1 (dbgn (fn abc [a b] (+ a b))))
-(def fn2 (dbgn (fn ([] 0)
-                 ([a] a)
-                 ([a b] (+ a b)))))
-
-(dbgn (def f #(+ % %2)))
-
-(dbgn (let [[a c] [10 30] b 20] (+ a b)))
-
-
-
-(dbgn (defn mul [m1 m2] (* m1 m2)))
-(dbgn (defn sub [s1 s2] (- s1 (mul s2 10))))
-(dbgn (let [a 10 b (* a 2)] (sub 10 (+ a b))))
-
-
-
-(dbgn (loop [x 10]
-        (if (> x 1)
-          x
-          (recur (- x 2)))))
-
-(dbgn (for [x (range 3)
-            :let [y (* x x)]]
-        [x y]))
-
-(dbgn (doseq [x (range 3)
-            :let [y (* x x)]]
-        [x y]))
-
-(dbgn (letfn [(twice [x]
-                (* x 2))
-              (six-times [y]
-                (* (twice y) 3))]
-        (+ (twice 15) (six-times 15)) ))
-
-(dbgn (case 'y
-        (x y z) "x, y, or z"
-        "default"))
-
-(dbgn (with-precision 10 (/ 1M 6)))
-
-(dbgn (-> "a b c d" 
-          .toUpperCase 
-          (.replace "A" "X") 
-          (.split " ") 
-          first))
-
-(dbgn (cond-> 1
-        true inc
-        false (* 42)
-        (= 2 2) (* 3)) {})
-
-(dbgn 'a)
-(dbgn #'+)
-
-(macroexpand-1 '(.. System (getProperties) (get "os.name")))
-(dbgn (.. System (getProperties) (get "os.name")))
-
-
-(dbgn (doto (java.util.HashMap.)
-            (.put "a" 1)
-            (.put "b" 2)
-            (println)))
-
-(dbgn (.. "fooBAR" toLowerCase toUpperCase (contains "ooba")))
-(dbgn (. (. (. "fooBAR" toLowerCase) toUpperCase) (contains "ooba")))
-(dbgn (. "fooBAR" toLowerCase))
-(dbgn (. System getProperties))
-
-(dbgn (.. "fooBAR" toLowerCase toUpperCase (contains "ooba")))
-;; (.. "fooBAR" toLowerCase toUpperCase (contains "ooba")))
-;;   (.. (. "fooBAR" toLowerCase) toUpperCase (contains "ooba"))
-;;   (.. (. (. "fooBAR" toLowerCase) toUpperCase) (contains "ooba"))
-;;   (. (. (. "fooBAR" toLowerCase) toUpperCase) (contains "ooba"))
-
-(dbgn (->> 10 inc inc) {})
-(dbgn (.toUpperCase "fred"))
-(dbgn (.getName String))
-(dbgn (.-x (java.awt.Point. 1 2)))
-(dbgn (System/getProperty "java.vm.version"))
-(dbgn (new java.util.Date))
-(dbgn (java.util.Date.))
-
-(dbgn (try (/ 1 0)
-     (catch Exception e (prn "Handle generic exception"))
-     (finally (prn "Release some resource)"))))
-
-(throw (ut/d (Exception. "my exception message")))
-
-(dbgn (map (fn [i] (* 2 i)) [10 20 30 40 50]))
-(dbgn (map inc [10 20 30 40 50]))
-
-(dbgn (reduce (fn [acc i] (+ acc i)) [10 20 30 40 50]))
-(dbgn (filter even? (range)))
-
-) ;; end of comment
-

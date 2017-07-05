@@ -46,10 +46,16 @@
             some-> some->>}
          :dot-type `#{.} }))
 
-(defn register-macros! [macro-type symbols]
+(defn- merge-symbols [old-symbols new-symbols]
+  (->> (map #(ns-symbol %) new-symbols)
+       set
+       (set/union old-symbols) ))
+
+(defn register-macros! [macro-type new-symbols]
   (swap! macro-types* update macro-type
-                             #(set/union % (set symbols)) ))
+         #(merge-symbols % new-symbols)))
+
 (defn show-macros
   ([] @macro-types*)
-  ([macro-type] (get @macro-types* macro-type)))
+  ([macro-type] (select-keys @macro-types* [macro-type])))
 

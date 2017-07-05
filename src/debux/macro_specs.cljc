@@ -1,5 +1,5 @@
 (ns debux.macro-specs
-  "clojure.core macro specs"
+  "clojure.core macro specs which are minified, simplified and modified."
   (:require #?(:clj  [clojure.spec.alpha :as s]
                :cljs [cljs.spec.alpha :as s])
             #?(:clj [clojure.future :refer :all])

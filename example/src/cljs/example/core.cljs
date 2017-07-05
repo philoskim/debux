@@ -1,4 +1,5 @@
 (ns example.core
-   (:require example.macros
+   (:require example.clogn
+             ; example.dbgn
              example.options))
 

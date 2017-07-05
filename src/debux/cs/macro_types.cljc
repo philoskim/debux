@@ -4,9 +4,9 @@
             [cljs.analyzer.api :as ana]
             [debux.util :as ut] ))
 
-(defn ns-symbol [sym]
-  ;(ut/d (ana/resolve {} sym))
-  (if-let [meta (ana/resolve {} sym)]
+;;; symbol with namespace
+(defn ns-symbol [env sym]
+  (if-let [meta (ana/resolve env sym)]
     ;; normal symbol
     (let [[ns name] (str/split (str (:name meta)) #"/")]
       ;; The special symbol . must be handled in the following special symbol part.
@@ -48,10 +48,20 @@
          :dot-type `#{.} }))
 
 
-(defmacro register-macros! [macro-type symbols]
-  `(swap! macro-types* update ~macro-type #(set/union % (set ~symbols))))
+(defn- merge-symbols [old-symbols new-symbols env]
+  (->> (map #(ns-symbol env %)
+            new-symbols)
+       set
+       (set/union old-symbols) ))
+
+(defmacro register-macros! [macro-type new-symbols]
+  (-> (swap! macro-types* update macro-type
+             #(merge-symbols % new-symbols &env))
+      ut/quote-vals))
 
 (defmacro show-macros
-  ([] `(identity ~(deref macro-types*)))
-  ([macro-type] `(get ~(deref macro-types*) ~macro-type)))
+  ([] (-> @macro-types*
+          ut/quote-vals))
+  ([macro-type] (-> (select-keys @macro-types* [macro-type])
+                    ut/quote-vals)))
 
