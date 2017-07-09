@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.set :as set]
             [cljs.analyzer.api :as ana]
-            [debux.util :as ut] ))
+            [debux.common.util :as ut] ))
 
 ;;; symbol with namespace
 (defn ns-symbol [env sym]

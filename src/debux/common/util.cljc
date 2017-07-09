@@ -1,4 +1,4 @@
-(ns debux.util
+(ns debux.common.util
   "util common for clojure and clojurescript" 
   (:require [clojure.string :as str]
             [clojure.pprint :as pp]

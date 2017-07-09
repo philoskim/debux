@@ -1,7 +1,7 @@
 (ns debux.core
   (:require [debux.dbg :as dbg]
             [debux.macro-types :as mt]
-            [debux.util :as ut]))
+            [debux.common.util :as ut]))
 
 (def register-macros! mt/register-macros!)
 (def show-macros mt/show-macros)

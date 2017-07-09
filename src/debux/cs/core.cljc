@@ -2,7 +2,7 @@
   #?(:cljs (:require-macros [debux.cs.dbg :as dbg]
                             [debux.cs.clog :as clog]
                             [debux.cs.macro-types :as mt] ))
-  (:require [debux.util :as ut]
+  (:require [debux.common.util :as ut]
             [debux.cs.util :as cs.ut] ))
 
 #?(:cljs (enable-console-print!))

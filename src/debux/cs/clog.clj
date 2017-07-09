@@ -2,9 +2,9 @@
   (:require [clojure.set :as set]
             [clojure.zip :as z]
             [cljs.analyzer :as analyzer]
-            [debux.macro-specs :as ms :refer [skip]]
-            [debux.skip :as sk]
-            [debux.util :as ut]
+            [debux.common.macro-specs :as ms :refer [skip]]
+            [debux.common.skip :as sk]
+            [debux.common.util :as ut]
             [debux.cs.util :as cs.ut]
             [debux.cs.macro-types :as mt] ))
 
@@ -241,7 +241,7 @@
   [form & [{:keys [condition msg style] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :js :once)
          condition#         ~condition]
-     (ut/prog2
+     (try
        (swap! ut/indent-level* inc)
        (when (or (nil? condition#) condition#)
          (let [title# (str "%cclogn: %c " (pr-str '~form)
@@ -255,7 +255,9 @@
                   (insert-d  &env)
                   remove-skip)
              (cs.ut/cgroup-end) )))
-       (swap! ut/indent-level* dec) )))
+       (catch js/Error ~'e (throw ~'e))
+       (finally
+         (swap! ut/indent-level* dec) ))))
 
 
 ;;; break

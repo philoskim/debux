@@ -1,9 +1,9 @@
-(ns debux.skip
+(ns debux.common.skip
   (:require [clojure.zip :as z]
             #?(:clj  [clojure.spec.alpha :as s]
                :cljs [cljs.spec.alpha :as s])
-            [debux.macro-specs :as ms :refer [skip]]
-            [debux.util :as ut] ))
+            [debux.common.macro-specs :as ms :refer [skip]]
+            [debux.common.util :as ut] ))
 
 ;;; :def-type
 (defn insert-skip-in-def [form]

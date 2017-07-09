@@ -1,10 +1,10 @@
 (ns debux.dbg
   (:require [clojure.set :as set]
             [clojure.zip :as z]
-            [debux.macro-specs :as ms :refer [skip]]
+            [debux.common.macro-specs :as ms :refer [skip]]
             [debux.macro-types :as mt]
-            [debux.skip :as sk]
-            [debux.util :as ut] ))
+            [debux.common.skip :as sk]
+            [debux.common.util :as ut] ))
 
 
 ;;; dbg macro
@@ -230,7 +230,7 @@
 
 
 ;;; dbgn
-(defmacro dbgn
+(defmacro dbgn0
   "DeBuG every Nested forms of a form.s"
   [form & [{:keys [condition] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~opts
@@ -247,3 +247,22 @@
        (swap! ut/indent-level* dec)
        (println)
        (flush) )))
+
+(defmacro dbgn
+  "DeBuG every Nested forms of a form.s"
+  [form & [{:keys [condition] :as opts}]]
+  `(let [~'+debux-dbg-opts+ ~opts
+         condition#         ~condition]
+     (try
+       (swap! ut/indent-level* inc)
+       (when (or (nil? condition#) condition#)
+         (println "\ndbgn:" (pr-str '~form) "=>")
+         ~(-> form
+              insert-skip
+              insert-d
+              remove-skip))
+       (catch Exception ~'e (throw ~'e)) 
+       (finally
+         (swap! ut/indent-level* dec)
+         (println)
+         (flush) ))))

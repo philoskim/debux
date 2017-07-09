@@ -4,7 +4,7 @@
             [clojure.set :as set]
             #?(:cljs [cljs.pprint :as pp])
             [cljs.analyzer.api :as ana]
-            [debux.util :as ut] ))
+            [debux.common.util :as ut] ))
 
 ;;; caching
 (def ^:private prev-returns* (atom {}))

@@ -1,9 +1,9 @@
-(ns debux.macro-specs
+(ns debux.common.macro-specs
   "clojure.core macro specs which are minified, simplified and modified."
   (:require #?(:clj  [clojure.spec.alpha :as s]
                :cljs [cljs.spec.alpha :as s])
             #?(:clj [clojure.future :refer :all])
-            [debux.util :as ut] ))
+            [debux.common.util :as ut] ))
 
 (declare skip)
 

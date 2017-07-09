@@ -2,6 +2,8 @@
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]])
   (:require-macros [example.macro :refer [my-let]]))
 
+(clogn (+ nil 4))
+
 ;;; simple example
 (clogn (defn foo [a b & [c]]
         (if c

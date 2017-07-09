@@ -2,9 +2,9 @@
   (:require [clojure.set :as set]
             [clojure.zip :as z]
             [cljs.analyzer :as analyzer]
-            [debux.macro-specs :as ms :refer [skip]]
-            [debux.skip :as sk]
-            [debux.util :as ut]
+            [debux.common.macro-specs :as ms :refer [skip]]
+            [debux.common.skip :as sk]
+            [debux.common.util :as ut]
             [debux.cs.macro-types :as mt] ))
 
 ;;; dbg macro
@@ -235,15 +235,16 @@
   [form & [{:keys [condition] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :style :js :once)
          condition#         ~condition]
-     (ut/prog2
+     (try
        (swap! ut/indent-level* inc)
        (when (or (nil? condition#) condition#)
-         (ut/prog2
-           (println "\ndbgn:" (pr-str '~form) "=>")
-          ~(-> form
-               (insert-skip &env)
-               (insert-d &env)
-               remove-skip) ))
-       (swap! ut/indent-level* dec)
-       (println)
-       (flush) )))
+         (println "\ndbgn:" (pr-str '~form) "=>")
+         ~(-> form
+              (insert-skip &env)
+              (insert-d &env)
+              remove-skip))
+       (catch Exception ~'e (throw ~'e)) 
+       (finally
+         (swap! ut/indent-level* dec)
+         (println)
+         (flush) ))))
