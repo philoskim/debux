@@ -144,6 +144,20 @@
 (dbgn (. (java.util.Date.) getMonth))
 
 
+;;; the form which includes recur
+(dbgn (loop [acc 1 n 3]
+          (if (zero? n)
+            acc
+            (recur (* acc n) (dec n)))))
+
+(dbgn (defn factorial [acc n]
+        (if (zero? n)
+          acc
+          (factorial (* acc n) (dec n)))))
+
+(factorial 1 3)
+
+
 ;;; Registering your own macros
 (defmacro my-let [bindings & body]
   `(let ~bindings ~@body))
@@ -154,4 +168,5 @@
 (dbg (show-macros))
 
 (dbgn (my-let [a 10 b (+ a 10)] (+ a b)))
+
 

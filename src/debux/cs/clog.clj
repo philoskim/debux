@@ -2,12 +2,11 @@
   (:require [clojure.set :as set]
             [clojure.zip :as z]
             [cljs.analyzer :as analyzer]
-            [debux.common.macro-specs :as ms :refer [skip]]
+            [debux.common.macro-specs :as ms]
             [debux.common.skip :as sk]
             [debux.common.util :as ut]
             [debux.cs.util :as cs.ut]
             [debux.cs.macro-types :as mt] ))
-
 
 ;;; clog macro
 (defmacro clog
@@ -46,11 +45,11 @@
         (z/end? loc) (z/root loc)
 
         ;; in case of (skip ...)
-        (and (seq? node) (= `skip (first node)))
+        (and (seq? node) (= `ms/skip (first node)))
         (recur (ut/right-or-next loc))
 
         (and (seq? node) (symbol? (first node)))
-        (let [sym (mt/ns-symbol env (first node))]
+        (let [sym (ut/ns-symbol (first node) env)]
           (cond
             ((:def-type @mt/macro-types*) sym)
             (-> (z/replace loc (sk/insert-skip-in-def node))
@@ -146,13 +145,19 @@
         (z/end? loc) (z/root loc)
 
         ;; in case of (skip ...)
-        (and (seq? node) (= `skip (first node)))
+        (and (seq? node) (= `ms/skip (first node)))
         (recur (ut/right-or-next loc))
+
+        ;; in case of (oskip ...)
+        (and (seq? node)
+             (= `ms/oskip (first node)))
+        (recur (-> loc z/down z/next))
+      
 
         ;; in case that the first symbol is defn/defn-
         (and (seq? node)
              (symbol? (first node))
-             (`#{defn defn-} (mt/ns-symbol env (first node))))
+             (`#{defn defn-} (ut/ns-symbol(first node) env)))
         (recur (-> (-> loc z/down z/next)))
 
         ;; in case of the first symbol except defn/defn-/def
@@ -169,13 +174,13 @@
         (and (vector? node)
              (and (seq? (first node))
                   (seq? (ffirst node))
-                  (= `skip (first (ffirst node)) )))
+                  (= `ms/skip (first (ffirst node)) )))
         (recur (z/next loc))
 
         ;; in case of [(skip ...) ...] in let bindings
         (and (vector? node)
              (and (seq? (first node))
-                  (= `skip (ffirst node)) ))
+                  (= `ms/skip (ffirst node)) ))
         (recur (-> loc z/down ut/right-or-next))
 
         ;; eg. [a b] in let form
@@ -227,9 +232,16 @@
 
         ;; in case of (skip ...)
         (and (seq? node)
-             (= `skip (first node)))
+             (= `ms/skip (first node)))
         (recur (-> (z/replace loc (second node))
                    ut/right-or-next))
+
+        ;; in case of (oskip ...)
+        (and (seq? node)
+             (= `ms/oskip (first node)))
+        (recur (-> (z/replace loc (second (second node)))
+                   z/next))        
+        
 
         :else
         (recur (z/next loc)) ))))
@@ -270,3 +282,4 @@
            "background: #FF1493; color: white"
            "background: white; color: black")   
      ~'(js* "debugger;") ))
+

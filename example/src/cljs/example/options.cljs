@@ -71,8 +71,8 @@
 
 ;; (break)
 ;; (break "hello world")
-;; (break :if (< 10 20) "10 is less than 20")
 ;; (break :if (> 10 20) "this will not be printed")
+;; (break :if (< 10 20) "10 is less than 20")
 
 (defn my-fun2
   [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]

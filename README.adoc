@@ -25,7 +25,7 @@ To include *debux* in your project, simply add the following to your *project.cl
 
 [source]
 ....
-[philoskim/debux "0.3.5"]
+[philoskim/debux "0.3.6"]
 ....
 
 
@@ -68,8 +68,12 @@ file to use *debux* library.
 
 ## Change logs since version 0.3.0
 
+* Version 0.3.6
+** Added: limited support for the form including `recur`. Refer to <<recur-support>>.
+
+
 * Version 0.3.5
-** Fixed: multi vertial bar display error by some exception thrown in the middle of
+** Fixed: redundant multiple vertial bar display error by an exception thrown in
    evaluating `dbgn`.
 
 * Version 0.3.4
@@ -163,10 +167,6 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
    bindnig symbols which must not be evaluated. In case of special forms and those macros
    in `clojure.core` namespace, `degn`/`clogn` macro can handle them appropriately.
 +
-IMPORTANT: However, `dbgn`/`clogn` cannot handle `recur` special form because of the
-           implementation restriction. *Be careful* not to use `dbgn`/`clogn` in case of
-           the form which includes `recur` special form.
-
 ** In some case, Clojure developers can write their own macros which `dbgn`/`clogn` cannot
    handle appopriately. So I categorized those macros in `clojure.core` namespace as the
    following table and you can register your own macros according to the macro types in
@@ -181,7 +181,7 @@ IMPORTANT: However, `dbgn`/`clogn` cannot handle `recur` special form because of
 | :def-type   | def defonce
 | :defn-type  | defn defn-
 | :fn-type    | fn fn*
-| :let-type   | let binding dotimes if-let if-some when-first when-let when-some
+| :let-type   | let binding dotimes if-let if-some loop when-first when-let when-some
                 with-in-str with-local-vars with-open with-out-str with-redefs
 | :letfn-type | letfn
 | :for-type   | for doseq
@@ -194,7 +194,7 @@ IMPORTANT: However, `dbgn`/`clogn` cannot handle `recur` special form because of
 | :skip-form-itself-type  | catch comment declare definline definterface defmacro defmulti
                             defprotocol defrecord defstruct deftype extend-protocol
                             extend-type finally gen-class gen-interface import loop memfn new
-                            ns proxy proxy-super quote recur refer-clojure reify sync var throw
+                            ns proxy proxy-super quote refer-clojure reify sync var throw
 | :expand-type | pass:q[.. -> ->> doto cond-> cond->> condp import some-> some->>]
 | :dot-type    | .
 
@@ -345,26 +345,26 @@ dbgn: (defn calc2 [s1 s2] (- 100 (calc1 s1 22))) =>
 
 dbgn: (defn calc3 [m1 m2] (* 10 (calc2 m1 m2))) =>
 
-|| m1 =>
+| m1 =>
+|   2
+| m2 =>
+|   5
+|| s1 =>
 ||   2
-|| m2 =>
-||   5
-||| s1 =>
+||| a1 =>
 |||   2
-|||| a1 =>
-||||   2
-|||| a2 =>
-||||   22
-|||| (+ a1 a2) =>
-||||   24
-||| (calc1 s1 22) =>
+||| a2 =>
+|||   22
+||| (+ a1 a2) =>
 |||   24
-||| (- 100 (calc1 s1 22)) =>
-|||   76
-|| (calc2 m1 m2) =>
+|| (calc1 s1 22) =>
+||   24
+|| (- 100 (calc1 s1 22)) =>
 ||   76
-|| (* 10 (calc2 m1 m2)) =>
-||   760
+| (calc2 m1 m2) =>
+|   76
+| (* 10 (calc2 m1 m2)) =>
+|   760
 ----
 
 
@@ -963,6 +963,207 @@ dbgn: (. (java.util.Date.) getMonth) =>
 |   5
 ----
 
+
+[#recur-support]
+
+### Limited support for the form including `recur`
+
+[cols="^1m,^1m,^1m", options="header"]
+.The forms including `recur`
+|===
+
+|                        | dbgn  | clogn
+| loop ~ recur           |   O   |   X   
+| defn/defn-/fn ~ recur  |  △   |   X    
+
+|===
+
+* Legend: `O` (supported), `△` (limited support), `X` (not supported)
+
+TIP: The evaluated results of `dbgn` in ClojureScript go not only to the browser REPL but
+also to the browser's DevTool console window. So use `dbgn` instead of `clogn`, when
+debugging in ClojureScript the form which includes `recur` form.
+
+
+#### `loop` ~ `recur`
+
+You can see the evaluated result of the form which incldues `loop` ~ `recur` by using
+`dbgn` in Clojure and ClojureScript.
+
+[source]
+....
+(dbgn (loop [acc 1 n 3]
+        (if (zero? n)
+          acc
+          (recur (* acc n) (dec n)))))
+; => 6
+....
+
+.REPL output
+[listing]
+----
+dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
+| n =>
+|   3
+| (zero? n) =>
+|   false
+| acc =>
+|   1
+| n =>
+|   3
+| (* acc n) =>
+|   3
+| n =>
+|   3
+| (dec n) =>
+|   2
+| n =>
+|   2
+| (zero? n) =>
+|   false
+| acc =>
+|   3
+| n =>
+|   2
+| (* acc n) =>
+|   6
+| n =>
+|   2
+| (dec n) =>
+|   1
+| n =>
+|   1
+| (zero? n) =>
+|   false
+| acc =>
+|   6
+| n =>
+|   1
+| (* acc n) =>
+|   6
+| n =>
+|   1
+| (dec n) =>
+|   0
+| n =>
+|   0
+| (zero? n) =>
+|   true
+| acc =>
+|   6
+| (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
+|   6
+----
+
+
+#### `defn`/`defn-`/`fn` ~ `recur`
+
+IMPORTANT: If you use `dbgn` in `defn`/`defn-`/`fn` ~ `recur` form, you will have the
+following exception. This is inevitable, due to the implementation restriction.
+
+
+[source]
+....
+(dbgn (defn factorial [acc n]
+        (if (zero? n)
+          acc
+          (recur (* acc n) (dec n)))))
+....
+
+.REPL output
+[listing]
+----
+Caused by java.lang.UnsupportedOperationException
+  Can only recur from tail position
+----
+
+{empty} +
+
+TIP: However, if you temporarily replace `recur` to `function name` itself, you can debug
+the form as follows. *Be careful* not to forget to recover `function name` itself to `recur`
+after debugging.
+
+[source]
+....
+(dbgn (defn factorial [acc n]
+        (if (zero? n)
+          acc
+          (factorial (* acc n) (dec n)))))
+
+(factorial 1 3)
+....
+
+.REPL output
+[listing]
+----
+dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n)))) =>
+| n =>
+|   3
+| (zero? n) =>
+|   false
+| acc =>
+|   1
+| n =>
+|   3
+| (* acc n) =>
+|   3
+| n =>
+|   3
+| (dec n) =>
+|   2
+|| n =>
+||   2
+|| (zero? n) =>
+||   false
+|| acc =>
+||   3
+|| n =>
+||   2
+|| (* acc n) =>
+||   6
+|| n =>
+||   2
+|| (dec n) =>
+||   1
+||| n =>
+|||   1
+||| (zero? n) =>
+|||   false
+||| acc =>
+|||   6
+||| n =>
+|||   1
+||| (* acc n) =>
+|||   6
+||| n =>
+|||   1
+||| (dec n) =>
+|||   0
+|||| n =>
+||||   0
+|||| (zero? n) =>
+||||   true
+|||| acc =>
+||||   6
+|||| (if (zero? n) acc (factorial (* acc n) (dec n))) =>
+||||   6
+||| (factorial (* acc n) (dec n)) =>
+|||   6
+||| (if (zero? n) acc (factorial (* acc n) (dec n))) =>
+|||   6
+|| (factorial (* acc n) (dec n)) =>
+||   6
+|| (if (zero? n) acc (factorial (* acc n) (dec n))) =>
+||   6
+| (factorial (* acc n) (dec n)) =>
+|   6
+| (if (zero? n) acc (factorial (* acc n) (dec n))) =>
+|   6
+----
+
+
+
+ 
 [#register-macros]
 ### How to register your own macros in using `dbgn`/`clogn` macro
 
@@ -1007,7 +1208,7 @@ dbgn: (. (java.util.Date.) getMonth) =>
 ----
 dbg: (show-macros :let-type) =>
 |   #{clojure.core/when-let clojure.core/let clojure.core/with-local-vars
-|     clojure.core/if-let clojure.core/when-some example.core/my-let
+|     clojure.core/if-let loop clojure.core/when-some example.core/my-let
 |     clojure.core/dotimes clojure.core/with-open clojure.core/if-some
 |     clojure.core/with-redefs clojure.core/binding clojure.core/with-in-str
 |     clojure.core/with-out-str clojure.core/when-first}
@@ -1030,7 +1231,7 @@ dbg: (show-macros) =>
 |    :skip-arg-1-type #{clojure.core/with-precision set!},
 |    :let-type
 |    #{clojure.core/when-let clojure.core/let clojure.core/with-local-vars
-|      clojure.core/if-let clojure.core/when-some example.core/my-let
+|      clojure.core/if-let loop clojure.core/when-some example.core/my-let
 |      clojure.core/dotimes clojure.core/with-open clojure.core/if-some
 |      clojure.core/with-redefs clojure.core/binding clojure.core/with-in-str
 |      clojure.core/with-out-str clojure.core/when-first},
@@ -1098,49 +1299,27 @@ dbgn: (my-let [a 10 b (+ a 10)] (+ a b)) =>
 dbg: (d/show-macros :let-type) =>
 |   {:let-type
 |    #{example.macro/my-let clojure.core/when-let clojure.core/let
-|      clojure.core/if-let
-|      clojure.core/when-some
-|      clojure.core/dotimes
-|      clojure.core/if-some
-|      clojure.core/with-redefs
-|      clojure.core/binding
+|      clojure.core/if-let loop clojure.core/when-some clojure.core/dotimes
+|      clojure.core/if-some clojure.core/with-redefs clojure.core/binding
 |      clojure.core/with-out-str clojure.core/when-first}}
 
 dbg: (d/show-macros) =>
 |   {:fn-type #{clojure.core/fn fn*},
 |    :skip-form-itself-type
 |    #{clojure.core/defmacro clojure.core/defrecord clojure.core/declare
-|      clojure.core/deftype
-|      clojure.core/comment
-|      finally
-|      clojure.core/refer-clojure
-|      clojure.core/memfn
-|      clojure.core/extend-type
-|      new
-|      clojure.core/defmulti
-|      recur
-|      clojure.core/extend-protocol
-|      var
-|      quote
-|      clojure.core/reify
-|      catch
-|      clojure.core/loop
-|      clojure.core/import
-|      clojure.core/defprotocol
-|      throw},
+|      clojure.core/deftype e clojure.core/comment finally
+|      clojure.core/refer-clojure clojure.core/memfn clojure.core/extend-type
+|      new clojure.core/defmulti clojure.core/extend-protocol var quote
+|      clojure.core/reify catch clojure.core/loop clojure.core/import
+|      clojure.core/defprotocol throw},
 |    :case-type #{clojure.core/case},
 |    :skip-arg-2-3-type #{clojure.core/areduce clojure.core/amap},
 |    :skip-arg-1-type #{set!},
 |    :let-type
 |    #{example.macro/my-let clojure.core/when-let clojure.core/let
-|      clojure.core/if-let
-|      clojure.core/when-some
-|      clojure.core/dotimes
-|      clojure.core/if-some
-|      clojure.core/with-redefs
-|      clojure.core/binding
-|      clojure.core/with-out-str
-|      clojure.core/when-first},
+|      clojure.core/if-let loop clojure.core/when-some clojure.core/dotimes
+|      clojure.core/if-some clojure.core/with-redefs clojure.core/bindings
+|      clojure.core/with-out-str clojure.core/when-first},
 |    :skip-arg-2-type #{clojure.core/as->},
 |    :defn-type #{clojure.core/defn clojure.core/defn-},
 |    :for-type #{clojure.core/for clojure.core/doseq},
@@ -1150,12 +1329,8 @@ dbg: (d/show-macros) =>
 |    :skip-arg-1-2-type #{},
 |    :expand-type
 |    #{clojure.core/doto clojure.core/->> clojure.core/some->>
-|      clojure.core/..
-|      clojure.core/->
-|      clojure.core/some->
-|      clojure.core/cond->
-|      clojure.core/condp
-|      clojure.core/import
+|      clojure.core/.. clojure.core/-> clojure.core/some->
+|      clojure.core/cond-> clojure.core/condp clojure.core/import
 |      clojure.core/cond->>}, 
 |    :skip-arg-1-3-type #{clojure.core/defmethod}}
 ----
@@ -1431,8 +1606,8 @@ option for message, or `:if` option for conditional break.
 ....
 (break)
 (break "hello world")
-(break :if (< 10 20) "10 is less than 20")
 (break :if (> 10 20) "this will not be printed")
+(break :if (< 10 20) "10 is less than 20")
 ....
 
 You can see the message in DevTool's console window.
@@ -1445,7 +1620,7 @@ image:break-1.png[title="break examples", width=550]
 After setting the breakpoint, you can inspect the callstack, locals, etc. in the browser's
 DevTool window.
 
-[source]
+<[source]
 ....
 (defn my-fun2
   [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
@@ -1491,7 +1666,7 @@ an example about runing the link:https://github.com/bhauman/lein-figwheel[figwhe
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.562"]
-                 [philoskim/debux "0.3.5"]]
+                 [philoskim/debux "0.3.6"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

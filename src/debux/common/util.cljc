@@ -3,6 +3,7 @@
   (:require [clojure.string :as str]
             [clojure.pprint :as pp]
             [clojure.zip :as z]
+            [cljs.analyzer.api :as ana]
             [clojure.repl :as repl] ))
 
 (def indent-level* (atom 0))
@@ -16,6 +17,28 @@
   `(let [return# ~form]
      (println ">> dbg_:" (pr-str '~form) "=>\n" (pr-str return#) "<<")
      return#))
+
+
+;;; general
+(defmacro read-source [sym]
+  `(-> (repl/source ~sym)
+       with-out-str
+       read-string))
+
+(defmacro prog1 [arg1 & args]
+  `(let [return# ~arg1]
+     ~@args
+     return#))
+
+(defmacro prog2 [arg1 arg2 & args]
+  `(do
+     ~arg1
+     (let [return# ~arg2]
+       ~@args
+       return#)))
+
+(defn cljs-env? [env]
+  (boolean (:ns env)))
 
 
 ;;; zipper
@@ -42,6 +65,41 @@
 
       ;; in case of (... a)
       (-> loc z/next) )))
+
+
+;;; symbol with namespace
+#?(:clj
+   (defn- var->symbol [v]
+     (let [m    (meta v)
+           ns   (str (ns-name (:ns m)))
+           name (str (:name m))]
+       (symbol ns name) )))
+
+#?(:clj
+   (defn- ns-symbol-for-clj [sym]
+     (if-let [v (resolve sym)]
+       (var->symbol v)
+       sym) ))
+
+#?(:clj
+   (defn- ns-symbol-for-cljs [sym env]
+     (if-let [meta (ana/resolve env sym)]
+       ;; normal symbol
+       (let [[ns name] (str/split (str (:name meta)) #"/")]
+         ;; The special symbol . must be handled in the following special symbol part.
+         ;; However, the special symbol . returns meta {:name / :ns nil}, which may be a bug.
+         (if (nil? name)
+           sym
+           (symbol (str/replace ns "cljs.core" "clojure.core")
+                   name)))
+       ;; special symbol
+       sym) ))
+
+#?(:clj
+   (defn ns-symbol [sym & [env]]
+     (if env
+       (ns-symbol-for-cljs sym env)
+       (ns-symbol-for-clj sym) )))
 
 
 ;;; print
@@ -80,6 +138,7 @@
                    (str/join "\n")))
     (flush) ))
 
+
 ;; for cljs dbg/dbgn macro
 (defn pprint-result-with-indent-for-cljs
   [result indent-level]
@@ -93,37 +152,6 @@
                    (mapv #(prepend-bars % indent-level))
                    (str/join "\n")))
     (flush) ))
-
-
-;;; general
-(defmacro read-source [sym]
-  `(-> (repl/source ~sym)
-       with-out-str
-       read-string))
-
-(defmacro prog1 [arg1 & args]
-  `(let [return# ~arg1]
-     ~@args
-     return#))
-
-(defmacro prog2 [arg1 arg2 & args]
-  `(do
-     ~arg1
-     (let [return# ~arg2]
-       ~@args
-       return#)))
-
-(defn var->symbol [v]
-  (let [m    (meta v)
-        ns   (str (ns-name (:ns m)))
-        name (str (:name m))]
-    (symbol ns name) ))
-
-#?(:clj
-   (defn ns-symbol [sym]
-     (if-let [v (resolve sym)]
-       (var->symbol v)
-       sym)))
 
 (defn pr-if-str [v]
   (if (string? v) (pr-str v) v))
@@ -180,3 +208,17 @@
 (defn quote-vals [m]
   (->> (map quote-val m)
        (into {})))
+
+
+;;; for recur processing
+(defn include-recur? [form]
+  (((comp set flatten) form) 'recur))
+
+#?(:clj
+   (defn final-target? [sym & [env]]
+     (let [ns-sym (ns-symbol sym env)]
+       (or (= `loop ns-sym)
+           (some #(= % ns-sym) [`defn `defn- `fn]) ))))
+
+(defn oskip? [sym]
+  (= 'debux.common.macro-specs/oskip sym))

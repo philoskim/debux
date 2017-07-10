@@ -1,11 +1,10 @@
 (ns debux.dbg
   (:require [clojure.set :as set]
             [clojure.zip :as z]
-            [debux.common.macro-specs :as ms :refer [skip]]
+            [debux.common.macro-specs :as ms]
             [debux.macro-types :as mt]
             [debux.common.skip :as sk]
             [debux.common.util :as ut] ))
-
 
 ;;; dbg macro
 (defmacro dbg
@@ -40,11 +39,11 @@
         (z/end? loc) (z/root loc)
 
         ;; in case of (skip ...)
-        (and (seq? node) (= `skip (first node)))
+        (and (seq? node) (= `ms/skip (first node)))
         (recur (ut/right-or-next loc))
 
         (and (seq? node) (symbol? (first node)))
-        (let [sym (mt/ns-symbol (first node))]
+        (let [sym (ut/ns-symbol (first node))]
           ;(ut/d sym)
           (cond
             ((:def-type @mt/macro-types*) sym)
@@ -140,13 +139,18 @@
         (z/end? loc) (z/root loc)
 
         ;; in case of (skip ...)
-        (and (seq? node) (= `skip (first node)))
+        (and (seq? node) (= `ms/skip (first node)))
         (recur (ut/right-or-next loc))
+
+        ;; in case of (oskip ...)
+        (and (seq? node)
+             (= `ms/oskip (first node)))
+        (recur (-> loc z/down z/next))
 
         ;; in case that the first symbol is defn/defn-
         (and (seq? node)
              (symbol? (first node))
-             (`#{defn defn-} (mt/ns-symbol (first node))))
+             (`#{defn defn-} (ut/ns-symbol (first node))))
         (recur (-> (-> loc z/down z/next)))
 
         ;; in case of the first symbol except defn/defn-/def
@@ -163,13 +167,13 @@
         (and (vector? node)
              (and (seq? (first node))
                   (seq? (ffirst node))
-                  (= `skip (first (ffirst node)) )))
+                  (= `ms/skip (first (ffirst node)) )))
         (recur (z/next loc))
 
         ;; in case of [(skip ...) ...] in let bindings
         (and (vector? node)
              (and (seq? (first node))
-                  (= `skip (ffirst node)) ))
+                  (= `ms/skip (ffirst node)) ))
         (recur (-> loc z/down ut/right-or-next))
 
         ;; eg. [a b] in let form
@@ -221,33 +225,47 @@
 
         ;; in case of (skip ...)
         (and (seq? node)
-             (= `skip (first node)))
+             (= `ms/skip (first node)))
         (recur (-> (z/replace loc (second node))
                    ut/right-or-next))
+
+        ;; in case of (oskip ...)
+        (and (seq? node)
+             (= `ms/oskip (first node)))
+        (recur (-> (z/replace loc (second (second node)))
+                   z/next))
 
         :else
         (recur (z/next loc)) ))))
 
 
-;;; dbgn
-(defmacro dbgn0
-  "DeBuG every Nested forms of a form.s"
-  [form & [{:keys [condition] :as opts}]]
-  `(let [~'+debux-dbg-opts+ ~opts
-         condition#         ~condition]
-     (ut/prog2
-       (swap! ut/indent-level* inc)
-       (when (or (nil? condition#) condition#)
-         (ut/prog2
-           (println "\ndbgn:" (pr-str '~form) "=>")
-           ~(-> form
-                insert-skip
-                insert-d
-                remove-skip)))
-       (swap! ut/indent-level* dec)
-       (println)
-       (flush) )))
+;;; Basic Strategy for dbgn
 
+;; 1. original form
+;;
+;; (let [a 10
+;;       b (+ a 20)]
+;;   (+ a b))
+
+;; 2. after insert-skip
+;;
+;; (let (eskip [(skip a) 10
+;;              (skip b) (+ a 20)])
+;;   (+ a b))
+
+;; 3. after insert-d
+;;
+;; (d (let (eskip [(skip a) 10
+;;                 (skip b) (d (+ (d a) 20))])
+;;      (d (+ (d a) (d b)))))
+
+;; 4. after remove-skip
+;;
+;; (d (let [a 10
+;;          b (d (+ (d a) 20))]
+;;      (d (+ (d a) (d b))))
+
+;;; dbgn
 (defmacro dbgn
   "DeBuG every Nested forms of a form.s"
   [form & [{:keys [condition] :as opts}]]
@@ -257,7 +275,9 @@
        (swap! ut/indent-level* inc)
        (when (or (nil? condition#) condition#)
          (println "\ndbgn:" (pr-str '~form) "=>")
-         ~(-> form
+         ~(-> (if (ut/include-recur? form)
+                (sk/insert-oskip-for-recur form)
+                form)
               insert-skip
               insert-d
               remove-skip))
@@ -266,3 +286,39 @@
          (swap! ut/indent-level* dec)
          (println)
          (flush) ))))
+
+(comment
+  
+(def form1
+  '(loop [sum 0 cnt 5]
+     (if (= cnt 0)
+       sum
+       (recur (+ cnt sum) (dec cnt)))))
+
+(def form2 
+  '(defn sum [total cnt]
+     (if (= cnt 0)
+       total
+       (recur (+ cnt total) (dec cnt)))))
+
+(def form3 '(defn- insert-skip
+   "Marks the form to skip."
+  [form]
+  (loop [loc (ut/sequential-zip form)]
+    (let [node (z/node loc)]
+      ;(dbg node)
+      (cond
+        (z/end? loc) (z/root loc)
+
+        ;; in case of (skip ...)
+        (and (seq? node) (= `skip (first node)))
+        (recur (ut/right-or-next loc))
+
+        :else (recur (z/next loc)) )))))
+
+(dbgn (defn sum [total cnt]
+        (if (= cnt 0)
+          total
+          (sum (+ cnt total) (dec cnt)))))
+) ; end of comment
+

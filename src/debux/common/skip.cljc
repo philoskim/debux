@@ -2,7 +2,7 @@
   (:require [clojure.zip :as z]
             #?(:clj  [clojure.spec.alpha :as s]
                :cljs [cljs.spec.alpha :as s])
-            [debux.common.macro-specs :as ms :refer [skip]]
+            [debux.common.macro-specs :as ms]
             [debux.common.util :as ut] ))
 
 ;;; :def-type
@@ -16,11 +16,11 @@
 (defn- insert-indent-info
   "Inserts dbg-count in front of form."
   [form]
-  `((skip let) (skip [~'+debux-dbg-opts+ ~'+debux-dbg-opts+])
-      ((skip ut/prog2)
-         (skip (swap! ut/indent-level* inc))
+  `((ms/skip let) (ms/skip [~'+debux-dbg-opts+ ~'+debux-dbg-opts+])
+      ((ms/skip ut/prog2)
+         (ms/skip (swap! ut/indent-level* inc))
          ~@form
-         (skip (swap! ut/indent-level* dec)) )))
+         (ms/skip (swap! ut/indent-level* dec)) )))
 
 (defn- insert-indent-info-in-defn-body [arity]
   (let [body (get-in arity [:body 1])
@@ -49,7 +49,7 @@
 
 ;;; :let-type
 (defn- process-let-binding [[binding form]]
-   [`(skip ~binding) form])
+   [`(ms/skip ~binding) form])
 
 (defn insert-skip-in-let
   [[name bs & body]]
@@ -61,7 +61,7 @@
 
 ;;; :letfn-type
 (defn- process-letfn-binding [[fn-name binding & body]]
-  `((skip ~fn-name) (skip ~binding) ~@body))
+  `((ms/skip ~fn-name) (ms/skip ~binding) ~@body))
   
 (defn insert-skip-in-letfn
   [[name bindings & body]]
@@ -74,9 +74,9 @@
 (defn- process-for-binding [[binding form]]
   (if (keyword? binding)
     (case binding
-      :let `[~binding [(skip ~(first form)) ~(second form)]]
+      :let `[~binding [(ms/skip ~(first form)) ~(second form)]]
       [binding form]) 
-    `[(skip ~binding) ~form] ))
+    `[(ms/skip ~binding) ~form] ))
   
 (defn insert-skip-in-for
   [[name bindings & body]]
@@ -89,7 +89,7 @@
 ;;; :case-type
 (defn- process-case-body [[arg1 arg2]]
   (if arg2
-    `[(skip ~arg1) ~arg2]
+    `[(ms/skip ~arg1) ~arg2]
     [arg1] ))
   
 (defn insert-skip-in-case
@@ -102,36 +102,78 @@
 ;;; skip-arg-*-type
 (defn insert-skip-arg-1
   [[name arg1 & body]]
-  (list* name `(skip ~arg1) body))
+  (list* name `(ms/skip ~arg1) body))
 
 (defn insert-skip-arg-2
   [[name arg1 arg2 & body]]
-  (list* name arg1 `(skip ~arg2) body))
+  (list* name arg1 `(ms/skip ~arg2) body))
 
 (defn insert-skip-arg-1-2
   [[name arg1 arg2 & body]]
-  (list* name `(skip ~arg1) `(skip ~arg2) body)) 
+  (list* name `(ms/skip ~arg1) `(ms/skip ~arg2) body)) 
 
 (defn insert-skip-arg-1-3
   [[name arg1 arg2 arg3 & body]]
-  (list* name `(skip ~arg1) arg2 `(skip ~arg3) body))
+  (list* name `(ms/skip ~arg1) arg2 `(ms/skip ~arg3) body))
 
 (defn insert-skip-arg-2-3
   [[name arg1 arg2 arg3 & body]]
-  (list* name arg1 `(skip ~arg2) `(skip ~arg3) body))
+  (list* name arg1 `(ms/skip ~arg2) `(ms/skip ~arg3) body))
 
 
 ;;; :skip-form-itself-type
 (defn insert-skip-form-itself
   [form]
-  `(skip ~form))
+  `(ms/skip ~form))
 
 
 ;;; :dot-type
 (defn insert-skip-in-dot
   [[name arg1 arg2]]
-  (let [arg1' (if (symbol? arg1) `(skip ~arg1) arg1)]
-    `(~name ~arg1' (skip ~arg2)) ))
+  (let [arg1' (if (symbol? arg1) `(ms/skip ~arg1) arg1)]
+    `(~name ~arg1' (ms/skip ~arg2)) ))
 
+;;;
+(defn insert-oskip
+  [form]
+  `(ms/oskip ~form))
 
+;;; insert outermost skip
+(defn insert-oskip
+  [form]
+  `(ms/oskip ~form))
 
+(defn insert-oskip-for-recur [form & [env]]
+  (loop [loc (ut/sequential-zip form) 
+         upwards false]
+    (let [node (z/node loc)]
+      ;(ut/d node)
+      (cond
+        (z/end? loc) (z/root loc)
+
+        ;; upwards start
+        (and (symbol? node)
+             (= 'recur (ut/ns-symbol node env))
+             (not upwards)
+             (not (ut/oskip? (-> loc z/up z/up z/down z/node))))
+        (recur (-> (z/replace (z/up loc)
+                              (insert-oskip (-> loc z/up z/node)))
+                   z/up)
+               true)
+
+        ;; upwards ongoing
+        (and upwards
+             (symbol? (first node))
+             (not (ut/final-target? (first node) env))
+             (not (ut/oskip? (-> loc z/up z/down z/node))))
+        (recur (-> (z/replace loc (insert-oskip (-> loc z/node)))
+                   z/up)
+               true)
+
+        ;; upwards finish
+        (and upwards
+             (symbol? (first node))
+             (ut/final-target? (first node) env))
+        (recur (z/next loc) false)
+
+        :else (recur (z/next loc) false) ))))

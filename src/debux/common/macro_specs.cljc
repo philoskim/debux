@@ -2,10 +2,12 @@
   "clojure.core macro specs which are minified, simplified and modified."
   (:require #?(:clj  [clojure.spec.alpha :as s]
                :cljs [cljs.spec.alpha :as s])
-            #?(:clj [clojure.future :refer :all])
-            [debux.common.util :as ut] ))
+            #?(:clj [clojure.future :refer :all]) ))
 
-(declare skip)
+(declare skip oskip)
+; skip => full skip
+; oskip => outermost skip
+
 
 ;;; def
 (defn name-unformer [name]

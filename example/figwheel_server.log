@@ -2830,3 +2830,22 @@ notifying browser that file changed:  resources/public/js/out/example/core.js
 notifying browser that file changed:  resources/public/js/out/goog/deps.js
 notifying browser that file changed:  resources/public/js/out/cljs_deps.js
 notifying browser that file changed:  resources/public/js/out/example/clogn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 1.145 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/dbgn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[31mFailed to compile "resources/public/js/app.js" in 0.106 seconds.[0m
+[36m----  Could not Read  jar:file:/home/philos/.m2/repository/philoskim/debux/0.3.5/debux-0.3.5.jar!/debux/cs/core.cljc   line:1  column:1  ----[0m
+
+  [1minvalid LOC header (bad signature)[0m
+
+[36m----  Reader Error : Please see jar:file:/home/philos/.m2/repository/philoskim/debux/0.3.5/debux-0.3.5.jar!/debux/cs/core.cljc  ----[0m
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[31mFailed to compile "resources/public/js/app.js" in 0.077 seconds.[0m
+[36m----  Could not Read  jar:file:/home/philos/.m2/repository/philoskim/debux/0.3.5/debux-0.3.5.jar!/debux/cs/core.cljc   line:1  column:1  ----[0m
+
+  [1minvalid LOC header (bad signature)[0m
+
+[36m----  Reader Error : Please see jar:file:/home/philos/.m2/repository/philoskim/debux/0.3.5/debux-0.3.5.jar!/debux/cs/core.cljc  ----[0m
