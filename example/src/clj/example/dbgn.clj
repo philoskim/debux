@@ -150,7 +150,7 @@
             acc
             (recur (* acc n) (dec n)))))
 
-(dbgn (defn fact [num]
+(debux.dbg/dbgn (defn fact [num]
         (loop [acc 1 n num]
           (if (zero? n)
             acc

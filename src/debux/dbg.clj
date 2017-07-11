@@ -288,37 +288,15 @@
          (flush) ))))
 
 (comment
-  
-(def form1
-  '(loop [sum 0 cnt 5]
-     (if (= cnt 0)
-       sum
-       (recur (+ cnt sum) (dec cnt)))))
 
-(def form2 
-  '(defn sum [total cnt]
-     (if (= cnt 0)
-       total
-       (recur (+ cnt total) (dec cnt)))))
+(dbgn (defn add [a b] (+ a b)))
 
-(def form3 '(defn- insert-skip
-   "Marks the form to skip."
-  [form]
-  (loop [loc (ut/sequential-zip form)]
-    (let [node (z/node loc)]
-      ;(dbg node)
-      (cond
-        (z/end? loc) (z/root loc)
+(dbgn (defn fact [num]
+        (loop [acc 1 n num]
+          (if (zero? n)
+            acc
+            (recur (* acc n) (dec n))))))
 
-        ;; in case of (skip ...)
-        (and (seq? node) (= `skip (first node)))
-        (recur (ut/right-or-next loc))
-
-        :else (recur (z/next loc)) )))))
-
-(dbgn (defn sum [total cnt]
-        (if (= cnt 0)
-          total
-          (sum (+ cnt total) (dec cnt)))))
+(fact 3)
 ) ; end of comment
 

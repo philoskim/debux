@@ -1073,6 +1073,7 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 [listing]
 .REPL output
 ----
+dbgn: (defn fact [num] (loop [acc 1 n num] (if (zero? n) acc (recur (* acc n) (dec n))))) =>
 | num =>
 |   3
 | n =>
@@ -1455,13 +1456,13 @@ more-than sign like this.
 
 [source]
 ....
-(dbg (repeat 5 "x") "repeat 5 times"))
+(dbg (repeat 5 "x") "5 times repeat"))
 ; => ("x" "x" "x" "x" "x")
 ....
   
 .REPL output
 ....
-dbg: (repeat 5 "x")   <repeat five times> =>
+dbg: (repeat 5 "x")   <5 times repeat> =>
 |   ("x" "x" "x" "x" "x")
 ....
 
