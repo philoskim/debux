@@ -1055,11 +1055,85 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 |   6
 ----
 
+{empty} +
+
+[source]
+.Another example
+....
+(dbgn (defn fact [num]
+        (loop [acc 1 n num]
+          (if (zero? n)
+            acc
+            (recur (* acc n) (dec n))))))
+
+(fact 3)
+....
+
+
+[listing]
+.REPL output
+----
+| num =>
+|   3
+| n =>
+|   3
+| (zero? n) =>
+|   false
+| acc =>
+|   1
+| n =>
+|   3
+| (* acc n) =>
+|   3
+| n =>
+|   3
+| (dec n) =>
+|   2
+| n =>
+|   2
+| (zero? n) =>
+|   false
+| acc =>
+|   3
+| n =>
+|   2
+| (* acc n) =>
+|   6
+| n =>
+|   2
+| (dec n) =>
+|   1
+| n =>
+|   1
+| (zero? n) =>
+|   false
+| acc =>
+|   6
+| n =>
+|   1
+| (* acc n) =>
+|   6
+| n =>
+|   1
+| (dec n) =>
+|   0
+| n =>
+|   0
+| (zero? n) =>
+|   true
+| acc =>
+|   6
+| (loop [acc 1 n num] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
+|   6
+----
+
+
 
 #### `defn`/`defn-`/`fn` ~ `recur`
 
-IMPORTANT: If you use `dbgn` in `defn`/`defn-`/`fn` ~ `recur` form, you will have the
-following exception. This is inevitable, due to the implementation restriction.
+IMPORTANT: If you use `dbgn` in `defn`/`defn-`/`fn` ~ `recur` form without `loop`, you
+will have the following exception. This is inevitable, due to the implementation
+restriction.
 
 
 [source]
