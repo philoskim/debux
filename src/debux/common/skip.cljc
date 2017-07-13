@@ -17,10 +17,12 @@
   "Inserts dbg-count in front of form."
   [form]
   `((ms/skip let) (ms/skip [~'+debux-dbg-opts+ ~'+debux-dbg-opts+])
-      ((ms/skip ut/prog2)
-         (ms/skip (swap! ut/indent-level* inc))
+     ((ms/skip try)
+        (ms/skip (swap! ut/indent-level* inc))
+        (ms/skip (ut/insert-blank-line))
          ~@form
-         (ms/skip (swap! ut/indent-level* dec)) )))
+        (ms/skip (catch Exception ~'e (throw ~'e)))
+        (ms/skip (finally (swap! ut/indent-level* dec))) )))
 
 (defn- insert-indent-info-in-defn-body [arity]
   (let [body (get-in arity [:body 1])
@@ -56,7 +58,7 @@
   (let [bs' (->> (partition 2 bs)
                  (mapcat process-let-binding)
                  vec)]
-    (list* name bs' body)))
+    (list* name `(ms/o-skip ~bs') body) ))
 
 
 ;;; :letfn-type
@@ -67,14 +69,14 @@
   [[name bindings & body]]
   (let [bindings' (-> (map process-letfn-binding bindings)
                       vec)]
-    `(~name ~bindings' ~@body) ))
+    (list* name `(ms/o-skip ~bindings') body) ))
 
 
 ;;; :for-type
 (defn- process-for-binding [[binding form]]
   (if (keyword? binding)
     (case binding
-      :let `[~binding [(ms/skip ~(first form)) ~(second form)]]
+      :let `[~binding (ms/o-skip [(ms/skip ~(first form)) ~(second form)])]
       [binding form]) 
     `[(ms/skip ~binding) ~form] ))
   
@@ -83,7 +85,7 @@
   (let [bindings' (->> (partition 2 bindings)
                  (mapcat process-for-binding)
                  vec)]
-    (list* name bindings' body) ))
+    (list* name `(ms/o-skip ~bindings') body) ))
 
 
 ;;; :case-type
@@ -133,17 +135,13 @@
   (let [arg1' (if (symbol? arg1) `(ms/skip ~arg1) arg1)]
     `(~name ~arg1' (ms/skip ~arg2)) ))
 
-;;;
-(defn insert-oskip
-  [form]
-  `(ms/oskip ~form))
 
 ;;; insert outermost skip
-(defn insert-oskip
+(defn insert-o-skip
   [form]
-  `(ms/oskip ~form))
+  `(ms/o-skip ~form))
 
-(defn insert-oskip-for-recur [form & [env]]
+(defn insert-o-skip-for-recur [form & [env]]
   (loop [loc (ut/sequential-zip form) 
          upwards false]
     (let [node (z/node loc)]
@@ -155,9 +153,9 @@
         (and (symbol? node)
              (= 'recur (ut/ns-symbol node env))
              (not upwards)
-             (not (ut/oskip? (-> loc z/up z/up z/down z/node))))
+             (not (ut/o-skip? (-> loc z/up z/up z/down z/node))))
         (recur (-> (z/replace (z/up loc)
-                              (insert-oskip (-> loc z/up z/node)))
+                              (insert-o-skip (-> loc z/up z/node)))
                    z/up)
                true)
 
@@ -165,8 +163,8 @@
         (and upwards
              (symbol? (first node))
              (not (ut/final-target? (first node) env))
-             (not (ut/oskip? (-> loc z/up z/down z/node))))
-        (recur (-> (z/replace loc (insert-oskip (-> loc z/node)))
+             (not (ut/o-skip? (-> loc z/up z/down z/node))))
+        (recur (-> (z/replace loc (insert-o-skip (-> loc z/node)))
                    z/up)
                true)
 

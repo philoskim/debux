@@ -2849,3 +2849,23 @@ notifying browser that file changed:  resources/public/js/out/example/dbgn.js
   [1minvalid LOC header (bad signature)[0m
 
 [36m----  Reader Error : Please see jar:file:/home/philos/.m2/repository/philoskim/debux/0.3.5/debux-0.3.5.jar!/debux/cs/core.cljc  ----[0m
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[36m----  Compiler Warning on   src/cljs/example/dbgn.cljs   line:174  column:7  ----[0m
+
+  [1mUse of undeclared Var example.dbgn/reset-indent-level![0m
+
+  [36m170[0m  [36m(dbgn (my-let [a 10 b (+ a 10)] (+ a b)))[0m
+  [36m171[0m  [36m[0m
+  [36m172[0m  [36m[0m
+  [36m173[0m  [36m;;; reset indent level[0m
+  [33m174[0m  [1m(dbg (reset-indent-level!))[0m
+  [0m   [0m  [33m      ^--- Use of undeclared Var example.dbgn/reset-indent-level![0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/dbgn.cljs  ----[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 1.028 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/dbgn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.882 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/dbgn.js

@@ -25,7 +25,7 @@ To include *debux* in your project, simply add the following to your *project.cl
 
 [source]
 ....
-[philoskim/debux "0.3.6"]
+[philoskim/debux "0.3.7"]
 ....
 
 
@@ -68,16 +68,24 @@ file to use *debux* library.
 
 ## Change logs since version 0.3.0
 
+* Version 0.3.7
+
+** Fixed: Another redundant multiple vertial bar display error by an exception thrown in
+   evaluating `dbgn` is fixed.
+** Changed: Some displayed output result formats are improved for readability.
+
+
 * Version 0.3.6
-** Added: limited support for the form including `recur`. Refer to <<recur-support>>.
+** Added: Limited support for the form including `recur` is added. Refer to
+   <<recur-support>>.
 
 
 * Version 0.3.5
-** Fixed: redundant multiple vertial bar display error by an exception thrown in
-   evaluating `dbgn`.
+** Fixed: Redundant multiple vertial bar display error by an exception thrown in
+   evaluating `dbgn` is fixed.
 
 * Version 0.3.4
-** Added: `register-macros!`/`show-macros` support for ClojureScript.
+** Added: `register-macros!`/`show-macros` support for ClojureScript is added.
 
 * Version 0.3.3
 ** Fixed: The error of `when` listed in `:let-type` by mistake is deleted.
@@ -89,8 +97,8 @@ file to use *debux* library.
 ** Fixed: The error-causing dependency `philoskim/debux2 "0.2.1"` is removed.
 
 * Version 0.3.0
-** Added: `dbgn`/`clogn` debugging macros on Clojure and ClojureScript.
-** Updated: `break` macro on ClojureScript.
+** Added: `dbgn`/`clogn` debugging macros on Clojure and ClojureScript ard added.
+** Updated: `break` macro on ClojureScript is improved.
 
 
 ## New feature added in version 0.3.0
@@ -225,14 +233,14 @@ dbgn: (def my-function (fn [x] (* x x x))) =>
 | (def my-function (fn [x] (* x x x))) =>
 |   #'example.core/my-function
 
- x =>
-   10
- x =>
-   10
- x =>
-   10
- (* x x x) =>
-   1000
+| x =>
+|   10
+| x =>
+|   10
+| x =>
+|   10
+| (* x x x) =>
+|   1000
 ----
 
 
@@ -349,8 +357,10 @@ dbgn: (defn calc3 [m1 m2] (* 10 (calc2 m1 m2))) =>
 |   2
 | m2 =>
 |   5
+ 
 || s1 =>
 ||   2
+ 
 ||| a1 =>
 |||   2
 ||| a2 =>
@@ -414,6 +424,7 @@ dbgn: (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]) =>
 
 
 [source]
+.Another example
 ....
 (dbgn (map #(* % 10) [1 5 9]))
 ; => (10 50 90)
@@ -641,6 +652,7 @@ dbgn: (let [mystr "hello"] (case mystr  0 hello (count mystr))) =>
 
 
 [source]
+.Another example
 ....
 (dbgn (case 'a
         (x y z) "x, y, or z"
@@ -858,7 +870,9 @@ dbgn: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>  ;; <
 
 {empty} +
 
+
 [source]
+.Another example
 ....
 (dbgn (.. "fooBAR"  toLowerCase  (contains "ooba")))
 ; => true
@@ -880,6 +894,7 @@ dbgn: (.. "fooBAR" toLowerCase (contains "ooba")) =>   ;; <1>
 {empty} +
 
 [source]
+.Yet another example
 ....
 (let [x 1 y 2]
   (dbgn (cond-> []
@@ -1148,8 +1163,8 @@ restriction.
 .REPL output
 [listing]
 ----
-Caused by java.lang.UnsupportedOperationException
-  Can only recur from tail position
+1. Caused by java.lang.UnsupportedOperationException
+   Cannot recur across try
 ----
 
 {empty} +
@@ -1172,6 +1187,7 @@ after debugging.
 [listing]
 ----
 dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n)))) =>
+
 | n =>
 |   3
 | (zero? n) =>
@@ -1186,6 +1202,7 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n)))) 
 |   3
 | (dec n) =>
 |   2
+ 
 || n =>
 ||   2
 || (zero? n) =>
@@ -1200,6 +1217,7 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n)))) 
 ||   2
 || (dec n) =>
 ||   1
+ 
 ||| n =>
 |||   1
 ||| (zero? n) =>
@@ -1214,6 +1232,7 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n)))) 
 |||   1
 ||| (dec n) =>
 |||   0
+ 
 |||| n =>
 ||||   0
 |||| (zero? n) =>
@@ -1741,7 +1760,7 @@ an example about runing the link:https://github.com/bhauman/lein-figwheel[figwhe
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.562"]
-                 [philoskim/debux "0.3.6"]]
+                 [philoskim/debux "0.3.7"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

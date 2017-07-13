@@ -17,12 +17,10 @@
                    (ut/take-n result# n#)
                    result#)]
      (when (or (nil? condition#) condition#)
-        (swap! ut/indent-level* inc)
-        (println "\ndbg:" (pr-str '~form) "=>")
-        (ut/pprint-result-with-indent result# @ut/indent-level*)
-        (println)
-        (flush)
-        (swap! ut/indent-level* dec))
+        (println (str "\ndbg: " (pr-str '~form)
+                      (and ~msg (str "   <" ~msg ">"))
+                      " =>"))
+        (ut/pprint-result-with-indent result# @ut/indent-level*))
      result#))
 
 
@@ -34,7 +32,7 @@
   [form]
   (loop [loc (ut/sequential-zip form)]
     (let [node (z/node loc)]
-      ;(dbg node)
+      ;(ut/d node)
       (cond
         (z/end? loc) (z/root loc)
 
@@ -142,44 +140,37 @@
         (and (seq? node) (= `ms/skip (first node)))
         (recur (ut/right-or-next loc))
 
-        ;; in case of (oskip ...)
+        ;; in case of (o-skip ...)
         (and (seq? node)
-             (= `ms/oskip (first node)))
-        (recur (-> loc z/down z/next))
+             (= `ms/o-skip (first node)))
+        (cond
+          ;; <ex> (o-skip [(skip a) ...]) 
+          (vector? (second node))
+          (recur (-> loc z/down z/next z/down))
+
+          ;; <ex> (o-skip (recur ...))
+          :else 
+          (recur (-> loc z/down z/next z/down ut/right-or-next)))
 
         ;; in case that the first symbol is defn/defn-
         (and (seq? node)
              (symbol? (first node))
              (`#{defn defn-} (ut/ns-symbol (first node))))
-        (recur (-> (-> loc z/down z/next)))
+        (recur (-> loc z/down z/next))
 
         ;; in case of the first symbol except defn/defn-/def
         (and (seq? node) (ifn? (first node)))
         (recur (-> (z/replace loc (concat [`d] [node]))
                    z/down z/right z/down ut/right-or-next))
 
+        (vector? node)
+        (recur (-> (z/replace loc (concat [`d] [node]))
+                   z/down z/right z/down))
+               
         ;; in case of symbol, map, or set
         (or (symbol? node) (map? node) (set? node))
         (recur (-> (z/replace loc (concat [`d] [node]))
                    ut/right-or-next))
-
-        ;; in case of [((skip ...) ...] in letfn bindings
-        (and (vector? node)
-             (and (seq? (first node))
-                  (seq? (ffirst node))
-                  (= `ms/skip (first (ffirst node)) )))
-        (recur (z/next loc))
-
-        ;; in case of [(skip ...) ...] in let bindings
-        (and (vector? node)
-             (and (seq? (first node))
-                  (= `ms/skip (ffirst node)) ))
-        (recur (-> loc z/down ut/right-or-next))
-
-        ;; eg. [a b] in let form
-        (vector? node)
-        (recur (-> (z/replace loc (concat [`d] [node]))
-                   z/down z/right z/down))
 
         :else
         (recur (z/next loc) )))))
@@ -229,10 +220,10 @@
         (recur (-> (z/replace loc (second node))
                    ut/right-or-next))
 
-        ;; in case of (oskip ...)
+        ;; in case of (o-skip ...)
         (and (seq? node)
-             (= `ms/oskip (first node)))
-        (recur (-> (z/replace loc (second (second node)))
+             (= `ms/o-skip (first node)))
+        (recur (-> (z/replace loc (second node))
                    z/next))
 
         :else
@@ -272,31 +263,17 @@
   `(let [~'+debux-dbg-opts+ ~opts
          condition#         ~condition]
      (try
-       (swap! ut/indent-level* inc)
        (when (or (nil? condition#) condition#)
          (println "\ndbgn:" (pr-str '~form) "=>")
          ~(-> (if (ut/include-recur? form)
-                (sk/insert-oskip-for-recur form)
+                (sk/insert-o-skip-for-recur form)
                 form)
               insert-skip
               insert-d
               remove-skip))
-       (catch Exception ~'e (throw ~'e)) 
-       (finally
-         (swap! ut/indent-level* dec)
-         (println)
-         (flush) ))))
+       (catch Exception ~'e (throw ~'e)) )))
 
 (comment
 
-(dbgn (defn add [a b] (+ a b)))
-
-(dbgn (defn fact [num]
-        (loop [acc 1 n num]
-          (if (zero? n)
-            acc
-            (recur (* acc n) (dec n))))))
-
-(fact 3)
 ) ; end of comment
 

@@ -1,7 +1,7 @@
-(ns example.dbgn)
+(ns debux.test.dbgn
+  (:require [debux.dbg :refer :all]))
 
-(use 'debux.core)
-  
+
 ;;; simple example
 (dbgn (defn foo [a b & [c]]
         (if c
@@ -9,7 +9,6 @@
           (* a b 100))))
 
 (foo 2 3)
-
 (foo 2 3 10)
 
 
@@ -151,7 +150,7 @@
             acc
             (recur (* acc n) (dec n)))))
 
-(debux.dbg/dbgn (defn fact [num]
+(dbgn (defn fact [num]
         (loop [acc 1 n num]
           (if (zero? n)
             acc

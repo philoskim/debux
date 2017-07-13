@@ -145,7 +145,7 @@
             acc
             (recur (* acc n) (dec n)))))
 
-(debux.dbg/dbgn (defn fact [num]
+(dbgn (defn fact [num]
         (loop [acc 1 n num]
           (if (zero? n)
             acc
@@ -168,3 +168,7 @@
 (dbg (d/show-macros))
 
 (dbgn (my-let [a 10 b (+ a 10)] (+ a b)))
+
+
+;;; reset indent level
+(dbg (d/reset-indent-level!))

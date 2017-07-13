@@ -18,12 +18,10 @@
                    (ut/take-n result# n#)
                    result#)]
      (when (or (nil? condition#) condition#)
-       (swap! ut/indent-level* inc)
-       (println "\ndbg:" (pr-str '~form) "=>")
-       (ut/pprint-result-with-indent-for-cljs result# @ut/indent-level*)
-       (println)
-       (flush)
-       (swap! ut/indent-level* dec))
+       (println (str "\ndbg: " (pr-str '~form)
+                      (and ~msg (str "   <" ~msg ">"))
+                      " =>"))
+       (ut/pprint-result-with-indent-for-cljs result# @ut/indent-level*))
      result#))
 
 
@@ -143,9 +141,17 @@
         (and (seq? node) (= `ms/skip (first node)))
         (recur (ut/right-or-next loc))
 
+        ;; in case of (o-skip ...)
         (and (seq? node)
-             (= `ms/oskip (first node)))
-        (recur (-> loc z/down z/next))
+             (= `ms/o-skip (first node)))
+        (cond
+          ;; <ex> (o-skip [(skip a) ...]) 
+          (vector? (second node))
+          (recur (-> loc z/down z/next z/down))
+
+          ;; <ex> (o-skip (recur ...))
+          :else 
+          (recur (-> loc z/down z/next z/down ut/right-or-next)))
 
         ;; in case that the first symbol is defn/defn-
         (and (seq? node)
@@ -158,28 +164,14 @@
         (recur (-> (z/replace loc (concat [`d] [node]))
                    z/down z/right z/down ut/right-or-next))
 
+        (vector? node)
+        (recur (-> (z/replace loc (concat [`d] [node]))
+                   z/down z/right z/down))
+        
         ;; in case of symbol, map, or set
         (or (symbol? node) (map? node) (set? node))
         (recur (-> (z/replace loc (concat [`d] [node]))
                    ut/right-or-next))
-
-        ;; in case of [((skip ...) ...] in letfn bindings
-        (and (vector? node)
-             (and (seq? (first node))
-                  (seq? (ffirst node))
-                  (= `ms/skip (first (ffirst node)) )))
-        (recur (z/next loc))
-
-        ;; in case of [(skip ...) ...] in let bindings
-        (and (vector? node)
-             (and (seq? (first node))
-                  (= `ms/skip (ffirst node)) ))
-        (recur (-> loc z/down ut/right-or-next))
-
-        ;; eg. [a b] in let form
-        (vector? node)
-        (recur (-> (z/replace loc (concat [`d] [node]))
-                   z/down z/right z/down))
 
         :else
         (recur (z/next loc) )))))
@@ -229,10 +221,10 @@
         (recur (-> (z/replace loc (second node))
                    ut/right-or-next))
 
-        ;; in case of (oskip ...)
+        ;; in case of (o-skip ...)
         (and (seq? node)
-             (= `ms/oskip (first node)))
-        (recur (-> (z/replace loc (second (second node)))
+             (= `ms/o-skip (first node)))
+        (recur (-> (z/replace loc (second node))
                    z/next))        
 
         :else
@@ -246,17 +238,12 @@
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :style :js :once)
          condition#         ~condition]
      (try
-       (swap! ut/indent-level* inc)
        (when (or (nil? condition#) condition#)
          (println "\ndbgn:" (pr-str '~form) "=>")
          ~(-> (if (ut/include-recur? form)
-                (sk/insert-oskip-for-recur form &env)
+                (sk/insert-o-skip-for-recur form &env)
                 form)
               (insert-skip &env)
               (insert-d &env)
               remove-skip))
-       (catch Exception ~'e (throw ~'e)) 
-       (finally
-         (swap! ut/indent-level* dec)
-         (println)
-         (flush) ))))
+       (catch Exception ~'e (throw ~'e)) )))

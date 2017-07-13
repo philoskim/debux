@@ -6,7 +6,10 @@
             [cljs.analyzer.api :as ana]
             [clojure.repl :as repl] ))
 
-(def indent-level* (atom 0))
+(def indent-level* (atom 1))
+
+(defn reset-indent-level! []
+  (reset! indent-level* 1))
 
 
 ;;; For internal debugging
@@ -112,7 +115,10 @@
 
 (defn prepend-bars
   [line indent-level]
-  (str (make-bars indent-level) " " line))
+  (let [indent-level' (if (> indent-level 1)
+                        (dec indent-level)
+                        indent-level)]
+    (str (make-bars indent-level') " " line)))
 
 (defn print-form-with-indent
   [form indent-level]
@@ -138,6 +144,10 @@
                    (str/join "\n")))
     (flush) ))
 
+(defn insert-blank-line []
+  (println " ")
+  (flush))
+
 
 ;; for cljs dbg/dbgn macro
 (defn pprint-result-with-indent-for-cljs
@@ -145,8 +155,7 @@
   (let [pprint (str/trim (with-out-str (pp/pprint result)))
         pprint' (if (fn? result)
                   (str (first (str/split pprint #" " 2)) "]")
-                  pprint)
-        ]
+                  pprint)]
     (println (->> (str/split pprint' #"\n")
                    prepend-blanks
                    (mapv #(prepend-bars % indent-level))
@@ -220,5 +229,5 @@
        (or (= `loop ns-sym)
            (some #(= % ns-sym) [`defn `defn- `fn]) ))))
 
-(defn oskip? [sym]
-  (= 'debux.common.macro-specs/oskip sym))
+(defn o-skip? [sym]
+  (= 'debux.common.macro-specs/o-skip sym))

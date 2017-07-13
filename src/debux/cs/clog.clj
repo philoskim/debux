@@ -21,15 +21,13 @@
      (when (or (nil? condition#) condition#)
        (when (or (and ~once (cs.ut/changed? (str '~form " " '~opts) (str result#)))
                  (not ~once))
-         (swap! ut/indent-level* inc)
          (let [title# (str "%cclog: %c " (pr-str '~form)
                            " %c" (and ~msg (str "   <" ~msg ">"))
                            " =>" (and ~once "   (:once mode)"))
                style# (or ~style :debug)]
            (cs.ut/cgroup title# style#)
            (cs.ut/clog-result-with-indent result# @ut/indent-level* ~js)
-           (cs.ut/cgroup-end))
-         (swap! ut/indent-level* dec)))
+           (cs.ut/cgroup-end) )))
      result#))
 
 ;;;; dbgn macro
@@ -148,11 +146,17 @@
         (and (seq? node) (= `ms/skip (first node)))
         (recur (ut/right-or-next loc))
 
-        ;; in case of (oskip ...)
+        ;; in case of (o-skip ...)
         (and (seq? node)
-             (= `ms/oskip (first node)))
-        (recur (-> loc z/down z/next))
-      
+             (= `ms/o-skip (first node)))
+        (cond
+          ;; <ex> (o-skip [(skip a) ...]) 
+          (vector? (second node))
+          (recur (-> loc z/down z/next z/down))
+
+          ;; <ex> (o-skip (recur ...))
+          :else 
+          (recur (-> loc z/down z/next z/down ut/right-or-next)))
 
         ;; in case that the first symbol is defn/defn-
         (and (seq? node)
@@ -165,28 +169,14 @@
         (recur (-> (z/replace loc (concat [`d] [node]))
                    z/down z/right z/down ut/right-or-next))
 
+        (vector? node)
+        (recur (-> (z/replace loc (concat [`d] [node]))
+                   z/down z/right z/down))
+           
         ;; in case of symbol, map, or set
         (or (symbol? node) (map? node) (set? node))
         (recur (-> (z/replace loc (concat [`d] [node]))
                    ut/right-or-next))
-
-        ;; in case of [((skip ...) ...] in letfn bindings
-        (and (vector? node)
-             (and (seq? (first node))
-                  (seq? (ffirst node))
-                  (= `ms/skip (first (ffirst node)) )))
-        (recur (z/next loc))
-
-        ;; in case of [(skip ...) ...] in let bindings
-        (and (vector? node)
-             (and (seq? (first node))
-                  (= `ms/skip (ffirst node)) ))
-        (recur (-> loc z/down ut/right-or-next))
-
-        ;; eg. [a b] in let form
-        (vector? node)
-        (recur (-> (z/replace loc (concat [`d] [node]))
-                   z/down z/right z/down))
 
         :else
         (recur (z/next loc) )))))
@@ -236,10 +226,10 @@
         (recur (-> (z/replace loc (second node))
                    ut/right-or-next))
 
-        ;; in case of (oskip ...)
+        ;; in case of (o-skip ...)
         (and (seq? node)
-             (= `ms/oskip (first node)))
-        (recur (-> (z/replace loc (second (second node)))
+             (= `ms/o-skip (first node)))
+        (recur (-> (z/replace loc (second node))
                    z/next))        
         
 
@@ -254,7 +244,6 @@
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :js :once)
          condition#         ~condition]
      (try
-       (swap! ut/indent-level* inc)
        (when (or (nil? condition#) condition#)
          (let [title# (str "%cclogn: %c " (pr-str '~form)
                            " %c" (and ~msg (str "   <" ~msg ">"))
@@ -267,9 +256,7 @@
                   (insert-d  &env)
                   remove-skip)
              (cs.ut/cgroup-end) )))
-       (catch js/Error ~'e (throw ~'e))
-       (finally
-         (swap! ut/indent-level* dec) ))))
+       (catch js/Error ~'e (throw ~'e)) )))
 
 
 ;;; break

@@ -4,9 +4,9 @@
                :cljs [cljs.spec.alpha :as s])
             #?(:clj [clojure.future :refer :all]) ))
 
-(declare skip oskip)
+(declare skip o-skip)
 ; skip => full skip
-; oskip => outermost skip
+; o-skip => outermost skip
 
 
 ;;; def
@@ -27,7 +27,6 @@
 
 
 ;;; defn, defn-, fn
-
 (defn arg-list-unformer [arg]
   `(skip ~(vec arg)))
 
