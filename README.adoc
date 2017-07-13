@@ -169,12 +169,12 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 
 * `dbgn`/`clogn`, however, can have some problem in case of macros and special forms.
 
-** Some macros like `when` don't have any problem when used in `dbgn`/`clogn`.
+** Some macros such as `when` don't have any problem when used in `dbgn`/`clogn`.
 
-** Other macros with binding vector such `defn` can have problem because they have
-   bindnig symbols which must not be evaluated. In case of special forms and those macros
-   in `clojure.core` namespace, `degn`/`clogn` macro can handle them appropriately.
-+
+** Other macros such as `defn` which has a binding vector can have problem because they
+   have bindnig symbols which must not be evaluated. In case of special forms and those
+   macros in `clojure.core` namespace, `degn`/`clogn` macro can handle them appropriately.
+
 ** In some case, Clojure developers can write their own macros which `dbgn`/`clogn` cannot
    handle appopriately. So I categorized those macros in `clojure.core` namespace as the
    following table and you can register your own macros according to the macro types in
@@ -336,7 +336,7 @@ You can have multiple `dbgn`/``clogn``s.
 [source]
 ....
 (dbgn (defn calc1 [a1 a2] (+ a1 a2)))
-(dbgn (defn calc2 [s1 s2] (- 100 (calc1 s1 22))))
+(dbgn (defn calc2 [s1 s2] (- 100 (calc1 s1 s2))))
 (dbgn (defn calc3 [m1 m2] (* 10 (calc2 m1 m2))))
 
 (calc3 2 5)
@@ -349,7 +349,7 @@ You can have multiple `dbgn`/``clogn``s.
 ----
 dbgn: (defn calc1 [a1 a2] (+ a1 a2)) =>
 
-dbgn: (defn calc2 [s1 s2] (- 100 (calc1 s1 22))) =>
+dbgn: (defn calc2 [s1 s2] (- 100 (calc1 s1 s2))) =>
 
 dbgn: (defn calc3 [m1 m2] (* 10 (calc2 m1 m2))) =>
 
@@ -360,21 +360,23 @@ dbgn: (defn calc3 [m1 m2] (* 10 (calc2 m1 m2))) =>
  
 || s1 =>
 ||   2
+|| s2 =>
+||   5
  
 ||| a1 =>
 |||   2
 ||| a2 =>
-|||   22
+|||   5
 ||| (+ a1 a2) =>
-|||   24
-|| (calc1 s1 22) =>
-||   24
-|| (- 100 (calc1 s1 22)) =>
-||   76
+|||   7
+|| (calc1 s1 s2) =>
+||   7
+|| (- 100 (calc1 s1 s2)) =>
+||   93
 | (calc2 m1 m2) =>
-|   76
+|   93
 | (* 10 (calc2 m1 m2)) =>
-|   760
+|   930
 ----
 
 

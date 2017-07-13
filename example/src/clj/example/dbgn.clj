@@ -43,7 +43,7 @@
 (my-add 10 20 30 40)
 
 (dbgn (defn calc1 [a1 a2] (+ a1 a2)))
-(dbgn (defn calc2 [s1 s2] (- 100 (calc1 s1 22))))
+(dbgn (defn calc2 [s1 s2] (- 100 (calc1 s1 s2))))
 (dbgn (defn calc3 [m1 m2] (* 10 (calc2 m1 m2))))
 
 (calc3 2 5)
