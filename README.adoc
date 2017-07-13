@@ -70,7 +70,7 @@ file to use *debux* library.
 
 * Version 0.3.7
 
-** Fixed: Another redundant multiple vertial bar display error by an exception thrown in
+** Fixed: Another redundant multiple vertical bar display error by an exception thrown in
    evaluating `dbgn` is fixed.
 ** Changed: Some displayed output result formats are improved for readability.
 
@@ -81,7 +81,7 @@ file to use *debux* library.
 
 
 * Version 0.3.5
-** Fixed: Redundant multiple vertial bar display error by an exception thrown in
+** Fixed: Redundant multiple vertical bar display error by an exception thrown in
    evaluating `dbgn` is fixed.
 
 * Version 0.3.4
