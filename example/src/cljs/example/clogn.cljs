@@ -2,7 +2,6 @@
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]])
   (:require-macros [example.macro :refer [my-let]]))
 
-(clogn (+ nil 4))
 
 ;;; simple example
 (clogn (defn foo [a b & [c]]
@@ -109,7 +108,7 @@
         (str "English greeting: " (:greeting map))))
 
 (clogn (defmethod greeting :french [map]
-        (str "English greeting: " (:greeting map))))
+        (str "French greeting: " (:greeting map))))
 
 (def english-map {:language :english :greeting "Hello!"})
 (def french-map {:language :french :greeting "Bonjour!"})

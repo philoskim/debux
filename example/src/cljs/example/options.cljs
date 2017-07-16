@@ -24,8 +24,8 @@
 ;; (clog (+ 10 20) "debug style is default")
 
 
-(d/merge-style {:warn "background: #9400D3; color: white"
-                :love "background: #FF1493; color: white"})
+(d/merge-styles {:warn "background: #9400D3; color: white"
+                 :love "background: #FF1493; color: white"})
 
 (clog (+ 10 20) :style :warn "warn style changed")
 (clog (+ 10 20) :style :love "love style")

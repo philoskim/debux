@@ -1,4 +1,8 @@
-(ns example.dbgn)
+(ns example.core
+  (:gen-class))
+
+(defn -main []
+  (println "\nRunning debux examples...\n"))
 
 (use 'debux.core)
   
@@ -116,7 +120,7 @@
         (str "English greeting: " (:greeting map))))
 
 (dbgn (defmethod greeting :french [map]
-        (str "English greeting: " (:greeting map))))
+        (str "French greeting: " (:greeting map))))
 
 (def english-map {:language :english :greeting "Hello!"})
 (def french-map {:language :french :greeting "Bonjour!"})
@@ -151,7 +155,7 @@
             acc
             (recur (* acc n) (dec n)))))
 
-(debux.dbg/dbgn (defn fact [num]
+(dbgn (defn fact [num]
         (loop [acc 1 n num]
           (if (zero? n)
             acc
@@ -177,8 +181,3 @@
 (dbg (show-macros))
 
 (dbgn (my-let [a 10 b (+ a 10)] (+ a b)))
-
-
-;;; reset indent level
-(dbg (reset-indent-level!))
-

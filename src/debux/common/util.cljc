@@ -100,7 +100,7 @@
 
 #?(:clj
    (defn ns-symbol [sym & [env]]
-     (if env
+     (if (cljs-env? env)
        (ns-symbol-for-cljs sym env)
        (ns-symbol-for-clj sym) )))
 
@@ -125,7 +125,7 @@
   (println (prepend-bars form indent-level))
   (flush))
 
-(defn form-header [form & [msg]]
+(defn form-header [form msg]
   (str (pr-str form)
        (and msg (str "   <" msg ">"))
        " =>"))
@@ -136,9 +136,13 @@
   (mapv #(str "  " %) lines))
 
 (defn pprint-result-with-indent
-  [result indent-level]
-  (let [pprint (str/trim (with-out-str (pp/pprint result)))]
-    (println (->> (str/split pprint #"\n")
+  [result indent-level ]
+  (let [pprint (str/trim (with-out-str (pp/pprint result)))
+        pprint' (if (fn? result)
+                  #?(:cljs (str (first (str/split pprint #" " 2)) "]")
+                     :clj  pprint)
+                  pprint)]
+    (println (->> (str/split pprint' #"\n")
                    prepend-blanks
                    (mapv #(prepend-bars % indent-level))
                    (str/join "\n")))
@@ -147,20 +151,6 @@
 (defn insert-blank-line []
   (println " ")
   (flush))
-
-
-;; for cljs dbg/dbgn macro
-(defn pprint-result-with-indent-for-cljs
-  [result indent-level]
-  (let [pprint (str/trim (with-out-str (pp/pprint result)))
-        pprint' (if (fn? result)
-                  (str (first (str/split pprint #" " 2)) "]")
-                  pprint)]
-    (println (->> (str/split pprint' #"\n")
-                   prepend-blanks
-                   (mapv #(prepend-bars % indent-level))
-                   (str/join "\n")))
-    (flush) ))
 
 (defn pr-if-str [v]
   (if (string? v) (pr-str v) v))
@@ -224,7 +214,7 @@
   (((comp set flatten) form) 'recur))
 
 #?(:clj
-   (defn final-target? [sym & [env]]
+   (defn final-target? [sym env]
      (let [ns-sym (ns-symbol sym env)]
        (or (= `loop ns-sym)
            (some #(= % ns-sym) [`defn `defn- `fn]) ))))

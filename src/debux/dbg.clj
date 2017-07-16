@@ -1,10 +1,16 @@
 (ns debux.dbg
-  (:require [clojure.set :as set]
-            [clojure.zip :as z]
+  (:require [clojure.zip :as z]
+            [cljs.analyzer :as analyzer]
             [debux.common.macro-specs :as ms]
-            [debux.macro-types :as mt]
             [debux.common.skip :as sk]
-            [debux.common.util :as ut] ))
+            [debux.common.util :as ut]
+            [debux.macro-types :as mt]
+            [debux.cs.macro-types :as cs.mt] ))
+
+(defn- macro-types [env]
+  (if (ut/cljs-env? env)
+    @cs.mt/macro-types*
+    @mt/macro-types*))
 
 ;;; dbg macro
 (defmacro dbg
@@ -29,7 +35,7 @@
 ;;; insert skip
 (defn- insert-skip
    "Marks the form to skip."
-  [form]
+  [form env]
   (loop [loc (ut/sequential-zip form)]
     (let [node (z/node loc)]
       ;(ut/d node)
@@ -41,83 +47,85 @@
         (recur (ut/right-or-next loc))
 
         (and (seq? node) (symbol? (first node)))
-        (let [sym (ut/ns-symbol (first node))]
+        (let [sym (ut/ns-symbol (first node) env)]
           ;(ut/d sym)
           (cond
-            ((:def-type @mt/macro-types*) sym)
+            ((:def-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-def node))
                 z/next
                 recur)
 
-            ((:defn-type @mt/macro-types*) sym)
+            ((:defn-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-defn node))
                 z/next
                 recur)
 
-            ((:fn-type @mt/macro-types*) sym)
+            ((:fn-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-fn node))
                 z/next
                 recur)
             
 
-            ((:let-type @mt/macro-types*) sym)
+            ((:let-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-let node))
                 z/next
                 recur)
 
-            ((:letfn-type @mt/macro-types*) sym)
+            ((:letfn-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-letfn node))
                 z/next
                 recur)
             
                         
-            ((:for-type @mt/macro-types*) sym)
+            ((:for-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-for node))
                 z/next
                 recur)
 
-            ((:case-type @mt/macro-types*) sym)
+            ((:case-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-case node))
                 z/next
                 recur)
             
 
-            ((:skip-arg-1-type @mt/macro-types*) sym)
+            ((:skip-arg-1-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1 node))
                 z/next
                 recur)
 
-            ((:skip-arg-2-type @mt/macro-types*) sym)
+            ((:skip-arg-2-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-arg-2 node))
                 z/next
                 recur)
             
-            ((:skip-arg-1-2-type @mt/macro-types*) sym)
+            ((:skip-arg-1-2-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1-2 node))
                 z/next
                 recur)
             
-            ((:skip-arg-2-3-type @mt/macro-types*) sym)
+            ((:skip-arg-2-3-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-arg-2-3 node))
                 z/next
                 recur)
             
-            ((:skip-arg-1-3-type @mt/macro-types*) sym)
+            ((:skip-arg-1-3-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1-3 node))
                 z/next
                 recur)
             
-            ((:skip-form-itself-type @mt/macro-types*) sym)
+            ((:skip-form-itself-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-form-itself node))
                 ut/right-or-next
                 recur)
             
 
-            ((:expand-type @mt/macro-types*) sym)
-            (-> (z/replace loc (seq (macroexpand-1 node)))
+            ((:expand-type (macro-types env)) sym)
+            (-> (z/replace loc (seq (if (ut/cljs-env? env)
+                                      (analyzer/macroexpand-1 {} node)
+                                      (macroexpand-1 node) )))
                 recur)
 
-            ((:dot-type @mt/macro-types*) sym)
+            ((:dot-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-dot node))
                 z/down z/right
                 recur)
@@ -129,7 +137,7 @@
 
 
 ;;; insert/remove d 
-(defn- insert-d [form]
+(defn- insert-d [form env]
   (loop [loc (ut/sequential-zip form)]
     (let [node (z/node loc)]
       ;(dbg node)
@@ -155,7 +163,7 @@
         ;; in case that the first symbol is defn/defn-
         (and (seq? node)
              (symbol? (first node))
-             (`#{defn defn-} (ut/ns-symbol (first node))))
+             (`#{defn defn-} (ut/ns-symbol (first node) env)))
         (recur (-> loc z/down z/next))
 
         ;; in case of the first symbol except defn/defn-/def
@@ -240,14 +248,14 @@
 
 ;; 2. after insert-skip
 ;;
-;; (let (eskip [(skip a) 10
-;;              (skip b) (+ a 20)])
+;; (let (o-skip [(skip a) 10
+;;               (skip b) (+ a 20)])
 ;;   (+ a b))
 
 ;; 3. after insert-d
 ;;
-;; (d (let (eskip [(skip a) 10
-;;                 (skip b) (d (+ (d a) 20))])
+;; (d (let (o-skip [(skip a) 10
+;;                  (skip b) (d (+ (d a) 20))])
 ;;      (d (+ (d a) (d b)))))
 
 ;; 4. after remove-skip
@@ -260,16 +268,18 @@
 (defmacro dbgn
   "DeBuG every Nested forms of a form.s"
   [form & [{:keys [condition] :as opts}]]
-  `(let [~'+debux-dbg-opts+ ~opts
+  `(let [~'+debux-dbg-opts+ ~(if (ut/cljs-env? &env)
+                               (dissoc opts :style :js :once)
+                               opts)
          condition#         ~condition]
      (try
        (when (or (nil? condition#) condition#)
          (println "\ndbgn:" (pr-str '~form) "=>")
          ~(-> (if (ut/include-recur? form)
-                (sk/insert-o-skip-for-recur form)
+                (sk/insert-o-skip-for-recur form &env)
                 form)
-              insert-skip
-              insert-d
+              (insert-skip &env)
+              (insert-d &env)
               remove-skip))
        (catch Exception ~'e (throw ~'e)) )))
 

@@ -69,7 +69,9 @@
   [[name bindings & body]]
   (let [bindings' (-> (map process-letfn-binding bindings)
                       vec)]
-    (list* name `(ms/o-skip ~bindings') body) ))
+    (list* name `(ms/o-skip ~bindings')
+           `(ms/skip (ut/insert-blank-line))
+           body) ))
 
 
 ;;; :for-type
@@ -81,11 +83,11 @@
     `[(ms/skip ~binding) ~form] ))
   
 (defn insert-skip-in-for
-  [[name bindings & body]]
+  [[name bindings body]]
   (let [bindings' (->> (partition 2 bindings)
                  (mapcat process-for-binding)
                  vec)]
-    (list* name `(ms/o-skip ~bindings') body) ))
+    `(~name (ms/o-skip ~bindings') ~body) ))
 
 
 ;;; :case-type

@@ -1,4 +1,4 @@
-(defproject philoskim/debux "0.3.7"
+(defproject philoskim/debux "0.3.8"
   :description "Debux library for debugging Clojure and ClojureScript"
   :url "https://github.com/philoskim/debux"
   :license {"Eclipse Public License"
@@ -12,8 +12,7 @@
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel "0.5.10"]]
 
-  ;:source-paths ["src"]
-  :test-paths ["test/clj" "test/cljs"]
+  :source-paths ["src"]
 
   :clean-targets ^{:protect false}
   ["target"

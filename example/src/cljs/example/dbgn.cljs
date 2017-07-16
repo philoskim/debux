@@ -107,7 +107,7 @@
         (str "English greeting: " (:greeting map))))
 
 (dbgn (defmethod greeting :french [map]
-        (str "English greeting: " (:greeting map))))
+        (str "French greeting: " (:greeting map))))
 
 (def english-map {:language :english :greeting "Hello!"})
 (def french-map {:language :french :greeting "Bonjour!"})
@@ -168,7 +168,3 @@
 (dbg (d/show-macros))
 
 (dbgn (my-let [a 10 b (+ a 10)] (+ a b)))
-
-
-;;; reset indent level
-(dbg (d/reset-indent-level!))

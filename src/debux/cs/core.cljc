@@ -1,5 +1,5 @@
 (ns debux.cs.core
-  #?(:cljs (:require-macros [debux.cs.dbg :as dbg]
+  #?(:cljs (:require-macros [debux.dbg :as dbg]
                             [debux.cs.clog :as clog]
                             [debux.cs.macro-types :as mt] ))
   (:require [debux.common.util :as ut]
@@ -12,11 +12,11 @@
 ;;; debugging APIs
 (defmacro dbg [form & opts]
   (let [opts' (ut/parse-opts opts)]
-    `(debux.cs.dbg/dbg ~form ~opts')))
+    `(debux.dbg/dbg ~form ~opts')))
 
 (defmacro dbgn [form & opts]
   (let [opts' (ut/parse-opts opts)]
-    `(debux.cs.dbg/dbgn ~form ~opts')))
+    `(debux.dbg/dbgn ~form ~opts')))
 
 (defmacro clog [form & opts]
   (let [opts' (ut/parse-opts opts)]
@@ -41,5 +41,5 @@
   
 
 ;;; style option API
-(def merge-style cs.ut/merge-style)
+(def merge-styles cs.ut/merge-styles)
 

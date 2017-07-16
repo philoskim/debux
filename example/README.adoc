@@ -1,0 +1,26 @@
+# Debux example project
+:source-language: clojure
+:source-highlighter: coderay
+:sectnums:
+
+## Running examples in Clojure
+
+[listing]
+----
+$ lein run
+----
+
+
+## Running examples in ClojureScript
+
+[listing]
+----
+$ lein clean
+
+$ lein figwheel
+----
+
+. Open the URL http://localhost:3449/ in your browser.
+
+. Open the DevTool's console widnow by pressing <Ctrl-Shift-I> in case of Google Chrome
+  and you will see the evaluated results of the examples.

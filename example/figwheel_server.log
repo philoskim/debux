@@ -2869,3 +2869,16 @@ notifying browser that file changed:  resources/public/js/out/example/dbgn.js
 [0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
 [32mSuccessfully compiled "resources/public/js/app.js" in 0.882 seconds.[0m
 notifying browser that file changed:  resources/public/js/out/example/dbgn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.958 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/clogn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.999 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/clogn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 1.106 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/clogn.js

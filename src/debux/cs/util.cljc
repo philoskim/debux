@@ -33,7 +33,7 @@
          :text  "color: black"
          :title "color: #8b008b"} ))
 
-(defn merge-style
+(defn merge-styles
   "Merges <new-style> into style*.
    <new-style {<style-name kw, style-value str>+}>"
   [new-style]
