@@ -32,7 +32,7 @@ To include *debux* in your project, simply add the following to your *project.cl
 
 ## How to use
  
-In Clojure, the following line should be included in your file to use *debux* library.
+In Clojure, the following line should be included in your file.
 
 
 [source]
@@ -41,7 +41,7 @@ In Clojure, the following line should be included in your file to use *debux* li
 ....
 
 In ClojureScript, the following `(:require pass:q[...])` line has to be included in your
-file to use *debux* library.
+file.
 
 
 [source]
@@ -52,8 +52,6 @@ file to use *debux* library.
 ....
 
 {empty} +
- 
-* Legend: `O` (supported), `X` (not supported)
 
 [cols="^1m,^1m,^1m,^1m,^1m,^1m", options="header"]
 .Debugging API use
@@ -68,15 +66,19 @@ file to use *debux* library.
 
 |===
 
-* `dbg`/`dbgn` can be used in Clojure REPL.
+* Legend: `O` (supported), `X` (not supported)
 
-* `dbg`/`dbgn` can be used in ClojureScript browser REPL like
+//-
+
+. `dbg`/`dbgn` can be used in Clojure REPL.
+
+. `dbg`/`dbgn` can be used in ClojureScript browser REPL like
   link:https://github.com/tomjakubowski/weasel[weasel] or
   https://github.com/bhauman/lein-figwheel[figwheel].
 
 ** Refer to <<browser-repl>> for Browser REPL usage.
 
-* `dbg`/`dbgn` , `clog`/`clogn` and `break` can be used in the browser console window
+. `dbg`/`dbgn` , `clog`/`clogn` and `break` can be used in the browser console window
   like Google DevTool.
 +
 
@@ -123,7 +125,7 @@ TIP: I recommend that you should use `clog` instead of `dbg` in the browser cons
 ** Fixed: The error-causing dependency `philoskim/debux2 "0.2.1"` is removed.
 
 * Version 0.3.0
-** Added: `dbgn`/`clogn` debugging macros on Clojure and ClojureScript ard added.
+** Added: `dbgn`/`clogn` debugging macros on Clojure and ClojureScript are added.
 ** Updated: `break` macro on ClojureScript is improved.
 
 
@@ -199,7 +201,7 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 
 ** Other macros such as `defn` which has a binding vector can have problem because they
    have bindnig symbols which must not be evaluated. In case of special forms and those
-   macros in `clojure.core` namespace, `degn`/`clogn` macro can handle them appropriately.
+   macros in `clojure.core` namespace, `degn`/`clogn` macros can handle them appropriately.
 
 ** In some case, Clojure developers can write their own macros which `dbgn`/`clogn` cannot
    handle appopriately. So I categorized those macros in `clojure.core` namespace as the
@@ -530,7 +532,7 @@ dbgn: (let [a (+ 1 2) [b c] [(+ a 10) (* a 2)]] (- (+ a b) c)) =>
 
 #### `:letfn-type` example
 
-This type of macro has the special biding vector syntax which is a bit different from
+This type of macro has the special binding vector syntax which is a bit different from
 `:fn-type`.
 
 [source]
@@ -1028,11 +1030,9 @@ dbgn: (. (java.util.Date.) getMonth) =>
 
 |===
 
-* Legend: `O` (supported), `△` (limited support), `X` (not supported)
-
-TIP: The evaluated results of `dbgn` in ClojureScript go not only to the browser REPL but
-also to the browser's DevTool console window. So use `dbgn` instead of `clogn`, when
-debugging in ClojureScript the form which includes `recur` form.
+TIP: `clogn` doesn't support the form including `recur`. So in ClojureScript you have to
+     use `dbgn` to debug the form including `recur`, because the evaluated results of
+     `dbgn` in ClojureScript go to the browser's DevTool console window as well.
 
 
 #### `loop` ~ `recur`
@@ -1291,12 +1291,10 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n)))) 
 ----
 
 
-
- 
 [#register-macros]
-### How to register your own macros in using `dbgn`/`clogn` macro
+### How to register your own macros in using `dbgn`/`clogn` macros
 
-* If you have some error when analyzing some source code using `dbgn`/`clogn` macro, first
+* If you have some error when analyzing some source code using `dbgn`/`clogn` macros, first
   of all, you have to figure out what kind of macro (refer to <<macro-type-table>>) caused
   the error and then register the macro by using `register-macros!` and can see the
   registerd macros by using `show-macros`.
@@ -1859,7 +1857,7 @@ cljs.user=>
 
 Now you can do anything in this browser REPL as in the Clojure REPL. When you evaluate
 `dbg`/`dbgn` macro in your ClojureScript source code, the result will go to both the REPL
-window and the browser's console window. When you evaluate `clog`/`clogn` macro in your
+window and the browser's console window. When you evaluate `clog`/`clogn` macros in your
 ClojureScript source code, the result will go only to your browser's console window.
 
 
