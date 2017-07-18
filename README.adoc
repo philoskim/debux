@@ -82,9 +82,9 @@ file.
   like Google DevTool.
 +
 
-TIP: I recommend that you should use `clog` instead of `dbg` in the browser console
-     window, because `clog` macro uses the `console.log` fuction of browser's developer
-     tools to style the form.
+TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in the browser
+     console window, because `clog`/`clogn` macros uses the `console.log` function of
+     browser's developer tools to style the form.
 
 
 
@@ -200,11 +200,11 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 ** Some macros such as `when` don't have any problem when used in `dbgn`/`clogn`.
 
 ** Other macros such as `defn` which has a binding vector can have problem because they
-   have bindnig symbols which must not be evaluated. In case of special forms and those
+   have binding symbols which must not be evaluated. In case of special forms and those
    macros in `clojure.core` namespace, `degn`/`clogn` macros can handle them appropriately.
 
 ** In some case, Clojure developers can write their own macros which `dbgn`/`clogn` cannot
-   handle appopriately. So I categorized those macros in `clojure.core` namespace as the
+   handle appporiately. So I categorized those macros in `clojure.core` namespace as the
    following table and you can register your own macros according to the macro types in
    the table. I will explain it in <<register-macros>>.
 
@@ -1297,7 +1297,7 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n)))) 
 * If you have some error when analyzing some source code using `dbgn`/`clogn` macros, first
   of all, you have to figure out what kind of macro (refer to <<macro-type-table>>) caused
   the error and then register the macro by using `register-macros!` and can see the
-  registerd macros by using `show-macros`.
+  registered macros by using `show-macros`.
 
 
 [source]
@@ -1470,7 +1470,7 @@ image::register-macros.png[title="register-macros! example", width=600]
 
 ## Various options
 
-* The various options can be added and combinated in any order after the form.
+* The various options can be added and combined in any order after the form.
 
 [cols="^1m,^1m,^1m,^1m,^1m,^1m", options="header"]
 .*debux* macro options
@@ -1492,7 +1492,7 @@ image::register-macros.png[title="register-macros! example", width=600]
 
 ### String option
 
-You can add your own message in a string and it will be printed betwen less-than and
+You can add your own message in a string and it will be printed between less-than and
 more-than sign like this.
 
 
@@ -1512,7 +1512,7 @@ dbg: (repeat 5 "x")   <5 times repeat> =>
 ### Number option
 
 If you don't specify the number after the form, *debux* macros will print and return
-default 100 items in each collection by default.
+the default 100 items in each collection.
 
 [source]
 ....
@@ -1717,7 +1717,7 @@ image::clog-5.png[title=":js option example", width=550]
 
 ### `break` options
 
-You can use `break` to set the breakpoint in the sourc code like this. You can add string
+You can use `break` to set the breakpoint in the source code like this. You can add string
 option for message, or `:if` option for conditional break.
 
 [source]
@@ -1777,7 +1777,7 @@ image:break-4.png[]
 ## Usage in ClojureScript on Browser REPL
 
 You can use both `dbg`/`dbgn` and `clog`/`clogn` macros on the browser REPL. The following is
-an example about runing the link:https://github.com/bhauman/lein-figwheel[figwheel].
+an example about running the link:https://github.com/bhauman/lein-figwheel[figwheel].
 
 [source]
 .project.clj
