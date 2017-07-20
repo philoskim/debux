@@ -88,46 +88,10 @@ TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in t
      developer tools to style the form.
 
 
-
-
 ## Change logs since v0.3.0
 
-* v0.3.9
-** Fixed: The error in debugging `doseq` is removed. 
-
-
-* v0.3.8
-** Refactored: Code duplications are removed as much as possible.
-** Renamed: `merge-style` pass:q[-->] `merge-styles`
-
-* v0.3.7
-** Fixed: Another redundant multiple vertical bar display error by an exception thrown in
-   evaluating `dbgn` is fixed.
-** Changed: Some displayed output result formats are improved for readability.
-
-* v0.3.6
-** Added: Limited support for the form including `recur` is added. Refer to
-   <<recur-support>>.
-
-* v0.3.5
-** Fixed: Redundant multiple vertical bar display error by an exception thrown in
-   evaluating `dbgn` is fixed.
-
-* v0.3.4
-** Added: `register-macros!`/`show-macros` support for ClojureScript is added.
-
-* v0.3.3
-** Fixed: The error of `when` listed in `:let-type` by mistake is deleted.
-
-* v0.3.2
-** Fixed: The `dbgn`/`clogn` related several bugs on ClojureScript are removed.
-
-* v0.3.1
-** Fixed: The error-causing dependency `philoskim/debux2 "0.2.1"` is removed.
-
-* v0.3.0
-** Added: `dbgn`/`clogn` debugging macros on Clojure and ClojureScript are added.
-** Updated: `break` macro on ClojureScript is improved.
+NOTE: You can see _Change logs since v0.3.0_ in
+https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 
 ## New feature added in v0.3.0
