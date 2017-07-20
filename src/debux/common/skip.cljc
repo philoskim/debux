@@ -83,11 +83,11 @@
     `[(ms/skip ~binding) ~form] ))
   
 (defn insert-skip-in-for
-  [[name bindings body]]
+  [[name bindings & body]]
   (let [bindings' (->> (partition 2 bindings)
                  (mapcat process-for-binding)
                  vec)]
-    `(~name (ms/o-skip ~bindings') ~body) ))
+    `(~name (ms/o-skip ~bindings') ~@body) ))
 
 
 ;;; :case-type

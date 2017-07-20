@@ -1,7 +1,8 @@
 (defproject example "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha17"]
                  [org.clojure/clojurescript "1.9.562"]
-                 [philoskim/debux "0.3.8"]]
+                 [org.clojure/spec.alpha "0.1.123"]
+                 [philoskim/debux "0.3.9"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

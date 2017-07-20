@@ -20,12 +20,13 @@ one.
 
 ## Installation
 
-To include *debux* in your project, simply add the following to your *project.clj* dependencies:
+To include *debux* in your project, simply add the following to your *project.clj*
+dependencies:
 
 
 [source]
 ....
-[philoskim/debux "0.3.8"]
+[philoskim/debux "0.3.9"]
 ....
 
 
@@ -83,53 +84,53 @@ file.
 +
 
 TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in the browser
-     console window, because `clog`/`clogn` macros uses the `console.log` function of
-     browser's developer tools to style the form.
+     console window, because `clog`/`clogn` uses the `console.log` function of browser's
+     developer tools to style the form.
 
 
 
 
-## Change logs since version 0.3.0
+## Change logs since v0.3.0
 
-* Version 0.3.8
+* v0.3.9
+** Fixed: The error in debugging `doseq` is removed. 
 
+
+* v0.3.8
 ** Refactored: Code duplications are removed as much as possible.
 ** Renamed: `merge-style` pass:q[-->] `merge-styles`
 
-
-* Version 0.3.7
+* v0.3.7
 ** Fixed: Another redundant multiple vertical bar display error by an exception thrown in
    evaluating `dbgn` is fixed.
 ** Changed: Some displayed output result formats are improved for readability.
 
-
-* Version 0.3.6
+* v0.3.6
 ** Added: Limited support for the form including `recur` is added. Refer to
    <<recur-support>>.
 
-
-* Version 0.3.5
+* v0.3.5
 ** Fixed: Redundant multiple vertical bar display error by an exception thrown in
    evaluating `dbgn` is fixed.
 
-* Version 0.3.4
+* v0.3.4
 ** Added: `register-macros!`/`show-macros` support for ClojureScript is added.
 
-* Version 0.3.3
+* v0.3.3
 ** Fixed: The error of `when` listed in `:let-type` by mistake is deleted.
 
-* Version 0.3.2
+* v0.3.2
 ** Fixed: The `dbgn`/`clogn` related several bugs on ClojureScript are removed.
 
-* Version 0.3.1
+* v0.3.1
 ** Fixed: The error-causing dependency `philoskim/debux2 "0.2.1"` is removed.
 
-* Version 0.3.0
+* v0.3.0
 ** Added: `dbgn`/`clogn` debugging macros on Clojure and ClojureScript are added.
 ** Updated: `break` macro on ClojureScript is improved.
 
 
-## New feature added in version 0.3.0
+## New feature added in v0.3.0
 
 The two new macros `dbgn` which is for Clojure/CloujureScript REPL and `clogn` which is
 for ClojureScript browser console only are added to *debux* library. Appended `n` to these
@@ -201,7 +202,7 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 
 ** Other macros such as `defn` which has a binding vector can have problem because they
    have binding symbols which must not be evaluated. In case of special forms and those
-   macros in `clojure.core` namespace, `degn`/`clogn` macros can handle them appropriately.
+   macros in `clojure.core` namespace, `degn`/`clogn` can handle them appropriately.
 
 ** In some case, Clojure developers can write their own macros which `dbgn`/`clogn` cannot
    handle appporiately. So I categorized those macros in `clojure.core` namespace as the
@@ -1037,7 +1038,7 @@ TIP: `clogn` doesn't support the form including `recur`. So in ClojureScript you
 
 #### `loop` ~ `recur`
 
-You can see the evaluated result of the form which incldues `loop` ~ `recur` by using
+You can see the evaluated results of the form which incldues `loop` ~ `recur` by using
 `dbgn` in Clojure and ClojureScript.
 
 [source]
@@ -1292,9 +1293,9 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n)))) 
 
 
 [#register-macros]
-### How to register your own macros in using `dbgn`/`clogn` macros
+### How to register your own macros in using `dbgn`/`clogn`
 
-* If you have some error when analyzing some source code using `dbgn`/`clogn` macros, first
+* If you have some error when analyzing some source code using `dbgn`/`clogn`, first
   of all, you have to figure out what kind of macro (refer to <<macro-type-table>>) caused
   the error and then register the macro by using `register-macros!` and can see the
   registered macros by using `show-macros`.
@@ -1493,7 +1494,7 @@ image::register-macros.png[title="register-macros! example", width=600]
 ### String option
 
 You can add your own message in a string and it will be printed between less-than and
-more-than sign like this.
+more-than signs like this.
 
 
 [source]
@@ -1591,7 +1592,7 @@ dbg: i =>
 
 ### `:style` option (CSS Styling)
 
-The following is the example of using `clog` and `clogn` macros in Google Chrome
+The following is the example of using `clog` and `clogn` in Google Chrome
 browser.
  
 [source]
@@ -1776,7 +1777,7 @@ image:break-4.png[]
 [#browser-repl]
 ## Usage in ClojureScript on Browser REPL
 
-You can use both `dbg`/`dbgn` and `clog`/`clogn` macros on the browser REPL. The following is
+You can use both `dbg`/`dbgn` and `clog`/`clogn` on the browser REPL. The following is
 an example about running the link:https://github.com/bhauman/lein-figwheel[figwheel].
 
 [source]
@@ -1785,7 +1786,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.562"]
-                 [philoskim/debux "0.3.8"]]
+                 [philoskim/debux "0.3.9"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]
@@ -1838,7 +1839,7 @@ Figwheel Controls:
 Prompt will show when Figwheel connects to your application
 ----
 
-After that, connect to `http://localhost:3449` on your borwser.
+After that, connect to `http://localhost:3449` on your browser.
 
 [listing]
 ----
@@ -1856,9 +1857,9 @@ cljs.user=>
 ----
 
 Now you can do anything in this browser REPL as in the Clojure REPL. When you evaluate
-`dbg`/`dbgn` macro in your ClojureScript source code, the result will go to both the REPL
-window and the browser's console window. When you evaluate `clog`/`clogn` macros in your
-ClojureScript source code, the result will go only to your browser's console window.
+`dbg`/`dbgn` in your ClojureScript source code, the result will go to both the REPL window
+and the browser's console window. When you evaluate `clog`/`clogn` in your ClojureScript
+source code, the result will go only to your browser's console window.
 
 
 ## License

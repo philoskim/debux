@@ -7,6 +7,33 @@
             [debux.macro-types :as mt]
             [debux.cs.macro-types :as cs.mt] ))
 
+;;; Basic strategy for dbgn
+
+;; 1. original form
+;;
+;; (let [a 10
+;;       b (+ a 20)]
+;;   (+ a b))
+
+;; 2. after insert-skip
+;;
+;; (let (o-skip [(skip a) 10
+;;               (skip b) (+ a 20)])
+;;   (+ a b))
+
+;; 3. after insert-d
+;;
+;; (d (let (o-skip [(skip a) 10
+;;                  (skip b) (d (+ (d a) 20))])
+;;      (d (+ (d a) (d b)))))
+
+;; 4. after remove-skip
+;;
+;; (d (let [a 10
+;;          b (d (+ (d a) 20))]
+;;      (d (+ (d a) (d b))))
+
+
 (defn- macro-types [env]
   (if (ut/cljs-env? env)
     @cs.mt/macro-types*
@@ -33,7 +60,7 @@
 ;;;; dbgn macro
 
 ;;; insert skip
-(defn- insert-skip
+(defn insert-skip
    "Marks the form to skip."
   [form env]
   (loop [loc (ut/sequential-zip form)]
@@ -137,7 +164,7 @@
 
 
 ;;; insert/remove d 
-(defn- insert-d [form env]
+(defn insert-d [form d-sym env]
   (loop [loc (ut/sequential-zip form)]
     (let [node (z/node loc)]
       ;(dbg node)
@@ -168,22 +195,22 @@
 
         ;; in case of the first symbol except defn/defn-/def
         (and (seq? node) (ifn? (first node)))
-        (recur (-> (z/replace loc (concat [`d] [node]))
+        (recur (-> (z/replace loc (concat [d-sym] [node]))
                    z/down z/right z/down ut/right-or-next))
 
         (vector? node)
-        (recur (-> (z/replace loc (concat [`d] [node]))
+        (recur (-> (z/replace loc (concat [d-sym] [node]))
                    z/down z/right z/down))
                
         ;; in case of symbol, map, or set
         (or (symbol? node) (map? node) (set? node))
-        (recur (-> (z/replace loc (concat [`d] [node]))
+        (recur (-> (z/replace loc (concat [d-sym] [node]))
                    ut/right-or-next))
 
         :else
         (recur (z/next loc) )))))
 
-(defn- remove-d [form]
+(defn remove-d [form d-sym]
   (loop [loc (ut/sequential-zip form)]
     (let [node (z/node loc)]
       ;(ut/d node)
@@ -192,7 +219,7 @@
 
         ;; in case of (d ...)
         (and (seq? node)
-             (= `d (first node)))
+             (= d-sym (first node)))
         (recur (z/replace loc (second node)))
       
         :else
@@ -208,14 +235,14 @@
          result# (if (coll? result#)
                    (ut/take-n result# n#)
                    result#)]
-     (ut/print-form-with-indent (ut/form-header '~(remove-d form) msg#)
+     (ut/print-form-with-indent (ut/form-header '~(remove-d form 'debux.dbg/d) msg#)
                                 @ut/indent-level*)
      (ut/pprint-result-with-indent result# @ut/indent-level*)
      result#))
 
 
 ;;; remove skip
-(defn- remove-skip [form]
+(defn remove-skip [form]
   (loop [loc (ut/sequential-zip form)]
     (let [node (z/node loc)]
       ;(dbg node)
@@ -238,32 +265,6 @@
         (recur (z/next loc)) ))))
 
 
-;;; Basic Strategy for dbgn
-
-;; 1. original form
-;;
-;; (let [a 10
-;;       b (+ a 20)]
-;;   (+ a b))
-
-;; 2. after insert-skip
-;;
-;; (let (o-skip [(skip a) 10
-;;               (skip b) (+ a 20)])
-;;   (+ a b))
-
-;; 3. after insert-d
-;;
-;; (d (let (o-skip [(skip a) 10
-;;                  (skip b) (d (+ (d a) 20))])
-;;      (d (+ (d a) (d b)))))
-
-;; 4. after remove-skip
-;;
-;; (d (let [a 10
-;;          b (d (+ (d a) 20))]
-;;      (d (+ (d a) (d b))))
-
 ;;; dbgn
 (defmacro dbgn
   "DeBuG every Nested forms of a form.s"
@@ -279,11 +280,12 @@
                 (sk/insert-o-skip-for-recur form &env)
                 form)
               (insert-skip &env)
-              (insert-d &env)
+              (insert-d 'debux.dbg/d &env)
               remove-skip))
        (catch Exception ~'e (throw ~'e)) )))
 
 (comment
+
 
 ) ; end of comment
 
