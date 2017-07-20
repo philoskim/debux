@@ -90,7 +90,7 @@ TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in t
 
 ## Change logs since v0.3.0
 
-NOTE: You can see _Change logs since v0.3.0_ in
+NOTE: You can see _Change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 
@@ -1824,6 +1824,175 @@ Now you can do anything in this browser REPL as in the Clojure REPL. When you ev
 `dbg`/`dbgn` in your ClojureScript source code, the result will go to both the REPL window
 and the browser's console window. When you evaluate `clog`/`clogn` in your ClojureScript
 source code, the result will go only to your browser's console window.
+
+
+## `debux.el` for Emacs CIDER user
+
+Inserting or deleting `dbg`/`dbgn`/`clog`/`clogn` manually is very painful. I am a Emacs
+user so I made `debux.el` for Emacs CIDER for convenience. If you find it useful, append
+the following file (which is in project root folder as well) to the `~/.emacs.d/init.el`
+  
+### `debux.el`
+
+[listing]
+----
+(defun toggle-dbg (&optional post-char)
+  "Toggle dbg form in Clojure"
+  (interactive)
+
+  (let* ((char-begin-pos (point))
+         (char-after-point (string (char-after)))
+         (prefix (if (string-match "\\.cljs$" (buffer-name))
+                   (concat "(clog" post-char " ")
+                   (concat "(dbg" post-char " ") )))
+
+    ;; When double-click the left mouse button
+    (cond
+      ;; If the char-after-point is blank
+      ;;   <ex> ' ' --> (dbg )
+      ((string-match "[ \n]" char-after-point)
+       (insert (concat prefix ")"))
+       (backward-char))
+
+      ;; If the char-after-point is not one of the parentheses
+      ;;   <ex> abc  --> (dbg abc)
+      ((string-match "[^[{(]" char-after-point)
+       (insert prefix)
+       (nonincremental-re-search-forward "[ \n]")
+       (backward-char)
+       (insert ")")
+       (backward-char))
+
+      ;; If the char after-point is one of the parentheses
+      ((string-match "[[{(]" char-after-point)
+       (set-mark (point))
+       (forward-word)
+       (forward-char)
+       (exchange-point-and-mark)
+       (cond
+         ;; If the following string is '(dbg ', delete it.
+         ;; <ex> (dbg ...) --> ...
+         ((string= (buffer-substring (point) (mark)) prefix)
+          (forward-list)
+          (let ((list-begin-pos (mark)))
+            (backward-char)
+            (delete-char 1)
+            (goto-char list-begin-pos)
+            (backward-delete-char (length prefix)) ))
+
+         ;; If the following string is not '(dbg ', insert it.
+         ;;  <ex> (...) --> (dbgn (...))
+         (t
+          (insert prefix)
+          (forward-list)
+          (insert ")")
+          (backward-char 1) ))))))
+
+(defun toggle-dbgn ()
+  "Toggle dbgn form in Clojure"
+  (interactive)
+  (toggle-dbg "n"))
+
+;; mouse-1: the left mouse button
+(defun my-clojure-mode-init ()
+  "Initializes clojure mode."
+  (interactive)
+
+  ;; disalbes the default <C-down-mouse-1> key
+  (global-unset-key (kbd "<C-down-mouse-1>"))
+
+  (local-set-key (kbd "<double-mouse-1>") 'toggle-dbg)
+  (local-set-key (kbd "C-<double-mouse-1>") 'toggle-dbgn))
+
+(add-hook 'clojure-mode-hook 'my-clojure-mode-init)
+----
+
+### How to use
+
+* If you are editing on `\*.clj` or `*.cljc` files, pass:q[`(dbg ...)`] or pass:q[`(dbgn
+...)`] will be inserted or deleted.
+
+* If you are editing on `*.cljs` files, pass:q[`(clog ...)`] or pass:q[`(clogn ...)`] will
+be inserted or deleted.
+
+
+
+#### Inserting or deleting pass:q[`(dbg ...)`]/pass:q[`(clog ...)`]
+
+When you double-click on one of the open parentheses and the following string is not 
+`dbg` or `clog`, it will be inserted.
+
+* The `v` of the following example is the cursor position.
+
+[source]
+....
+;; before
+;  v
+   (+ a b)
+
+;; after
+   (dbg (+ a b))
+....
+
+When you double-click on one of the open parentheses and the following string is `dbg` or
+`clog`, it will be deleted.
+
+[source]
+....
+;; before
+;  v
+   (dbg (+ a b))
+
+;; after
+   (+ a b)
+....
+
+When you double-click on a symbol, `dbg` or `clog` will be inserted as well.
+
+[source]
+....
+;; before
+;     v
+   (+ a b))
+
+;; after
+   (+ (dbg a) b)
+....
+
+
+
+#### Inserting or deleting pass:q[`(dbgn ...)`]/pass:q[`(clogn ...)`]
+
+When you double-click on one of the open parentheses while pressing `<Ctrl>` key and the
+following string is not `dbgn` or `clogn`, it will be inserted.
+
+[source]
+....
+;; before
+;  v
+   (+ a b)
+
+;; after
+   (dbgn (+ a b))
+....
+
+When you double-click on one of the open parentheses while pressing `<Ctrl>` key and the
+following string is `dbgn` or `clogn`, it will be deleted.
+
+[source]
+....
+;; before
+;  v
+   (dbgn (+ a b))
+
+;; after
+   (+ a b)
+....
+
+
+
+
+
 
 
 ## License
