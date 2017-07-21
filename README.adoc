@@ -1829,13 +1829,16 @@ source code, the result will go only to your browser's console window.
 ## `debux.el` for Emacs CIDER user
 
 Inserting or deleting `dbg`/`dbgn`/`clog`/`clogn` manually is very painful. As an Emacs
-user I wrote `debux.el` for Emacs CIDER for my convenience. It's not perfect but beter
+user I wrote `debux.el` for Emacs CIDER for my convenience. It's not perfect but better
 than nothing. If you find it useful, append the following `debux.el` (which is in project
-root folder as well) to the `~/.emacs.d/init.el`.
-  
+root folder) to the `~/.emacs.d/init.el`.
+
+
 ### `debux.el`
 
-Refer to `debux.el` source code https://github.com/philoskim/debux/blob/master/debux.el[here]
+Refer to the source code of `debux.el`
+https://github.com/philoskim/debux/blob/master/debux.el[here].
+
 
 ### How to use
 

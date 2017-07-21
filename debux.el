@@ -1,4 +1,10 @@
-(defun toggle-dbg (&optional post-char)
+(defun debux-match-delete-word? (word)
+  (let ((match-word))
+    (dolist (w '("(dbg " "(dbgn " "(clog " "(clogn ") match-word)
+      (if (string= w word)
+        (setq match-word w) ))))
+
+(defun debux-toggle-dbg (&optional post-char)
   "Toggle dbg form in Clojure"
   (interactive)
 
@@ -11,12 +17,13 @@
     ;; When double-click the left mouse button
     (cond
       ;; If the char-after-point is blank
-      ;;  <ex> ' ' --> (dbg )
+      ;;   <ex> ' ' --> (dbg )
       ((string-match "[ \n]" char-after-point)
        (insert (concat prefix ")"))
        (backward-char))
 
-      ;; If the char-after-point is not parentheses:  <ex> abc  --> (dbg abc)
+      ;; If the char-after-point is not one of the parentheses
+      ;;   <ex> abc  --> (dbg abc)
       ((string-match "[^[{(]" char-after-point)
        (insert prefix)
        (nonincremental-re-search-forward "[ \n]")
@@ -24,35 +31,39 @@
        (insert ")")
        (backward-char))
 
-      ;; If the char after-point is parentheses
+      ;; If the char-after-point is one of the parentheses
       ((string-match "[[{(]" char-after-point)
        (set-mark (point))
-       (forward-word)
-       (forward-char)
+       (nonincremental-re-search-forward "[ \n]")
        (exchange-point-and-mark)
-       (cond
-         ;; If the following string is '(dbg ', delete it.
-         ;; <ex> (dbg ...) --> ...
-         ((string= (buffer-substring (point) (mark)) prefix)
-          (forward-list)
-          (let ((list-begin-pos (mark)))
-            (backward-char)
-            (delete-char 1)
-            (goto-char list-begin-pos)
-            (backward-delete-char (length prefix)) ))
+       (let ((fn-name (buffer-substring (point) (mark))))
+         (cond
+           ;; If the following string matches a delete-word, delete it.
+           ;; <ex> (dbg ...) --> ...
+           ((debux-match-delete-word? fn-name)
+            (forward-list)
+            (let ((list-begin-pos (mark)))
+              (backward-char)
+              (delete-char 1)
+              (goto-char list-begin-pos)
+              (backward-delete-char (length fn-name))
+              (indent-sexp) ))
 
-         ;; If the following string is not '(dbg ', insert it.
-         ;;  <ex> (...) --> (dbgn (...))
-         (t
-          (insert prefix)
-          (forward-list)
-          (insert ")")
-          (backward-char 1) ))))))
+           ;; If the following string doesn't match a delete-word, insert the prefix.
+           ;;  <ex> (...) --> (dbg (...))
+           (t
+            (insert prefix)
+            (forward-list)
+            (insert ")")
+            (backward-char 1)
+            (backward-list)
+            (indent-sexp)
+            (forward-list)  )))))))
 
-(defun toggle-dbgn ()
+(defun debux-toggle-dbgn ()
   "Toggle dbgn form in Clojure"
   (interactive)
-  (toggle-dbg "n"))
+  (debux-toggle-dbg "n"))
 
 ;; mouse-1: the left mouse button
 (defun my-clojure-mode-init ()
