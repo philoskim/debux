@@ -73,7 +73,7 @@
   ;; disalbes the default <C-down-mouse-1> key
   (global-unset-key (kbd "<C-down-mouse-1>"))
 
-  (local-set-key (kbd "<double-mouse-1>") 'toggle-dbg)
-  (local-set-key (kbd "C-<double-mouse-1>") 'toggle-dbgn))
+  (local-set-key (kbd "<double-mouse-1>") 'debux-toggle-dbg)
+  (local-set-key (kbd "C-<double-mouse-1>") 'debux-toggle-dbgn))
 
 (add-hook 'clojure-mode-hook 'my-clojure-mode-init)
