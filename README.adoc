@@ -1860,11 +1860,13 @@ following string is not `dbg` or `clog`, it will be inserted.
 [source]
 ....
 ;; before
-;  v
-   (+ a b)
+;; v
+   (let [a 1 b 2] 
+     (+ a b))
 
 ;; after
-   (dbg (+ a b))
+   (dbg (let [a 1 b 2] 
+          (+ a b)))
 ....
 
 When you double-click on one of the open parentheses and the following string is `dbg` or
@@ -1873,12 +1875,15 @@ When you double-click on one of the open parentheses and the following string is
 [source]
 ....
 ;; before
-;  v
-   (dbg (+ a b))
+;; v
+   (dbg (let [a 1 b 2] 
+          (+ a b)))
 
 ;; after
-   (+ a b)
+   (let [a 1 b 2] 
+     (+ a b))
 ....
+
 
 When you double-click on a symbol, `dbg` or `clog` will be inserted as well.
 
@@ -1886,12 +1891,11 @@ When you double-click on a symbol, `dbg` or `clog` will be inserted as well.
 ....
 ;; before
 ;     v
-   (+ a b))
+   (+ a b)
 
 ;; after
    (+ (dbg a) b)
 ....
-
 
 
 #### Inserting or deleting pass:q[`(dbgn ...)`]/pass:q[`(clogn ...)`]
@@ -1902,11 +1906,13 @@ following string is not `dbgn` or `clogn`, it will be inserted.
 [source]
 ....
 ;; before
-;  v
-   (+ a b)
+;; v
+   (defn foo [a b c]
+     (* a b c))
 
 ;; after
-   (dbgn (+ a b))
+   (dbgn (defn foo [a b c]
+           (* a b c)))
 ....
 
 When you double-click on one of the open parentheses and the following string is `dbgn` or
@@ -1915,11 +1921,13 @@ When you double-click on one of the open parentheses and the following string is
 [source]
 ....
 ;; before
-;  v
-   (dbgn (+ a b))
+;; v
+   (dbgn (defn foo [a b c]
+           (* a b c)))
 
 ;; after
-   (+ a b)
+   (defn foo [a b c]
+     (* a b c))
 ....
 
 

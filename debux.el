@@ -1,20 +1,18 @@
 (defun debux-match-delete-word? (word)
   (let ((match-word))
     (dolist (w '("(dbg " "(dbgn " "(clog " "(clogn ") match-word)
-      (if (string= w word)
+      (when (string= w word)
         (setq match-word w) ))))
 
 (defun debux-toggle-dbg (&optional post-char)
-  "Toggle dbg form in Clojure"
   (interactive)
-
   (let* ((char-begin-pos (point))
          (char-after-point (string (char-after)))
          (prefix (if (string-match "\\.cljs$" (buffer-name))
                    (concat "(clog" post-char " ")
                    (concat "(dbg" post-char " ") )))
 
-    ;; When double-click the left mouse button
+    ;; When the left mouse button double-clicked
     (cond
       ;; If the char-after-point is blank
       ;;   <ex> ' ' --> (dbg )
@@ -55,22 +53,20 @@
             (insert prefix)
             (forward-list)
             (insert ")")
-            (backward-char 1)
             (backward-list)
             (indent-sexp)
             (forward-list) )))))))
 
 (defun debux-toggle-dbgn ()
-  "Toggle dbgn form in Clojure"
-  (interactive)
+   (interactive)
   (debux-toggle-dbg "n"))
 
-;; mouse-1: the left mouse button
 (defun my-clojure-mode-init ()
   "Initializes clojure mode."
   (interactive)
 
-  ;; Disalbes the default global <down-mouse-1> and <C-down-mouse-1> key
+  ;; mouse-1: the left mouse button
+  ;; Disables the default global <down-mouse-1> and <C-down-mouse-1> key
   (global-unset-key (kbd "<down-mouse-1>"))
   (global-unset-key (kbd "<C-down-mouse-1>"))
 

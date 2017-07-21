@@ -167,7 +167,7 @@
 (defn insert-d [form d-sym env]
   (loop [loc (ut/sequential-zip form)]
     (let [node (z/node loc)]
-      ;(dbg node)
+      ;(ut/d node)
       (cond
         (z/end? loc) (z/root loc)
 
@@ -245,7 +245,7 @@
 (defn remove-skip [form]
   (loop [loc (ut/sequential-zip form)]
     (let [node (z/node loc)]
-      ;(dbg node)
+      ;(ut/d node)
       (cond
         (z/end? loc) (z/root loc)
 
