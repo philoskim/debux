@@ -58,7 +58,7 @@
             (backward-char 1)
             (backward-list)
             (indent-sexp)
-            (forward-list)  )))))))
+            (forward-list) )))))))
 
 (defun debux-toggle-dbgn ()
   "Toggle dbgn form in Clojure"
@@ -70,7 +70,8 @@
   "Initializes clojure mode."
   (interactive)
 
-  ;; disalbes the default <C-down-mouse-1> key
+  ;; Disalbes the default global <down-mouse-1> and <C-down-mouse-1> key
+  (global-unset-key (kbd "<down-mouse-1>"))
   (global-unset-key (kbd "<C-down-mouse-1>"))
 
   (local-set-key (kbd "<double-mouse-1>") 'debux-toggle-dbg)
