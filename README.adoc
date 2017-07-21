@@ -1879,7 +1879,7 @@ root folder as well) to the `~/.emacs.d/init.el`.
          (cond
            ;; If the following string matches a delete-word, delete it.
            ;; <ex> (dbg ...) --> ...
-           ((match-delete-word? fn-name)
+           ((debux-match-delete-word? fn-name)
             (forward-list)
             (let ((list-begin-pos (mark)))
               (backward-char)
