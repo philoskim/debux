@@ -1850,12 +1850,12 @@ be inserted or deleted.
 
 
 
-#### Inserting or deleting pass:q[`(dbg ...)`]/pass:q[`(clog ...)`]
+#### Inserting pass:q[`(dbg ...)`]/pass:q[`(clog ...)`] or pass:q[`(dbgn ...)`]/pass:q[`(clogn ...)`] 
 
 When you double-click the left mouse button on one of the open parentheses and the
 following string is not `dbg` or `clog`, it will be inserted.
 
-* The `v` of the following example is the cursor position.
+* The `v` of the following examples marks the cursor position.
 
 [source]
 ....
@@ -1868,22 +1868,6 @@ following string is not `dbg` or `clog`, it will be inserted.
    (dbg (let [a 1 b 2] 
           (+ a b)))
 ....
-
-When you double-click on one of the open parentheses and the following string is `dbg` or
-`clog`, it will be deleted.
-
-[source]
-....
-;; before
-;; v
-   (dbg (let [a 1 b 2] 
-          (+ a b)))
-
-;; after
-   (let [a 1 b 2] 
-     (+ a b))
-....
-
 
 When you double-click on a symbol, `dbg` or `clog` will be inserted as well.
 
@@ -1896,9 +1880,6 @@ When you double-click on a symbol, `dbg` or `clog` will be inserted as well.
 ;; after
    (+ (dbg a) b)
 ....
-
-
-#### Inserting or deleting pass:q[`(dbgn ...)`]/pass:q[`(clogn ...)`]
 
 When you double-click on one of the open parentheses while pressing `<Ctrl>` key and the
 following string is not `dbgn` or `clogn`, it will be inserted.
@@ -1915,11 +1896,26 @@ following string is not `dbgn` or `clogn`, it will be inserted.
            (* a b c)))
 ....
 
-When you double-click on one of the open parentheses and the following string is `dbgn` or
-`clogn`, it will be deleted.
+
+
+
+
+#### Deleting pass:q[`(dbg ...)`]/pass:q[`(clog ...)`]/pass:q[`(dbgn ...)`]/pass:q[`(clogn ...)`]
+
+When you double-click on one of the open parentheses and the following string is `dbg`, `clog`, `dbgn` or `clogn`,  it will be deleted.
 
 [source]
 ....
+;; before
+;; v
+   (dbg (let [a 1 b 2] 
+          (+ a b)))
+
+;; after
+   (let [a 1 b 2] 
+     (+ a b))
+
+
 ;; before
 ;; v
    (dbgn (defn foo [a b c]

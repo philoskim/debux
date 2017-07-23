@@ -58,7 +58,7 @@
             (forward-list) )))))))
 
 (defun debux-toggle-dbgn ()
-   (interactive)
+  (interactive)
   (debux-toggle-dbg "n"))
 
 (defun my-clojure-mode-init ()
