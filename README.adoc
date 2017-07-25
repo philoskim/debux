@@ -220,7 +220,7 @@ optional `doc-string` argument.
 [listing]
 .REPL output
 ----
-dbgn: (def my-function (fn [x] (* x x x))) =>
+dbgn: (def my-function "my-function doc string" (fn [x] (* x x x))) =>
 | (fn [x] (* x x x)) =>
 |   #function[example.core/eval24554/result--24229--auto----24555]
 | (def my-function (fn [x] (* x x x))) =>
@@ -256,7 +256,7 @@ have optional `doc-string`, `attr-map`, or `prepost-map` arguments.
 [listing]
 .REPL output
 ----
-dbgn: (defn add add doc-string [a b] (+ a b)) =>
+dbgn: (defn add "add doc-string" [a b] (+ a b)) =>
 
 | a =>
 |   10
@@ -298,7 +298,7 @@ You can debug multiple-arity functions as well.
 [listing]
 .REPL output
 ----
-dbgn: (defn my-add add doc-string ([] 0) ([a] a) ([a b] (+ a b)) ([a b & more] (apply + a b more))) =>
+dbgn: (defn my-add "my-add doc string" ([] 0) ([a] a) ([a b] (+ a b)) ([a b & more] (apply + a b more))) =>
 
 | a =>
 |   10
@@ -1850,7 +1850,7 @@ be inserted or deleted.
 
 
 
-#### Inserting pass:q[`(dbg ...)`]/pass:q[`(clog ...)`] or pass:q[`(dbgn ...)`]/pass:q[`(clogn ...)`] 
+#### Inserting pass:q[`dbg`/`clog`] or pass:q[`dbgn`/`clogn`] 
 
 When you double-click the left mouse button on one of the open parentheses and the
 following string is not `dbg` or `clog`, it will be inserted.
@@ -1897,12 +1897,10 @@ following string is not `dbgn` or `clogn`, it will be inserted.
 ....
 
 
+#### Deleting pass:q[`dbg`/`clog`/`dbgn`/`clogn`]
 
-
-
-#### Deleting pass:q[`(dbg ...)`]/pass:q[`(clog ...)`]/pass:q[`(dbgn ...)`]/pass:q[`(clogn ...)`]
-
-When you double-click on one of the open parentheses and the following string is `dbg`, `clog`, `dbgn` or `clogn`,  it will be deleted.
+When you double-click on one of the open parentheses and the following string is `dbg`,
+`clog`, `dbgn` or `clogn`, it will be deleted.
 
 [source]
 ....
