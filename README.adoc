@@ -223,7 +223,7 @@ optional `doc-string` argument.
 dbgn: (def my-function "my-function doc string" (fn [x] (* x x x))) =>
 | (fn [x] (* x x x)) =>
 |   #function[example.core/eval24554/result--24229--auto----24555]
-| (def my-function (fn [x] (* x x x))) =>
+| (def my-function "my-function doc string" (fn [x] (* x x x))) =>
 |   #'example.core/my-function
 
 | x =>
