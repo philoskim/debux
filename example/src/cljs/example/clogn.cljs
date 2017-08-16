@@ -152,3 +152,4 @@
 
 (clogn (my-let [a 10 b (+ a 10)] (+ a b)))
 
+(clogn (range))

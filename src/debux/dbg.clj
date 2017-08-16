@@ -46,8 +46,8 @@
   `(let [n# ~(or n 100)
          condition# ~condition
          result# ~form
-         result# (if (coll? result#)
-                   (ut/take-n result# n#)
+         result# (if (seq? result#)
+                   (take n# result#)
                    result#)]
      (when (or (nil? condition#) condition#)
         (println (str "\ndbg: " (pr-str '~form)
@@ -232,8 +232,8 @@
          n#    (or (:n opts#) 100)
          
          result# ~form
-         result# (if (coll? result#)
-                   (ut/take-n result# n#)
+         result# (if (seq? result#)
+                   (take n# result#)
                    result#)]
      (ut/print-form-with-indent (ut/form-header '~(remove-d form 'debux.dbg/d) msg#)
                                 @ut/indent-level*)
@@ -285,7 +285,6 @@
        (catch Exception ~'e (throw ~'e)) )))
 
 (comment
-
 
 ) ; end of comment
 

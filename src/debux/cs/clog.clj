@@ -10,8 +10,8 @@
   `(let [n# ~(or n 100)
          condition# ~condition
          result# ~form
-         result# (if (coll? result#)
-                   (ut/take-n result# n#)
+         result# (if (seq? result#)
+                   (take n# result#)
                    result#)]
      (when (or (nil? condition#) condition#)
        (when (or (and ~once (cs.ut/changed? (str '~form " " '~opts) (str result#)))
@@ -33,8 +33,8 @@
          n#    (or (:n opts#) 100)
          form-style# (or (:style opts#) :debug)
          result# ~form
-         result# (if (coll? result#)
-                   (ut/take-n result# n#)
+         result# (if (seq? result#)
+                   (take n# result#)
                    result#)]
      (cs.ut/clog-form-with-indent
        (cs.ut/form-header '~(dbg/remove-d form 'debux.cs.clog/d) msg#)

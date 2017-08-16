@@ -181,3 +181,5 @@
 (dbg (show-macros))
 
 (dbgn (my-let [a 10 b (+ a 10)] (+ a b)))
+
+(dbgn (range))

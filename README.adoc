@@ -15,7 +15,7 @@ one.
 ## Prerequisites
 
 * clojure 1.8.0 or later
-* clojurescript 1.9.562 or later
+* clojurescript 1.9.854 or later
 
 
 ## Installation
@@ -26,7 +26,7 @@ dependencies:
 
 [source]
 ....
-[philoskim/debux "0.3.9"]
+[philoskim/debux "0.3.10"]
 ....
 
 
@@ -90,7 +90,21 @@ TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in t
 
 ## Change logs since v0.3.0
 
-NOTE: You can see _Change logs since v0.3.0_
+* v0.3.10
+** Fixed: The clojurescript-1.9.854 version of improved function printing style is reflected.
++
+Refer to http://blog.fikesfarm.com/posts/2017-07-29-improved-function-printing.html?utm_source=dlvr.it[here] for details.
+** Changed: The number option applies only to `seq` data type, not to vectors, maps, or sets.
+
+* v0.3.9
+** Fixed: The error in debugging `doseq` is removed. 
+
+* v0.3.8
+** Refactored: Code duplications are removed as much as possible.
+** Renamed: `merge-style` pass:q[-->] `merge-styles`
+
+
+NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 
@@ -102,7 +116,7 @@ two macro names means *Nested forms*. Now you can debug every nested form withou
 affecting program executions. This feature is very useful, especially when you analyze
 other developer's source code.
 
-Now you can see the evaluated output of outer-most form by using `dbg` or `clog` and the
+Now you can see the evaluated output of outermost form by using `dbg` or `clog` and the
 evaluated outputs of every nested form by using `dbgn` or `clogn`.
 
 NOTE: You can see every example source code of this document in
@@ -836,7 +850,7 @@ dbgn: (areduce xs i ret (float 0) (+ ret (aget xs i))) =>
 
 #### `:skip-form-itself-type` example
 
-This type of macros have too complex to parse, so `dbgn`/`clogn` skips form itself and does
+This type of macros have too complex to parse, so `dbgn`/`clogn` skips the form itself and does
 nothing.
   
 
@@ -868,7 +882,7 @@ dbgn: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>  ;; <
 |   "X"
 ----
 
-* You can compare the original form (1) and the exhaustively expanded form (2).
+* You can compare the original form (1) and the expanded form (2).
 
 
 {empty} +
@@ -1476,8 +1490,11 @@ dbg: (repeat 5 "x")   <5 times repeat> =>
 
 ### Number option
 
-If you don't specify the number after the form, *debux* macros will print and return
-the default 100 items in each collection.
+If you don't specify a number after the form returning the `seq` data type, *debux* macros
+will print and return the default 100 items.
+
+IMPORTANT: The number option doesn't apply to vectors, maps or sets.
+ 
 
 [source]
 ....
@@ -1749,8 +1766,8 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 ....
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.562"]
-                 [philoskim/debux "0.3.9"]]
+                 [org.clojure/clojurescript "1.9.854"]
+                 [philoskim/debux "0.3.10"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]
@@ -1828,16 +1845,16 @@ source code, the result will go only to your browser's console window.
 
 ## `debux.el` for Emacs CIDER user
 
-Inserting or deleting `dbg`/`dbgn`/`clog`/`clogn` manually is very painful. As an Emacs
-user I wrote `debux.el` for Emacs CIDER for my convenience. It's not perfect but better
+Inserting or deleting `dbg`/`dbgn`/`clog`/`clogn` manually is very painful. As Emacs user
+I wrote `debux.el` for Emacs CIDER for my convenience. I think it's not perfect but better
 than nothing. If you find it useful, append the following `debux.el` (which is in project
 root folder) to the `~/.emacs.d/init.el`.
 
 
 ### `debux.el`
 
-Refer to the source code of `debux.el`
-https://github.com/philoskim/debux/blob/master/debux.el[here].
+Refer to https://github.com/philoskim/debux/blob/master/debux.el[here] for the source code
+of `debux.el` .
 
 
 ### How to use

@@ -1,5 +1,6 @@
 (ns debux.common.util
-  "util common for clojure and clojurescript" 
+  "util common for clojure and clojurescript"
+  (:refer-clojure :exclude [coll?])
   (:require [clojure.string :as str]
             [clojure.pprint :as pp]
             [clojure.zip :as z]
@@ -42,6 +43,9 @@
 
 (defn cljs-env? [env]
   (boolean (:ns env)))
+
+(defn lazy-seq? [coll]
+  (instance? clojure.lang.IPending coll))
 
 
 ;;; zipper
@@ -136,13 +140,9 @@
   (mapv #(str "  " %) lines))
 
 (defn pprint-result-with-indent
-  [result indent-level ]
-  (let [pprint (str/trim (with-out-str (pp/pprint result)))
-        pprint' (if (fn? result)
-                  #?(:cljs (str (first (str/split pprint #" " 2)) "]")
-                     :clj  pprint)
-                  pprint)]
-    (println (->> (str/split pprint' #"\n")
+  [result indent-level]
+  (let [pprint (str/trim (with-out-str (pp/pprint result)))]
+    (println (->> (str/split pprint #"\n")
                    prepend-blanks
                    (mapv #(prepend-bars % indent-level))
                    (str/join "\n")))
@@ -151,9 +151,6 @@
 (defn insert-blank-line []
   (println " ")
   (flush))
-
-(defn pr-if-str [v]
-  (if (string? v) (pr-str v) v))
 
 
 ;;; parse options
@@ -191,13 +188,6 @@
 
         (= f :clog)
         (recur (next opts) (assoc acc :clog true)) ))))
-
-(defn take-n [coll n]
-  (let [n-coll (take n coll)]
-    (cond
-      (vector? coll) (vec n-coll)
-      (seq? coll) n-coll
-      :else (into (empty coll) n-coll))))
 
 
 ;;; quote the value parts of a map
