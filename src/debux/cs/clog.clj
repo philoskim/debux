@@ -16,7 +16,7 @@
      (when (or (nil? condition#) condition#)
        (when (or (and ~once (cs.ut/changed? (str '~form " " '~opts) (str result#)))
                  (not ~once))
-         (let [title# (str "%cclog: %c " (pr-str '~form)
+         (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
                            " %c" (and ~msg (str "   <" ~msg ">"))
                            " =>" (and ~once "   (:once mode)"))
                style# (or ~style :debug)]

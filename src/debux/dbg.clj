@@ -50,7 +50,7 @@
                    (take n# result#)
                    result#)]
      (when (or (nil? condition#) condition#)
-        (println (str "\ndbg: " (pr-str '~form)
+        (println (str "\ndbg: " (ut/truncate (pr-str '~form))
                       (and ~msg (str "   <" ~msg ">"))
                       " =>"))
         (ut/pprint-result-with-indent result# @ut/indent-level*))
@@ -262,9 +262,9 @@
                    z/next))
 
         :else
-        (recur (z/next loc)) ))))
+        (recur (z/next loc) )))))
 
-
+ 
 ;;; dbgn
 (defmacro dbgn
   "DeBuG every Nested forms of a form.s"

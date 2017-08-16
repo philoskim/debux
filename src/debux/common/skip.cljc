@@ -70,7 +70,6 @@
   (let [bindings' (-> (map process-letfn-binding bindings)
                       vec)]
     (list* name `(ms/o-skip ~bindings')
-           `(ms/skip (ut/insert-blank-line))
            body) ))
 
 

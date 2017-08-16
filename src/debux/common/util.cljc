@@ -110,6 +110,11 @@
 
 
 ;;; print
+(defn truncate [s]
+  (if (> (count s) 70)
+    (str (.substring s 0 70) " ...")
+    s))
+
 (defn- make-bars-
   [times]
   (apply str (repeat times "|")))
@@ -130,7 +135,7 @@
   (flush))
 
 (defn form-header [form msg]
-  (str (pr-str form)
+  (str (truncate (pr-str form))
        (and msg (str "   <" msg ">"))
        " =>"))
 

@@ -67,7 +67,7 @@
 
 ;;; printing for browser console
 (defn form-header [form & [msg]]
-  (str "%c " (pr-str form)
+  (str "%c " (ut/truncate (pr-str form))
        " %c" (and msg (str "   <" msg ">"))
        " =>"))
 
