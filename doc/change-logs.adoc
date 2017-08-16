@@ -7,10 +7,10 @@
 ** Fixed: clojurescript-1.9.854 version of improved function printing style is reflected.
 +
 Refer to http://blog.fikesfarm.com/posts/2017-07-29-improved-function-printing.html?utm_source=dlvr.it[here] for details.
+** Changed: The number option applies only to `seq` data type, not to vectors, maps, or sets.
 
 * v0.3.9
 ** Fixed: The error in debugging `doseq` is removed. 
-** Changed: The number option applies only to `seq` data type, not to vectors, maps, or sets.
 
 * v0.3.8
 ** Refactored: Code duplications are removed as much as possible.
