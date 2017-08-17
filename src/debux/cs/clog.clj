@@ -49,7 +49,7 @@
          condition#         ~condition]
      (try
        (when (or (nil? condition#) condition#)
-         (let [title# (str "%cclogn: %c " (pr-str '~form)
+         (let [title# (str "%cclogn: %c " (ut/truncate (pr-str '~form))
                            " %c" (and ~msg (str "   <" ~msg ">"))
                            " =>")
                style# (or ~style :debug)]

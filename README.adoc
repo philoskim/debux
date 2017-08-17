@@ -26,7 +26,7 @@ dependencies:
 
 [source]
 ....
-[philoskim/debux "0.3.11"]
+[philoskim/debux "0.3.12"]
 ....
 
 
@@ -90,22 +90,16 @@ TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in t
 
 ## Change logs since v0.3.0
 
+* v0.3.12
+** Supplemented: The missing parts of too long forms truncation are supplemented.
+
 * v0.3.11
-** Changed: The too long form is truncated and printed with pass:q[`...`] symbol.
+** Changed: Too long forms are truncated and printed with pass:q[`...`] symbol.
 
 * v0.3.10
 ** Fixed: The clojurescript-1.9.854 version of improved function printing style is reflected.
-+
-Refer to http://blog.fikesfarm.com/posts/2017-07-29-improved-function-printing.html?utm_source=dlvr.it[here] for details.
+*** Refer to http://blog.fikesfarm.com/posts/2017-07-29-improved-function-printing.html?utm_source=dlvr.it[here] for details.
 ** Changed: The number option applies only to `seq` data type, not to vectors, maps, or sets.
-
-* v0.3.9
-** Fixed: The error in debugging `doseq` is removed. 
-
-* v0.3.8
-** Refactored: Code duplications are removed as much as possible.
-** Renamed: `merge-style` pass:q[-->] `merge-styles`
-
 
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
@@ -315,7 +309,7 @@ You can debug multiple-arity functions as well.
 [listing]
 .REPL output
 ----
-dbgn: (defn my-add "my-add doc string" ([] 0) ([a] a) ([a b] (+ a b)) ([a b & more] (apply + a b more))) =>
+dbgn: (defn my-add "my-add doc string" ([] 0) ([a] a) ([a b] (+ a b)) ([a b  ... =>
 
 | a =>
 |   10
@@ -531,7 +525,7 @@ This type of macro has the special binding vector syntax which is a bit differen
 [listing]
 .REPL output
 ----
-dbgn: (letfn [(twice [x] (* x 2)) (six-times [y] (* (twice y) 3))] (six-times 15)) =>
+dbgn: (letfn [(twice [x] (* x 2)) (six-times [y] (* (twice y) 3))] (six-time ... =>
 | y =>
 |   15
 | x =>
@@ -544,7 +538,7 @@ dbgn: (letfn [(twice [x] (* x 2)) (six-times [y] (* (twice y) 3))] (six-times 15
 |   90
 | (six-times 15) =>
 |   90
-| (letfn [(twice [x] (* x 2)) (six-times [y] (* (twice y) 3))] (six-times 15)) =>
+| (letfn [(twice [x] (* x 2)) (six-times [y] (* (twice y) 3))] (six-time ... =>
 |   90
 ----
 
@@ -769,11 +763,11 @@ This type of macros have the first and third arguments which must not be evaluat
 [listing]
 .REPL output
 ----
-dbgn: (defmethod greeting :english [map] (str "English greeting: " (:greeting map))) =>
+dbgn: (defmethod greeting :english [map] (str "English greeting: " (:greetin ... =>
 | (defmethod greeting :english [map] (str "English greeting: " (:greeting map))) =>
 |   #multifn[greeting 0x1c28c1cc]
 
-dbgn: (defmethod greeting :french [map] (str "English greeting: " (:greeting map))) =>
+dbgn: (defmethod greeting :french [map] (str "French greeting: " (:greeting  ... =>
 | (defmethod greeting :french [map] (str "English greeting: " (:greeting map))) =>
 |   #multifn[greeting 0x1c28c1cc]
 
@@ -874,18 +868,16 @@ This type of macros will be expanded and then the output will be printed.
 [listing]
 .REPL output
 ----
-dbgn: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>  ;; <1>
+dbgn: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>
 | (.toUpperCase "a b c d") =>
 |   "A B C D"
 | (.replace (.toUpperCase "a b c d") "A" "X") =>
 |   "X B C D"
 | (.split (.replace (.toUpperCase "a b c d") "A" "X") " ") =>
 |   ["X", "B", "C", "D"]
-| (first (.split (.replace (.toUpperCase "a b c d") "A" "X") " ")) =>       ;; <2>
+| (first (.split (.replace (.toUpperCase "a b c d") "A" "X") " ")) =>
 |   "X"
 ----
-
-* You can compare the original form (1) and the expanded form (2).
 
 
 {empty} +
@@ -902,14 +894,12 @@ dbgn: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>  ;; <
 [listing]
 .REPL output
 ----
-dbgn: (.. "fooBAR" toLowerCase (contains "ooba")) =>   ;; <1>
+dbgn: (.. "fooBAR" toLowerCase (contains "ooba")) =>
 | (. "fooBAR" toLowerCase) =>
 |   "foobar"
-| (. (. "fooBAR" toLowerCase) (contains "ooba")) =>    ;; <2>
+| (. (. "fooBAR" toLowerCase) (contains "ooba")) =>
 |   true
 ----
-
-* You can compare the original form (1) and the expanded form (2).
 
 {empty} +
 
@@ -927,10 +917,7 @@ dbgn: (.. "fooBAR" toLowerCase (contains "ooba")) =>   ;; <1>
 [listing]
 .REPL output
 ----
-dbgn: (cond-> []                        ;; <1>
-        (odd? x) (conj "x is odd") 
-        (zero? (rem y 3)) (conj "y is divisible by 3")
-        (even? y) (conj "y is even")) =>
+dbgn: (cond-> [] (odd? x) (conj "x is odd") (zero? (rem y 3)) (conj "y is di ... =>
 | [] =>
 |   []
 | x =>
@@ -963,20 +950,9 @@ dbgn: (cond-> []                        ;; <1>
 |   ["x is odd" "y is even"]
 | (if (even? y) (conj G__25146 "y is even") G__25146) =>
 |   ["x is odd" "y is even"]
-| (clojure.core/let [G__25146 []        ;; <2>
-|                    G__25146 (if (odd? x)
-|                               (conj G__25146 "x is odd")
-|                               G__25146)
-|                    G__25146 (if (zero? (rem y 3))
-|                               (conj G__25146 "y is divisible by 3")
-|                               G__25146)]
-|   (if (even? y)
-|     (conj G__25146 "y is even") G__25146)) =>
-|    ["x is odd" "y is even"]
+| (clojure.core/let [G__28483 [] G__28483 (if (odd? x) (conj G__28483 "x ... =>
+|   ["x is odd" "y is even"]
 ----
-
-* You can compare the original form (1) and the expanded form (2). I rearranged the output
-  only in both (1) and (2) for convenience.
 
 
 #### `:dot-type` example
@@ -1105,7 +1081,8 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 [listing]
 .REPL output
 ----
-dbgn: (defn fact [num] (loop [acc 1 n num] (if (zero? n) acc (recur (* acc n) (dec n))))) =>
+dbgn: (defn fact [num] (loop [acc 1 n num] (if (zero? n) acc (recur (* acc n ... =>
+
 | num =>
 |   3
 | n =>
@@ -1203,7 +1180,7 @@ debug the form as follows. *Be careful* not to forget to recover `function name`
 .REPL output
 [listing]
 ----
-dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n)))) =>
+dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ... =>
 
 | n =>
 |   3
@@ -1770,7 +1747,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.854"]
-                 [philoskim/debux "0.3.11"]]
+                 [philoskim/debux "0.3.12"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

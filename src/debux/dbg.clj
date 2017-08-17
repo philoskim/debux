@@ -275,7 +275,7 @@
          condition#         ~condition]
      (try
        (when (or (nil? condition#) condition#)
-         (println "\ndbgn:" (pr-str '~form) "=>")
+         (println "\ndbgn:" (ut/truncate (pr-str '~form)) "=>")
          ~(-> (if (ut/include-recur? form)
                 (sk/insert-o-skip-for-recur form &env)
                 form)

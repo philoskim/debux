@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.3.12
+** Supplemented: The missing parts of too long forms truncation are supplemented.
+
 * v0.3.11
 ** Changed: The too long form is truncated and printed with pass:q[`...`] symbol.
 

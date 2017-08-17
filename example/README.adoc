@@ -7,6 +7,7 @@
 
 [listing]
 ----
+$ lein clean
 $ lein run
 ----
 
@@ -16,7 +17,6 @@ $ lein run
 [listing]
 ----
 $ lein clean
-
 $ lein figwheel
 ----
 
