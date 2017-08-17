@@ -5,9 +5,8 @@
 :imagesdir: ./doc/img
 :toc:
 
-*Debux* is a simple but useful library for debugging/tracing Clojure and ClojureScript. I
-wrote this library to debug my own Clojure(Script) code and to analyze other developer's
-one.
+*Debux* is a simple but useful debugging library for Clojure and ClojureScript. I wrote
+this library to debug my own Clojure(Script) code and to analyze other developer's one.
 
 * Refer to https://github.com/philoskim/debux/tree/master/doc/v0.2.1/README.adoc[here] for
   the earlier version(v0.2.1) of documentation.
