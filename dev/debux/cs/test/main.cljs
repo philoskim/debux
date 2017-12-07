@@ -2,20 +2,28 @@
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]])
   (:require-macros [debux.cs.test.macros :refer [my-let]]))
 
+(clog (-> "a b c d"
+          .toUpperCase
+          (.replace "A" "X")
+          (.split " ")
+          first) "aaa")
 
-(def foo (js/Symbol "foo"))
+(def a 5)
+(clog (->> a (+ 3) (/ 2) (- 1)))
 
-(clog (type foo))
-(clog (.toString foo))
 
-(comment
+(def c (clog (comp inc inc +)))
 
-;;; Registering your own macros
-(d/register-macros! :let-type [my-let])
+(c 10 20)
 
-(clog (d/show-macros :let-type))
-(clog (d/show-macros))
 
-(clogn (my-let [a 10 b (+ a 10)] (+ a b)))
+(clog (let [a (take 5 (range))
+            {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}
+            [e f g & h] ["a" "b" "c" "d" "e"]]
+        [a b c d e f g h]))
 
-)   ; end of comment
+(clog (+ 1 2))
+
+
+(clogn (repeat 5 (repeat 5 "x")) "25 times repeat")
+

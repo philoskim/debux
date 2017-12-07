@@ -1,5 +1,7 @@
 (ns example.core
-   (:require example.clogn
-             example.dbgn
-             example.options))
+  (:require example.clogn
+            example.clog
+            example.dbgn
+            example.dbg
+            example.options))
 

@@ -2882,3 +2882,422 @@ notifying browser that file changed:  resources/public/js/out/example/clogn.js
 notifying browser that file changed:  resources/public/js/out/goog/deps.js
 notifying browser that file changed:  resources/public/js/out/cljs_deps.js
 notifying browser that file changed:  resources/public/js/out/example/clogn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[36m----  Compiler Warning on   src/cljs/example/dbgn.cljs   line:169  column:8  ----[0m
+
+  [1mUse of undeclared Var example.dbgn/my-let[0m
+
+  [36m166[0m  [36m(dbg (d/show-macros :let-type))[0m
+  [36m167[0m  [36m(dbg (d/show-macros))[0m
+  [36m168[0m  [36m[0m
+  [33m169[0m  [1m(dbgn (my-let [a 10 b (+ a 10)] (+ a b)))[0m
+  [0m   [0m  [33m       ^--- Use of undeclared Var example.dbgn/my-let[0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/dbgn.cljs  ----[0m
+[36m----  Compiler Warning on   src/cljs/example/dbgn.cljs   line:169  column:16  ----[0m
+
+  [1mUse of undeclared Var example.dbgn/a[0m
+
+  [36m166[0m  [36m(dbg (d/show-macros :let-type))[0m
+  [36m167[0m  [36m(dbg (d/show-macros))[0m
+  [36m168[0m  [36m[0m
+  [33m169[0m  [1m(dbgn (my-let [a 10 b (+ a 10)] (+ a b)))[0m
+  [0m   [0m  [33m               ^--- Use of undeclared Var example.dbgn/a[0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/dbgn.cljs  ----[0m
+[36m----  Compiler Warning on   src/cljs/example/dbgn.cljs   line:169  column:21  ----[0m
+
+  [1mUse of undeclared Var example.dbgn/b[0m
+
+  [36m166[0m  [36m(dbg (d/show-macros :let-type))[0m
+  [36m167[0m  [36m(dbg (d/show-macros))[0m
+  [36m168[0m  [36m[0m
+  [33m169[0m  [1m(dbgn (my-let [a 10 b (+ a 10)] (+ a b)))[0m
+  [0m   [0m  [33m                    ^--- Use of undeclared Var example.dbgn/b[0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/dbgn.cljs  ----[0m
+[36m----  Compiler Warning on   src/cljs/example/dbgn.cljs   line:169  column:26  ----[0m
+
+  [1mUse of undeclared Var example.dbgn/a[0m
+
+  [36m166[0m  [36m(dbg (d/show-macros :let-type))[0m
+  [36m167[0m  [36m(dbg (d/show-macros))[0m
+  [36m168[0m  [36m[0m
+  [33m169[0m  [1m(dbgn (my-let [a 10 b (+ a 10)] (+ a b)))[0m
+  [0m   [0m  [33m                         ^--- Use of undeclared Var example.dbgn/a[0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/dbgn.cljs  ----[0m
+[36m----  Compiler Warning on   src/cljs/example/dbgn.cljs   line:169  column:36  ----[0m
+
+  [1mUse of undeclared Var example.dbgn/a[0m
+
+  [36m166[0m  [36m(dbg (d/show-macros :let-type))[0m
+  [36m167[0m  [36m(dbg (d/show-macros))[0m
+  [36m168[0m  [36m[0m
+  [33m169[0m  [1m(dbgn (my-let [a 10 b (+ a 10)] (+ a b)))[0m
+  [0m   [0m  [33m                                   ^--- Use of undeclared Var example.dbgn/a[0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/dbgn.cljs  ----[0m
+[36m----  Compiler Warning on   src/cljs/example/dbgn.cljs   line:169  column:38  ----[0m
+
+  [1mUse of undeclared Var example.dbgn/b[0m
+
+  [36m166[0m  [36m(dbg (d/show-macros :let-type))[0m
+  [36m167[0m  [36m(dbg (d/show-macros))[0m
+  [36m168[0m  [36m[0m
+  [33m169[0m  [1m(dbgn (my-let [a 10 b (+ a 10)] (+ a b)))[0m
+  [0m   [0m  [33m                                     ^--- Use of undeclared Var example.dbgn/b[0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/dbgn.cljs  ----[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 1.012 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/dbgn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.254 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.996 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/dbgn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[36m----  Compiler Warning on   src/cljs/example/clog.cljs   line:51  column:1  ----[0m
+
+  [1ma at line 33 is being replaced[0m
+
+  [36m47[0m  [36m         .toUpperCase [0m
+  [36m48[0m  [36m         (.replace "A" "X") [0m
+  [36m49[0m  [36m         (.split " ") [0m
+  [36m50[0m  [36m         first))[0m
+  [33m51[0m  [1m(def a 5)[0m
+  [0m  [0m  [33m^--- a at line 33 is being replaced[0m
+  [36m52[0m  [36m(clog (->> a (+ 3) (/ 2) (- 1)))[0m
+  [36m53[0m  [36m[0m
+  [36m54[0m  [36m; When debugging the threading macro `->' or `->>', don't do it like this.[0m
+  [36m55[0m  [36m; You will have some exception.[0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/clog.cljs  ----[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.369 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/clog.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.33 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/clog.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.27 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.357 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/dbg.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.282 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.257 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.253 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.257 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.285 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.245 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.276 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.231 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.231 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.22 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.273 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/async.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.293 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/async.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.303 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/async.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.296 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/async.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.249 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/async.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.264 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/async.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.287 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/async.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[36m----  Compiler Warning on   src/cljs/example/dbgn.cljs   line:127  column:12  ----[0m
+
+  [1mUse of undeclared Var example.dbgn/toUpperCase[0m
+
+  [36m123[0m  [36m          (.split " ") [0m
+  [36m124[0m  [36m          first))[0m
+  [36m125[0m  [36m[0m
+  [36m126[0m  [36m(dbgn (.. "a b c d"[0m
+  [33m127[0m  [1m           toUpperCase[0m
+  [0m   [0m  [33m           ^--- Use of undeclared Var example.dbgn/toUpperCase[0m
+  [36m128[0m  [36m           (replace "A" "X")))[0m
+  [36m129[0m  [36m[0m
+  [36m130[0m  [36m[0m
+  [36m131[0m  [36m(let [x 1 y 2][0m
+  [36m132[0m  [36m  (dbgn (cond-> [][0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/dbgn.cljs  ----[0m
+[31mFailed to compile "resources/public/js/app.js" in 0.813 seconds.[0m
+[36m----  Could not Analyze  src/cljs/example/dbgn.cljs   line:148  column:1  ----[0m
+
+  [1m at line 148 src/cljs/example/dbgn.cljs[0m
+
+  [36m146[0m  [36m            (recur (* acc n) (dec n)))))[0m
+  [36m147[0m  [36m[0m
+  [33m148[0m  [1m(dbgn (defn fact [num][0m
+  [0m   [0m  [33m^---  at line 148 src/cljs/example/dbgn.cljs[0m
+  [36m149[0m  [36m        (loop [acc 1 n num][0m
+  [36m150[0m  [36m          (if (zero? n)[0m
+  [36m151[0m  [36m            acc[0m
+
+[36m----  Analysis Error : Please see src/cljs/example/dbgn.cljs  ----[0m
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[36m----  Compiler Warning on   src/cljs/example/dbgn.cljs   line:127  column:12  ----[0m
+
+  [1mUse of undeclared Var example.dbgn/toUpperCase[0m
+
+  [36m123[0m  [36m          (.split " ") [0m
+  [36m124[0m  [36m          first))[0m
+  [36m125[0m  [36m[0m
+  [36m126[0m  [36m(dbgn (.. "a b c d"[0m
+  [33m127[0m  [1m           toUpperCase[0m
+  [0m   [0m  [33m           ^--- Use of undeclared Var example.dbgn/toUpperCase[0m
+  [36m128[0m  [36m           (replace "A" "X")))[0m
+  [36m129[0m  [36m[0m
+  [36m130[0m  [36m[0m
+  [36m131[0m  [36m(let [x 1 y 2][0m
+  [36m132[0m  [36m  (dbgn (cond-> [][0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/dbgn.cljs  ----[0m
+[36m----  Compiler Warning on   src/cljs/example/dbgn.cljs   line:154  column:2  ----[0m
+
+  [1mUse of undeclared Var example.dbgn/fact[0m
+
+  [36m150[0m  [36m          (if (zero? n)[0m
+  [36m151[0m  [36m            acc[0m
+  [36m152[0m  [36m            (recur (* acc n) (dec n))))))[0m
+  [36m153[0m  [36m[0m
+  [33m154[0m  [1m(fact 3)[0m
+  [0m   [0m  [33m ^--- Use of undeclared Var example.dbgn/fact[0m
+  [36m155[0m  [36m[0m
+  [36m156[0m  [36m(dbgn (defn factorial [acc n][0m
+  [36m157[0m  [36m        (if (zero? n)[0m
+  [36m158[0m  [36m          acc[0m
+  [36m159[0m  [36m          (factorial (* acc n) (dec n)))))[0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/dbgn.cljs  ----[0m
+[36m----  Compiler Warning on   src/cljs/example/clogn.cljs   line:128  column:12  ----[0m
+
+  [1mUse of undeclared Var example.clogn/toUpperCase[0m
+
+  [36m124[0m  [36m          (.split " ") [0m
+  [36m125[0m  [36m          first))[0m
+  [36m126[0m  [36m[0m
+  [36m127[0m  [36m(clogn (.. "a b c d"[0m
+  [33m128[0m  [1m           toUpperCase[0m
+  [0m   [0m  [33m           ^--- Use of undeclared Var example.clogn/toUpperCase[0m
+  [36m129[0m  [36m           (replace "A" "X")))[0m
+  [36m130[0m  [36m[0m
+  [36m131[0m  [36m[0m
+  [36m132[0m  [36m(let [x 1 y 2][0m
+  [36m133[0m  [36m  (clogn (cond-> [][0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/clogn.cljs  ----[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 4.943 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/dbgn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[36m----  Compiler Warning on   src/cljs/example/dbgn.cljs   line:127  column:12  ----[0m
+
+  [1mUse of undeclared Var example.dbgn/toUpperCase[0m
+
+  [36m123[0m  [36m          (.split " ") [0m
+  [36m124[0m  [36m          first))[0m
+  [36m125[0m  [36m[0m
+  [36m126[0m  [36m(dbgn (.. "a b c d"[0m
+  [33m127[0m  [1m           toUpperCase[0m
+  [0m   [0m  [33m           ^--- Use of undeclared Var example.dbgn/toUpperCase[0m
+  [36m128[0m  [36m           (replace "A" "X")))[0m
+  [36m129[0m  [36m[0m
+  [36m130[0m  [36m[0m
+  [36m131[0m  [36m(let [x 1 y 2][0m
+  [36m132[0m  [36m  (dbgn (cond-> [][0m
+
+[36m----  Compiler Warning : Please see src/cljs/example/dbgn.cljs  ----[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 1.053 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/dbgn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.255 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.262 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.462 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+notifying browser that file changed:  resources/public/js/out/example/clog.js
+notifying browser that file changed:  resources/public/js/out/example/async.js
+notifying browser that file changed:  resources/public/js/out/example/dbg.js
+Figwheel: Can't open  ("src/cljs/example/dbgn.cljs" 143 1) No :open-file-command supplied in the config.
+Figwheel: Can't open  ("src/cljs/example/dbgn.cljs" 143 1) No :open-file-command supplied in the config.
+Figwheel: Can't open  ("src/cljs/example/dbgn.cljs" 143 1) No :open-file-command supplied in the config.
+Figwheel: Can't open  ("src/cljs/example/dbgn.cljs" 143 1) No :open-file-command supplied in the config.
+Figwheel: Can't open  ("src/cljs/example/dbgn.cljs" 143 1) No :open-file-command supplied in the config.
+Figwheel: Can't open  ("src/cljs/example/dbgn.cljs" 143 1) No :open-file-command supplied in the config.
+Figwheel: Can't open  ("src/cljs/example/dbgn.cljs" 143 1) No :open-file-command supplied in the config.
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[31mFailed to compile "resources/public/js/app.js" in 0.189 seconds.[0m
+[36m----  Could not Analyze  src/cljs/example/async.cljs   line:8  column:1  ----[0m
+
+  [1mloop requires a vector for its binding[0m
+
+  [36m 6[0m  [36m  (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]]))[0m
+  [36m 7[0m  [36m[0m
+  [33m 8[0m  [1m(clogn (go-loop [seconds 1][0m
+  [0m  [0m  [33m^--- loop requires a vector for its binding[0m
+  [36m 9[0m  [36m         (<! (timeout 1000))[0m
+  [36m10[0m  [36m         (print "waited" seconds "seconds")[0m
+  [36m11[0m  [36m         (recur (inc seconds))))[0m
+
+[36m----  Analysis Error : Please see src/cljs/example/async.cljs  ----[0m
+Figwheel: Can't open  ("src/cljs/example/async.cljs" 8 1) No :open-file-command supplied in the config.
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 3.256 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/async.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[31mFailed to compile "resources/public/js/app.js" in 0.224 seconds.[0m
+[36m----  Could not Analyze  src/cljs/example/async.cljs   line:8  column:1  ----[0m
+
+  [1m at line 8 src/cljs/example/async.cljs[0m
+
+  [33m 8[0m  [1m(dbgn (go-loop [seconds 1][0m
+  [0m  [0m  [33m^---  at line 8 src/cljs/example/async.cljs[0m
+  [36m 9[0m  [36m        (<! (timeout 1000))[0m
+  [36m10[0m  [36m        (println "waited" seconds "seconds")[0m
+  [36m11[0m  [36m        (when (< seconds 5)[0m
+
+[36m----  Analysis Error : Please see src/cljs/example/async.cljs  ----[0m
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[31mFailed to compile "resources/public/js/app.js" in 0.163 seconds.[0m
+[36m----  Could not Analyze  src/cljs/example/async.cljs   line:8  column:1  ----[0m
+
+  [1m at line 8 src/cljs/example/async.cljs[0m
+
+  [33m 8[0m  [1m(dbgn (go-loop [seconds 1][0m
+  [0m  [0m  [33m^---  at line 8 src/cljs/example/async.cljs[0m
+  [36m 9[0m  [36m        (<! (timeout 1000))[0m
+  [36m10[0m  [36m        (println "waited" seconds "seconds")[0m
+  [36m11[0m  [36m        (when (< seconds 5)[0m
+
+[36m----  Analysis Error : Please see src/cljs/example/async.cljs  ----[0m
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[31mFailed to compile "resources/public/js/app.js" in 0.198 seconds.[0m
+[36m----  Could not Analyze  src/cljs/example/async.cljs   line:8  column:1  ----[0m
+
+  [1mloop requires a vector for its binding[0m
+
+  [33m 8[0m  [1m(clogn (go-loop [seconds 1][0m
+  [0m  [0m  [33m^--- loop requires a vector for its binding[0m
+  [36m 9[0m  [36m        (<! (timeout 1000))[0m
+  [36m10[0m  [36m        (println "waited" seconds "seconds")[0m
+  [36m11[0m  [36m        (when (< seconds 5)[0m
+
+[36m----  Analysis Error : Please see src/cljs/example/async.cljs  ----[0m
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.397 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/async.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[31mFailed to compile "resources/public/js/app.js" in 0.322 seconds.[0m
+[36m----  Could not Analyze  src/cljs/example/async.cljs   line:15  column:1  ----[0m
+
+  [1mNo implementation of method: :emit-instruction of protocol: #'cljs.core.async.impl.ioc-macros/IEmittableInstruction found for class: cljs.core.async.impl.ioc_macros.Jmp[0m
+
+  [36m13[0m  [36m    (when (< seconds 5) (recur (inc seconds)))))[0m
+  [36m14[0m  [36m[0m
+  [33m15[0m  [1m(clogn (go-loop [seconds 1][0m
+  [0m  [0m  [33m^--- No implementation of method: :emit-instruction of protocol: #'cljs.core.async.impl.ioc-macros/IEmittableInstruction found for class: cljs.core.async.impl.ioc_macros.Jmp[0m
+  [36m16[0m  [36m        (<! (timeout 1000))[0m
+  [36m17[0m  [36m        (println "waited" seconds "seconds")[0m
+  [36m18[0m  [36m        (when (< seconds 5)[0m
+
+[36m----  Analysis Error : Please see src/cljs/example/async.cljs  ----[0m
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[31mFailed to compile "resources/public/js/app.js" in 0.32 seconds.[0m
+[36m----  Could not Analyze  src/cljs/example/async.cljs   line:15  column:1  ----[0m
+
+  [1mNo implementation of method: :emit-instruction of protocol: #'cljs.core.async.impl.ioc-macros/IEmittableInstruction found for class: cljs.core.async.impl.ioc_macros.Jmp[0m
+
+  [36m13[0m  [36m    (when (< seconds 5) (recur (inc seconds)))))[0m
+  [36m14[0m  [36m[0m
+  [33m15[0m  [1m(clogn (go-loop [seconds 1][0m
+  [0m  [0m  [33m^--- No implementation of method: :emit-instruction of protocol: #'cljs.core.async.impl.ioc-macros/IEmittableInstruction found for class: cljs.core.async.impl.ioc_macros.Jmp[0m
+  [36m16[0m  [36m        (<! (timeout 1000))[0m
+  [36m17[0m  [36m        (println "waited" seconds "seconds")[0m
+  [36m18[0m  [36m        (when (< seconds 5)[0m
+
+[36m----  Analysis Error : Please see src/cljs/example/async.cljs  ----[0m
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 3.212 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js

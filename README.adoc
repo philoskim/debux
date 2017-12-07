@@ -8,8 +8,6 @@
 *Debux* is a simple but useful library for debugging Clojure and ClojureScript. I wrote
 this library to debug my own Clojure(Script) code and to analyze other developer's one.
 
-* Refer to https://github.com/philoskim/debux/tree/master/doc/v0.2.1/README.adoc[here] for
-  the earlier version(v0.2.1) of documentation.
 
 ## Prerequisites
 
@@ -25,8 +23,17 @@ dependencies:
 
 [source]
 ....
-[philoskim/debux "0.3.12"]
+[philoskim/debux "0.4.0"]
 ....
+
+
+## Change logs
+
+* v0.4.0
+** Revived: The old useful features of `dbg` in version 0.2.1 are revived for practicality.
+
+NOTE: You can see _All change logs since v0.3.0_
+https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 
 
@@ -87,33 +94,296 @@ TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in t
      developer tools to style the form.
 
 
-## Change logs since v0.3.0
+## `dbg` examples
 
-* v0.3.12
-** Supplemented: The missing parts of too long forms truncation are supplemented.
-
-* v0.3.11
-** Changed: Too long forms are truncated and printed with pass:q[`...`] symbol.
-
-* v0.3.10
-** Fixed: The clojurescript-1.9.854 version of improved function printing style is reflected.
-*** Refer to http://blog.fikesfarm.com/posts/2017-07-29-improved-function-printing.html?utm_source=dlvr.it[here] for details.
-** Changed: The number option applies only to `seq` data type, not to vectors, maps, or sets.
-
-NOTE: You can see _All change logs since v0.3.0_
-https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
+NOTE: The features of `clog` are almost the same as those of `dbg`.
 
 
-## New feature added in v0.3.0
+### Basic usage
 
-The two new macros `dbgn` which is for Clojure/CloujureScript REPL and `clogn` which is
-for ClojureScript browser console only are added to *debux* library. Appended `n` to these
-two macro names means *Nested forms*. Now you can debug every nested form without
-affecting program executions. This feature is very useful, especially when you analyze
-other developer's source code.
+The macro `dbg` prints an original form and pretty-prints the evaluated value on the REPL
+window. Then it returns the value without interrupting code evaluation.
 
-Now you can see the evaluated output of outermost form by using `dbg` or `clog` and the
-evaluated outputs of every nested form by using `dbgn` or `clogn`.
+[source]
+....
+(* 2 (dbg (+ 10 20)))
+; => 60
+....
+
+[listing]
+.REPL output
+----
+dbg: (+ 10 20) =>
+|   30
+----
+
+Sometimes you need to see several forms evaluated. To do so, a literal vector
+form can be used like this.
+
+[source]
+....
+(defn my-fun
+  [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
+  (dbg [a b c d e f g h]))
+
+(my-fun (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"])
+; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
+....
+
+[listing]
+.REPL output
+----
+
+dbg: [a b c d e f g h] =>
+|   {:a (0 1 2 3 4),
+|    :b 20,
+|    :c 50,
+|    :d 100,
+|    :e "a",
+|    :f "b",
+|    :g "c",
+|    :h ("d" "e")}
+----
+
+
+NOTE: Notice that the printed value is a map, not a vector and the form is prepended with
+      colon to differenciate the form from the evaluated value.
+
+Further examples:
+
+[source]
+....
+(def a 10)
+(def b 20)
+
+(dbg [a b [a b] :c])
+; => [10 20 [10 20] :c]
+....
+
+
+[listing]
+----
+dbg: [a b [a b] :c] =>
+|   {:a 10, :b 20, :[a b] [10 20], ::c :c}
+----
+
+
+
+### Debugging thread macro `pass:[->]` or `pass:[->>]`
+
+When debugging the thread-first macro `pass:[->]` or thread-last macro `pass:[->>]`, `dbg`
+prints every expression in the thread macros.
+
+This is an example of thread-first macro `pass:[->]`.
+  
+[source]
+....
+(dbg (-> "a b c d"
+         .toUpperCase
+         (.replace "A" "X")
+         (.split " ")
+         first))
+;=> "X"
+....
+
+.REPL output:
+[listing]
+----
+dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>
+| "a b c d" =>
+|   "a b c d"
+| .toUpperCase =>
+|   "A B C D"
+| (.replace "A" "X") =>
+|   "X B C D"
+| (.split " ") =>
+|   ["X", "B", "C", "D"]
+| first =>
+|   "X"
+----
+ 
+Another example.
+
+[source]
+....
+(def person 
+  {:name "Mark Volkmann"
+   :address {:street "644 Glen Summit"
+             :city "St. Charles"
+             :state "Missouri"
+             :zip 63304}
+   :employer {:name "Object Computing, Inc."
+              :address {:street "12140 Woodcrest Dr."
+                        :city "Creve Coeur"
+                        :state "Missouri"
+                        :zip 63141}}})
+
+(dbg (-> person :employer :address :city))
+; => "Creve Coeur"
+....
+
+.REPL output: 
+....
+dbg: (-> person :employer :address :city) =>
+| person =>
+|   {:name "Mark Volkmann",
+|    :address
+|    {:street "644 Glen Summit",
+|     :city "St. Charles",
+|     :state "Missouri",
+|     :zip 63304},
+|    :employer
+|    {:name "Object Computing, Inc.",
+|     :address
+|     {:street "12140 Woodcrest Dr.",
+|      :city "Creve Coeur",
+|      :state "Missouri",
+|      :zip 63141}}}
+| :employer =>
+|   {:name "Object Computing, Inc.",
+|    :address
+|    {:street "12140 Woodcrest Dr.",
+|     :city "Creve Coeur",
+|     :state "Missouri",
+|     :zip 63141}}
+| :address =>
+|   {:street "12140 Woodcrest Dr.",
+|    :city "Creve Coeur",
+|    :state "Missouri",
+|    :zip 63141}
+| :city =>
+|   "Creve Coeur"
+....
+   
+This is an example of thread-last macro `pass:[->>]`.
+  
+[source]
+....
+(def c 5)
+
+(dbg (->> c (+ 3) (/ 2) (- 1)))
+; => 3/4
+....
+  
+.REPL output:
+....
+dbg: (->> c (+ 3) (/ 2) (- 1)) =>
+| c =>
+|   5
+| (+ 3) =>
+|   8
+| (/ 2) =>
+|   1/4
+| (- 1) =>
+|   3/4
+....
+
+If you want to debug one of the expressions in the thread macro `pass:[->]` or
+`pass:[->>]`, don't do it like this. You will have some exception.
+
+[source]
+....
+(-> {:a [1 2]}
+    (dbg (get :a))
+    (conj 3))
+; => java.lang.IllegalArgumentException
+;    Don't know how to create ISeq from: java.lang.Long
+....
+
+Instead, do it like this.
+
+[source]
+....
+(-> {:a [1 2]}
+    (get :a)
+    dbg
+    (conj 3))
+; => [1 2 3]
+....
+
+.REPL output:
+....
+dbg: (get {:a [1 2]} :a) =>
+|   [1 2]
+....
+
+Another example.
+  
+[source]
+....
+(->> [-1 0 1 2]
+     (filter pos?)
+     (map inc)
+     dbg
+     (map str))
+; => ("2" "3")
+....
+  
+.REPL output:
+....
+dbg: (map inc (filter pos? [-1 0 1 2])) =>
+|   (2 3)
+....
+
+  
+### Debugging `let` or `comp` form
+
+When debugging `let` form,
+
+[source]
+....
+(dbg (let [a (take 5 (range))
+           {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}
+           [e f g & h] ["a" "b" "c" "d" "e"]]
+        [a b c d e f g h]))
+; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
+....
+
+each binding will be printed like this.
+  
+.REPL output: 
+....
+dbg: (let [a (take 5 (range)) {:keys [b c d], :or {d 10, b 20, c 30}} {:c 5 ... =>
+| a =>
+|   (0 1 2 3 4)
+| {:keys [b c d], :or {d 10, b 20, c 30}} =>
+|   {:keys [20 50 100], :or {100 10, 20 20, 50 30}}
+| [e f g & h] =>
+|   ["a" "b" "c" & ("d" "e")]
+....
+
+When debugging `comp` form,
+
+[source]
+....
+(def c (dbg (comp inc inc +)))
+
+(c 10 20)
+; => 32
+....
+the result of each function will be printed like this.
+  
+.REPL output: 
+....
+dbg: (comp inc inc +) =>
+| + =>
+|   40
+| inc =>
+|   41
+| inc =>
+|   42
+....
+
+
+
+## `dbgn` examples
+
+NOTE: The features of `clogn` are almost the same as those of `dbgn`.
+
+The macro `dbgn` is for Clojure/CloujureScript REPL and the macro `clogn` is for
+ClojureScript browser console only. Appended `n` to these two macro names means *Nested
+forms*. You can debug every nested form without affecting code evaluations. This feature
+is very useful, especially when you analyze other developer's source code.
 
 NOTE: You can see every example source code of this document in
 https://github.com/philoskim/debux/tree/master/example[example] folder.
@@ -175,8 +445,9 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 ** Some macros such as `when` don't have any problem when used in `dbgn`/`clogn`.
 
 ** Other macros such as `defn` which has a binding vector can have problem because they
-   have binding symbols which must not be evaluated. In case of special forms and those
-   macros in `clojure.core` namespace, `degn`/`clogn` can handle them appropriately.
+   have binding symbols which must not be evaluated in `dbgn`/`clogn` macros. In case of
+   special forms and those macros in `clojure.core` namespace, `degn`/`clogn` can handle
+   them appropriately.
 
 ** In some case, Clojure developers can write their own macros which `dbgn`/`clogn` cannot
    handle appporiately. So I categorized those macros in `clojure.core` namespace as the
@@ -1254,8 +1525,9 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ...
 
 * If you have some error when analyzing some source code using `dbgn`/`clogn`, first
   of all, you have to figure out what kind of macro (refer to <<macro-type-table>>) caused
-  the error and then register the macro by using `register-macros!` and can see the
-  registered macros by using `show-macros`.
+  the error and then register the macro by using `register-macros!`.
+
+* You can see the registered macros by using `show-macros`.
 
 
 [source]
@@ -1292,13 +1564,14 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ...
 [listing]
 .REPL output
 ----
-dbg: (show-macros :let-type) =>
-:   {:let-type
-|    #{clojure.core/when-let clojure.core/let clojure.core/with-local-vars
-|      clojure.core/if-let loop clojure.core/when-some example.core/my-let
-|      clojure.core/dotimes clojure.core/with-open clojure.core/if-some
-|      clojure.core/with-redefs clojure.core/binding clojure.core/with-in-str
-|      clojure.core/with-out-str clojure.core/when-first}}
+bg: (show-macros :let-type) =>
+|   {:let-type
+|    #{clojure.core/when-let example.dbgn/my-let clojure.core/let
+|      clojure.core/with-local-vars clojure.core/if-let
+|      clojure.core/when-some clojure.core/dotimes clojure.core/with-open
+|      clojure.core/if-some clojure.core/with-redefs clojure.core/binding
+|      clojure.core/with-in-str clojure.core/with-out-str clojure.core/loop
+|      clojure.core/when-first}}
 
 dbg: (show-macros) =>
 |   {:fn-type #{clojure.core/fn fn*},
@@ -1311,16 +1584,17 @@ dbg: (show-macros) =>
 |      clojure.core/definline clojure.core/defstruct clojure.core/defmulti
 |      clojure.core/ns clojure.core/proxy clojure.core/extend-protocol var
 |      quote clojure.core/reify catch clojure.core/gen-interface
-|      clojure.core/import clojure.core/defprotocolthrow},
+|      clojure.core/import clojure.core/defprotocol throw},
 |    :case-type #{clojure.core/case},
 |    :skip-arg-2-3-type #{clojure.core/areduce clojure.core/amap},
 |    :skip-arg-1-type #{clojure.core/with-precision set!},
 |    :let-type
-|    #{clojure.core/when-let clojure.core/let clojure.core/with-local-vars
-|      clojure.core/if-let loop clojure.core/when-some example.core/my-let
-|      clojure.core/dotimes clojure.core/with-open clojure.core/if-some
-|      clojure.core/with-redefs clojure.core/binding clojure.core/with-in-str
-|      clojure.core/with-out-str clojure.core/when-first},
+|    #{clojure.core/when-let example.dbgn/my-let clojure.core/let
+|      clojure.core/with-local-vars clojure.core/if-let
+|      clojure.core/when-some clojure.core/dotimes clojure.core/with-open
+|      clojure.core/if-some clojure.core/with-redefs clojure.core/binding
+|      clojure.core/with-in-str clojure.core/with-out-str clojure.core/loop
+|      clojure.core/when-first},
 |    :skip-arg-2-type #{clojure.core/as->},
 |    :defn-type #{clojure.core/defn clojure.core/defn-},
 |    :for-type #{clojure.core/for clojure.core/doseq},
@@ -1385,41 +1659,65 @@ dbgn: (my-let [a 10 b (+ a 10)] (+ a b)) =>
 ----
 dbg: (d/show-macros :let-type) =>
 |   {:let-type
-|    #{example.macro/my-let clojure.core/when-let clojure.core/let
-|      clojure.core/if-let loop clojure.core/when-some clojure.core/dotimes
-|      clojure.core/if-some clojure.core/with-redefs clojure.core/binding
-|      clojure.core/with-out-str clojure.core/when-first}}
+|    #{example.macro/my-let cljs.core/with-redefs cljs.core/binding
+|      cljs.core/when-first
+|      cljs.core/if-some
+|      cljs.core/let
+|      cljs.core/with-out-str
+|      cljs.core/loop
+|      cljs.core/when-let
+|      cljs.core/when-some cljs.core/if-let cljs.core/dotimes}}
 
 dbg: (d/show-macros) =>
-|   {:fn-type #{clojure.core/fn fn*},
+|   {:fn-type #{fn* cljs.core/fn},
 |    :skip-form-itself-type
-|    #{clojure.core/defmacro clojure.core/defrecord clojure.core/declare
-|      clojure.core/deftype e clojure.core/comment finally
-|      clojure.core/refer-clojure clojure.core/memfn clojure.core/extend-type
-|      new clojure.core/defmulti clojure.core/extend-protocol var quote
-|      clojure.core/reify catch clojure.core/import clojure.core/defprotocol
-|      throw},
-|    :case-type #{clojure.core/case},
-|    :skip-arg-2-3-type #{clojure.core/areduce clojure.core/amap},
+|    #{cljs.core/defmulti finally cljs.core/defprotocol
+|      cljs.core/extend-protocol
+|      new
+|      cljs.core/import
+|      cljs.core/defrecord
+|      cljs.core/declare
+|      cljs.core/reify
+|      cljs.core/deftype
+|      cljs.core/comment
+|      cljs.core/memfn
+|      var
+|      quote
+|      cljs.core/refer-clojure
+|      catch
+|      cljs.core/extend-type
+|      throw
+|      cljs.core/defmacro},
+|    :case-type #{cljs.core/case},
+|    :skip-arg-2-3-type #{cljs.core/amap cljs.core/areduce},
 |    :skip-arg-1-type #{set!},
 |    :let-type
-|    #{example.macro/my-let clojure.core/when-let clojure.core/let
-|      clojure.core/if-let loop clojure.core/when-some clojure.core/dotimes
-|      clojure.core/if-some clojure.core/with-redefs clojure.core/bindings
-|      clojure.core/with-out-str clojure.core/when-first},
-|    :skip-arg-2-type #{clojure.core/as->},
-|    :defn-type #{clojure.core/defn clojure.core/defn-},
-|    :for-type #{clojure.core/for clojure.core/doseq},
-|    :def-type #{clojure.core/defonce def},
-|    :letfn-type #{clojure.core/letfn},
+|    #{example.macro/my-let cljs.core/with-redefs cljs.core/binding
+|      cljs.core/when-first
+|      cljs.core/if-some
+|      cljs.core/let
+|      cljs.core/with-out-str
+|      cljs.core/loop
+|      cljs.core/when-let
+|      cljs.core/when-some
+|      cljs.core/if-let
+|      cljs.core/dotimes},
+|    :skip-arg-2-type #{cljs.core/as->},
+|    :defn-type #{cljs.core/defn- cljs.core/defn},
+|    :for-type #{cljs.core/doseq cljs.core/for},
+|    :def-type #{cljs.core/defonce def},
+|    :letfn-type #{cljs.core/letfn},
 |    :dot-type #{.},
 |    :skip-arg-1-2-type #{},
 |    :expand-type
-|    #{clojure.core/doto clojure.core/->> clojure.core/some->>
-|      clojure.core/.. clojure.core/-> clojure.core/some->
-|      clojure.core/cond-> clojure.core/condp clojure.core/import
-|      clojure.core/cond->>}, 
-|    :skip-arg-1-3-type #{clojure.core/defmethod}}
+|    #{cljs.core/.. cljs.core/some-> cljs.core/-> cljs.core/cond->>
+|      cljs.core/import
+|      cljs.core/doto
+|      cljs.core/condp
+|      cljs.core/cond->
+|      cljs.core/some->>
+|      cljs.core/->>}, 
+|    :skip-arg-1-3-type #{cljs.core/defmethod}}
 ----
 
 image::register-macros.png[title="register-macros! example", width=600]
@@ -1526,7 +1824,7 @@ You can set `:if` option like this.
 
 [source]
 ....
-(for [i (range 10)]
+(doseq [i (range 10)]
   (dbg i :if (even? i)))
 ; => (0 1 2 3 4 5 6 7 8 9)
 ....
@@ -1746,7 +2044,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.854"]
-                 [philoskim/debux "0.3.12"]]
+                 [philoskim/debux "0.4.0"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

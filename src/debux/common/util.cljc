@@ -47,6 +47,18 @@
 (defn lazy-seq? [coll]
   (instance? clojure.lang.IPending coll))
 
+(defn vec->map
+  "Transsub-forms a vector into an array-map with key/value pairs.
+  (def a 10)
+  (def b 20)
+  (vec-map [a b :c [30 40]])
+  => {:a 10 :b 20 ::c :c :[30 40] [30 40]}"
+  [v]
+  (apply array-map
+         (mapcat (fn [elm]
+                   `[~(keyword (str elm)) ~elm])
+                 v) ))
+
 
 ;;; zipper
 (defn sequential-zip [root]
@@ -93,23 +105,29 @@
      (if-let [meta (ana/resolve env sym)]
        ;; normal symbol
        (let [[ns name] (str/split (str (:name meta)) #"/")]
-         ;; The special symbol . must be handled in the following special symbol part.
-         ;; However, the special symbol . returns meta {:name / :ns nil}, which may be a bug.
-         (if (nil? name)
+         ;; The special symbol `.` must be handled in the following special symbol part.
+         ;; However, the special symbol `.` returns meta {:name / :ns nil}, which may be a bug.
+         (if (nil? ns)
            sym
-           (symbol (str/replace ns "cljs.core" "clojure.core")
-                   name)))
-       ;; special symbol
+           (symbol ns name)))
+       ;; special symbols except for `.`
        sym) ))
 
 #?(:clj
    (defn ns-symbol [sym & [env]]
-     (if (cljs-env? env)
-       (ns-symbol-for-cljs sym env)
-       (ns-symbol-for-clj sym) )))
+     (if (symbol? sym)
+       (if (cljs-env? env)
+         (ns-symbol-for-cljs sym env)
+         (ns-symbol-for-clj sym))
+       sym) ))
 
 
 ;;; print
+(defn take-n-if-seq [n result]
+  (if (seq? result)
+    (take (or n 100) result)
+    result))
+
 (defn truncate [s]
   (if (> (count s) 70)
     (str (.substring s 0 70) " ...")
@@ -134,7 +152,7 @@
   (println (prepend-bars form indent-level))
   (flush))
 
-(defn form-header [form msg]
+(defn form-header [form & [msg]]
   (str (truncate (pr-str form))
        (and msg (str "   <" msg ">"))
        " =>"))
@@ -211,8 +229,32 @@
 #?(:clj
    (defn final-target? [sym env]
      (let [ns-sym (ns-symbol sym env)]
-       (or (= `loop ns-sym)
-           (some #(= % ns-sym) [`defn `defn- `fn]) ))))
+       (or (#{'clojure.core/loop 'cljs.core/loop} ns-sym)
+           (some #(= % ns-sym)
+                 '[clojure.core/defn clojure.core/defn- clojure.core/fn
+                   cljs.core/defn cljs.core/defn- cljs.core/fn
+                   clojure.core.async/go-loop cljs.core.async.macros/go-loop] )))))
 
 (defn o-skip? [sym]
   (= 'debux.common.macro-specs/o-skip sym))
+
+
+;;; spy functions
+(def spy-first
+  (fn [result quoted-form {:keys [n] :as opts}]
+    (print-form-with-indent (form-header quoted-form) 1)
+    (pprint-result-with-indent (take-n-if-seq n result) 1)
+    result))
+
+(def spy-last
+  (fn [quoted-form {:keys [n] :as opts} result]
+    (print-form-with-indent (form-header quoted-form) 1)
+    (pprint-result-with-indent (take-n-if-seq n result) 1)
+    result))
+
+(defn spy-comp [quoted-form form {:keys [n] :as opts}]
+  (fn [& arg]
+    (let [result (apply form arg)]
+      (print-form-with-indent (form-header quoted-form) 1)
+      (pprint-result-with-indent (take-n-if-seq n result) 1)
+      result) ))

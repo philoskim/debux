@@ -4,73 +4,85 @@
             [debux.cs.util :as cs.ut] ))
 
 ;;; clog macro
-(defmacro clog
+
+(defmacro clog-base
   "Console LOG an outer-most form."
-  [form {:keys [n msg condition style js once] :as opts}]
-  `(let [n# ~(or n 100)
-         condition# ~condition
-         result# ~form
-         result# (if (seq? result#)
-                   (take n# result#)
-                   result#)]
-     (when (or (nil? condition#) condition#)
-       (when (or (and ~once (cs.ut/changed? (str '~form " " '~opts) (str result#)))
-                 (not ~once))
-         (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
-                           " %c" (and ~msg (str "   <" ~msg ">"))
-                           " =>" (and ~once "   (:once mode)"))
-               style# (or ~style :debug)]
+  [form {:keys [n msg condition style js once] :as opts} body]
+  `(let [condition# ~condition]
+     (if (or (nil? condition#) condition#)
+       (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
+                         " %c" (and ~msg (str "   <" ~msg ">"))
+                         " =>" (and ~once "   (:once mode)"))
+             style# (or ~style :debug)]
+         (ut/prog2
            (cs.ut/cgroup title# style#)
-           (cs.ut/clog-result-with-indent result# @ut/indent-level* ~js)
-           (cs.ut/cgroup-end) )))
+           ~body
+           (cs.ut/cgroup-end) ))
+     ~form) ))
+
+(defmacro clog->
+  [[_ & subforms :as form] opts]
+  `(clog-base ~form ~opts
+     (-> ~@(mapcat (fn [subform] [subform `(cs.ut/spy-first '~subform ~opts)])
+                   subforms) )))
+
+(defmacro clog->>
+  [[_ & subforms :as form] opts]
+  `(clog-base ~form ~opts
+     (->> ~@(mapcat (fn [subform] [subform `(cs.ut/spy-last '~subform ~opts)])
+                    subforms)) ))
+
+(defmacro clog-comp
+  [[_ & subforms :as form] opts]
+  `(clog-base ~form ~opts
+     (comp ~@(map (fn [subform] `(cs.ut/spy-comp '~subform ~subform ~opts))
+                  subforms) )))
+
+(defmacro clog-let
+  [[_ bindings & subforms :as form] opts]
+  `(clog-base ~form ~opts
+     (let ~(->> (partition 2 bindings)
+                (mapcat (fn [[sym value :as binding]]
+                          [sym value '_ `(cs.ut/spy-first ~sym '~sym ~opts)]))
+                (concat ['& ''&])
+                vec)
+       ~@subforms) ))
+
+(defmacro clog-others
+  [form {:keys [n js] :as opts}]
+  `(clog-base ~form ~opts
+     (let [result# ~form
+           form# ~(if (vector? form) (ut/vec->map form) form)]
+       (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n form#)
+                                      @ut/indent-level* ~js)
+       result#) ))
+
+(defmacro clog-once
+  [form {:keys [n msg condition style js once] :as opts}]
+  `(let [condition# ~condition
+         result# ~form]
+     (when (and (or (nil? condition#) condition#)
+                (cs.ut/changed? (str '~form " " '~opts) (str result#)))
+       (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
+                         " %c" (and ~msg (str "   <" ~msg ">"))
+                         " =>" (and ~once "   (:once mode)"))
+             style# (or ~style :debug)]
+           (cs.ut/cgroup title# style#)
+           (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n result#)
+                                          @ut/indent-level* ~js))
+           (cs.ut/cgroup-end))
      result#))
+       
 
-
-;;;; clogn macro   
-(defmacro d [form]
-  `(let [opts# ~'+debux-dbg-opts+
-         msg#  (:msg opts#)
-         n#    (or (:n opts#) 100)
-         form-style# (or (:style opts#) :debug)
-         result# ~form
-         result# (if (seq? result#)
-                   (take n# result#)
-                   result#)]
-     (cs.ut/clog-form-with-indent
-       (cs.ut/form-header '~(dbg/remove-d form 'debux.cs.clog/d) msg#)
-       form-style# @ut/indent-level*)
-     (cs.ut/clog-result-with-indent result# @ut/indent-level*)
-     result#))
-
-(defmacro clogn
-  "Console LOG every Nested forms of a form."
-  [form & [{:keys [condition msg style] :as opts}]]
-  `(let [~'+debux-dbg-opts+ ~(dissoc opts :js :once)
-         condition#         ~condition]
-     (try
-       (when (or (nil? condition#) condition#)
-         (let [title# (str "%cclogn: %c " (ut/truncate (pr-str '~form))
-                           " %c" (and ~msg (str "   <" ~msg ">"))
-                           " =>")
-               style# (or ~style :debug)]
-           (ut/prog2
-             (cs.ut/cgroup title# style#) 
-             ~(-> form
-                  (dbg/insert-skip &env)
-                  (dbg/insert-d 'debux.cs.clog/d &env)
-                  dbg/remove-skip)
-             (cs.ut/cgroup-end) )))
-       (catch js/Error ~'e (throw ~'e)) )))
-
-
-;;; break
-(defmacro break
-  "Sets a break point."
-  [{:keys [msg condition] :as opts}]
-  `(when (or (nil? ~condition) ~condition)
-     (.log js/console (str "%c break %c"
-                           (and ~msg (str "   <" ~msg ">")))
-           "background: #FF1493; color: white"
-           "background: white; color: black")   
-     ~'(js* "debugger;") ))
-
+(defmacro clog
+  [form & [{:keys [once] :as opts}]]
+  (if (list? form)
+    (if once
+      `(clog-once ~form ~opts)
+      (condp = (ut/ns-symbol (first form) &env)
+        `->   `(clog-> ~form ~opts)
+        `->>  `(clog->> ~form ~opts)
+        `comp `(clog-comp ~form ~opts)        
+        `let  `(clog-let ~form ~opts)
+        `(clog-others ~form ~opts) ))
+    `(clog-others ~form ~opts) ))

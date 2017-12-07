@@ -101,3 +101,38 @@
                              (str/join "\n") ))
        (when js-mode
          (.log js/console "%O" result) ))))
+
+
+;;; spy functions
+#?(:cljs
+   (def spy-first
+     (fn [result quoted-form {:keys [n msg style js] :as opts}]
+       (clog-form-with-indent (form-header quoted-form msg)
+                              (or style :debug)
+                              @ut/indent-level*)
+       (clog-result-with-indent (ut/take-n-if-seq n result)
+                                @ut/indent-level* js)
+       result) ))
+
+#?(:cljs
+   (def spy-last
+     (fn [quoted-form {:keys [n msg style js] :as opts} result]
+       (clog-form-with-indent (form-header quoted-form msg)
+                              (or style :debug)
+                              @ut/indent-level*)
+       (clog-result-with-indent (ut/take-n-if-seq n result)
+                                @ut/indent-level* js)
+       result) ))
+
+#?(:cljs
+   (defn spy-comp
+     [quoted-form form {:keys [n msg style js] :as opts}]
+     (fn [& arg]
+       (let [result (apply form arg)]
+         (clog-form-with-indent (form-header quoted-form msg)
+                                (or style :debug)
+                                @ut/indent-level*)
+         (clog-result-with-indent (ut/take-n-if-seq n result)
+                                  @ut/indent-level* js)
+         result) )))
+

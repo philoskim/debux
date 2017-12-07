@@ -1,6 +1,8 @@
 (ns debux.cs.core
   #?(:cljs (:require-macros [debux.dbg :as dbg]
+                            [debux.dbgn :as dbgn]
                             [debux.cs.clog :as clog]
+                            [debux.cs.clogn :as clogn]
                             [debux.cs.macro-types :as mt] ))
   (:require [debux.common.util :as ut]
             [debux.cs.util :as cs.ut] ))
@@ -16,7 +18,7 @@
 
 (defmacro dbgn [form & opts]
   (let [opts' (ut/parse-opts opts)]
-    `(debux.dbg/dbgn ~form ~opts')))
+    `(debux.dbgn/dbgn ~form ~opts')))
 
 (defmacro clog [form & opts]
   (let [opts' (ut/parse-opts opts)]
@@ -24,11 +26,11 @@
 
 (defmacro clogn [form & opts]
   (let [opts' (ut/parse-opts opts)]
-    `(debux.cs.clog/clogn ~form ~opts')))
+    `(debux.cs.clogn/clogn ~form ~opts')))
 
 (defmacro break [& opts]
   (let [opts' (ut/parse-opts opts)]
-    `(debux.cs.clog/break ~opts')))
+    `(debux.cs.clogn/break ~opts')))
 
 
 ;;; macro registering APIs

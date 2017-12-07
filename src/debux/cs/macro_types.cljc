@@ -4,31 +4,36 @@
 
 ;;; macro management
 (def macro-types*
-  (atom {:def-type `#{def defonce}
-         :defn-type `#{defn defn-}
-         :fn-type `#{fn fn*}
+  (atom {:def-type '#{def cljs.core/defonce}
+         :defn-type '#{cljs.core/defn cljs.core/defn-}
+         :fn-type '#{cljs.core/fn fn*}
 
          :let-type
-         `#{let binding dotimes if-let if-some loop when-first when-let
-            when-some with-out-str with-redefs}
-         :letfn-type `#{letfn}
+         '#{cljs.core/let cljs.core/binding cljs.core/dotimes cljs.core/if-let
+            cljs.core/if-some cljs.core/loop cljs.core/when-first cljs.core/when-let
+            cljs.core/when-some cljs.core/with-out-str cljs.core/with-redefs}
+         :letfn-type '#{cljs.core/letfn}
          
-         :for-type `#{for doseq}
-         :case-type `#{case}
+         :for-type '#{cljs.core/for cljs.core/doseq}
+         :case-type '#{cljs.core/case}
 
-         :skip-arg-1-type `#{set!}
-         :skip-arg-2-type `#{as->}
-         :skip-arg-1-2-type `#{}
-         :skip-arg-2-3-type `#{amap areduce}
-         :skip-arg-1-3-type `#{defmethod}
+         :skip-arg-1-type '#{set!}
+         :skip-arg-2-type '#{cljs.core/as->}
+         :skip-arg-1-2-type '#{}
+         :skip-arg-2-3-type '#{cljs.core/amap cljs.core/areduce}
+         :skip-arg-1-3-type '#{cljs.core/defmethod}
          :skip-form-itself-type
-         `#{catch comment declare defmacro defmulti defprotocol defrecord
-            deftype extend-protocol extend-type finally import memfn new
-            quote refer-clojure reify var throw}
+         '#{catch cljs.core/comment cljs.core/declare cljs.core/defmacro
+            cljs.core/defmulti cljs.core/defprotocol cljs.core/defrecord
+            cljs.core/deftype cljs.core/extend-protocol cljs.core/extend-type
+            finally cljs.core/import cljs.core/memfn new quote
+            cljs.core/refer-clojure cljs.core/reify var throw}
 
          :expand-type
-         `#{clojure.core/.. -> ->> doto cond-> cond->> condp import some-> some->>}
-         :dot-type `#{.} }))
+         '#{cljs.core/.. cljs.core/-> cljs.core/->> cljs.core/doto
+            cljs.core/cond-> cljs.core/cond->> cljs.core/condp cljs.core/import
+            cljs.core/some-> cljs.core/some->>}
+         :dot-type '#{.} }))
 
 
 (defn- merge-symbols [old-symbols new-symbols env]
