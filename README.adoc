@@ -96,10 +96,13 @@ TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in t
 
 ## `dbg` examples
 
-NOTE: The features of `clog` are almost the same as those of `dbg`.
+NOTE: You can see every example source code of this document in
+https://github.com/philoskim/debux/tree/master/example[example] folder.
 
 
 ### Basic usage
+
+NOTE: The features of `clog` are almost the same as those of `dbg`.
 
 The macro `dbg` prints an original form and pretty-prints the evaluated value on the REPL
 window. Then it returns the value without interrupting code evaluation.
@@ -367,11 +370,11 @@ the result of each function will be printed like this.
 ....
 dbg: (comp inc inc +) =>
 | + =>
-|   40
+|   30
 | inc =>
-|   41
+|   31
 | inc =>
-|   42
+|   32
 ....
 
 
@@ -381,12 +384,10 @@ dbg: (comp inc inc +) =>
 NOTE: The features of `clogn` are almost the same as those of `dbgn`.
 
 The macro `dbgn` is for Clojure/CloujureScript REPL and the macro `clogn` is for
-ClojureScript browser console only. Appended `n` to these two macro names means *Nested
-forms*. You can debug every nested form without affecting code evaluations. This feature
-is very useful, especially when you analyze other developer's source code.
-
-NOTE: You can see every example source code of this document in
-https://github.com/philoskim/debux/tree/master/example[example] folder.
+ClojureScript browser console only. The appended *n* to these two macro names means
+**N**ested forms. You can debug every nested form without interrupting code
+evaluations. This feature is very useful, especially when you analyze other developer's
+source code.
 
 
 ### Simple example
@@ -449,7 +450,7 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
    special forms and those macros in `clojure.core` namespace, `degn`/`clogn` can handle
    them appropriately.
 
-** In some case, Clojure developers can write their own macros which `dbgn`/`clogn` cannot
+** In some cases, Clojure developers can write their own macros which `dbgn`/`clogn` cannot
    handle appporiately. So I categorized those macros in `clojure.core` namespace as the
    following table and you can register your own macros according to the macro types in
    the table. I will explain it in <<register-macros>>.
