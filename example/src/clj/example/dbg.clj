@@ -104,7 +104,7 @@
 
 
 (def c (dbg (comp inc inc +)))
-(c 10 30)
+(c 10 20)
 
 
 (doseq [i (range 10)]

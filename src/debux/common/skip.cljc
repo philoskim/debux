@@ -2,8 +2,15 @@
   (:require [clojure.zip :as z]
             #?(:clj  [clojure.spec.alpha :as s]
                :cljs [cljs.spec.alpha :as s])
+            [debux.macro-types :as mt]
+            [debux.cs.macro-types :as cs.mt]
             [debux.common.macro-specs :as ms]
             [debux.common.util :as ut] ))
+
+(defn- macro-types [env]
+  (if (ut/cljs-env? env)
+    @cs.mt/macro-types*
+    @mt/macro-types*))
 
 ;;; :def-type
 (defn insert-skip-in-def [form]
@@ -163,7 +170,9 @@
         ;; upwards ongoing
         (and upwards
              (symbol? (first node))
-             (not (ut/final-target? (first node) env))
+             (not (ut/final-target? (ut/ns-symbol (first node) env)
+                                    (:loop-type (macro-types env))
+                                    env))
              (not (ut/o-skip? (-> loc z/up z/down z/node))))
         (recur (-> (z/replace loc (insert-o-skip (-> loc z/node)))
                    z/up)
@@ -172,7 +181,9 @@
         ;; upwards finish
         (and upwards
              (symbol? (first node))
-             (ut/final-target? (first node) env))
+             (ut/final-target? (ut/ns-symbol (first node) env)
+                               (:loop-type (macro-types env))
+                               env))
         (recur (z/next loc) false)
 
         :else (recur (z/next loc) false) ))))

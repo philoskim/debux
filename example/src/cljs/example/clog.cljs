@@ -88,3 +88,4 @@
 
 (def c (clog (comp inc inc +)))
 (c 10 20)
+

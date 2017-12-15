@@ -3,10 +3,7 @@
             [debux.common.util :as ut]            
             [debux.cs.util :as cs.ut] ))
 
-;;; clog macro
-
 (defmacro clog-base
-  "Console LOG an outer-most form."
   [form {:keys [n msg condition style js once] :as opts} body]
   `(let [condition# ~condition]
      (if (or (nil? condition#) condition#)
@@ -14,11 +11,9 @@
                          " %c" (and ~msg (str "   <" ~msg ">"))
                          " =>" (and ~once "   (:once mode)"))
              style# (or ~style :debug)]
-         (ut/prog2
-           (cs.ut/cgroup title# style#)
-           ~body
-           (cs.ut/cgroup-end) ))
-     ~form) ))
+         (cs.ut/clog-header title# style#)
+         ~body)
+       ~form) ))
 
 (defmacro clog->
   [[_ & subforms :as form] opts]
@@ -67,10 +62,9 @@
                          " %c" (and ~msg (str "   <" ~msg ">"))
                          " =>" (and ~once "   (:once mode)"))
              style# (or ~style :debug)]
-           (cs.ut/cgroup title# style#)
+           (cs.ut/clog-header title# style#)
            (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n result#)
-                                          @ut/indent-level* ~js))
-           (cs.ut/cgroup-end))
+                                          @ut/indent-level* ~js) ))
      result#))
        
 
@@ -79,10 +73,11 @@
   (if (list? form)
     (if once
       `(clog-once ~form ~opts)
-      (condp = (ut/ns-symbol (first form) &env)
-        `->   `(clog-> ~form ~opts)
-        `->>  `(clog->> ~form ~opts)
-        `comp `(clog-comp ~form ~opts)        
-        `let  `(clog-let ~form ~opts)
-        `(clog-others ~form ~opts) ))
+      (let [ns-sym (ut/ns-symbol (first form) &env)]
+        (condp = ns-sym
+          'cljs.core/-> `(clog-> ~form ~opts)
+          'cljs.core/->> `(clog->> ~form ~opts)
+          'cljs.core/comp  `(clog-comp ~form ~opts)
+          'cljs.core/let  `(clog-let ~form ~opts)
+          `(clog-others ~form ~opts) )))
     `(clog-others ~form ~opts) ))

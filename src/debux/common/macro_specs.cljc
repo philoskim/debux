@@ -18,8 +18,6 @@
     simple-symbol?
     (s/conformer identity name-unformer)))
 
-
-;;; def
 (s/def ::def-args
   (s/cat :name ::name
          :docstring (s/? string?)

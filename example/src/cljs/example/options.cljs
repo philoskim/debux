@@ -1,7 +1,6 @@
 (ns example.options
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
 
-  
 (clog (repeat 5 "x") "5 times repeat")
 (clogn (repeat 5 (repeat 5 "x")) "25 times repeat")
 
@@ -23,7 +22,6 @@
 ;; (clog (+ 10 20) :s :d "debug style")
 ;; (clog (+ 10 20) "debug style is default")
 
-
 (d/merge-styles {:warn "background: #9400D3; color: white"
                  :love "background: #FF1493; color: white"})
 
@@ -33,6 +31,7 @@
 (clog (+ 10 20) :style "color:orange; background:blue; font-size: 14pt")
 
 
+  
 ;;---------------
 ;; :once option
 ;;---------------
@@ -79,9 +78,12 @@
   (break "in my-func2")
   (clog [a b c d e f g h]))
 
+
 ;; (my-fun2 (take 5 (range))
 ;;          {:c 50 :d 100}
 ;;          ["a" "b" "c" "d" "e"]) 
+
+
 
 (defn my-fun3 []
   (let [a 10
@@ -90,3 +92,5 @@
       (break :if (= i 999) "in my-func3"))))
 
 ;; (my-fun3)
+
+

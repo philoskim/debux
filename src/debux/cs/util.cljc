@@ -1,5 +1,5 @@
 (ns debux.cs.util
-  "util for clojurescript only"
+  "Utilities for clojurescript only"
   (:require [clojure.string :as str]
             [clojure.set :as set]
             #?(:cljs [cljs.pprint :as pp])
@@ -76,6 +76,12 @@
      [header form-style]
      (.group js/console header (:title @style*)
              (get-style form-style) (:text @style*) )))
+
+#?(:cljs
+   (defn clog-header
+     [header form-style]
+     (.log js/console header (:title @style*)
+           (get-style form-style) (:text @style*) )))
 
 #?(:cljs
    (defn cgroup-end

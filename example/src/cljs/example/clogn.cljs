@@ -1,8 +1,10 @@
 (ns example.clogn
-  (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]])
-  (:require-macros [example.macro :refer [my-let]]))
-
-
+  (:require [cljs.core.async :refer [<! timeout]]
+            [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]])
+  (:require-macros [cljs.core.async.macros :refer [go go-loop]]
+                   [example.macro :refer [my-let]] ))
+(comment
+  
 ;;; simple example
 (clogn (defn foo [a b & [c]]
         (if c
@@ -143,12 +145,28 @@
 ;;; etc example
 (clogn (.-closed js/window))
 
+) ; end of comment
+
 
 ;;; Registering your own macros
 (d/register-macros! :let-type [my-let])
+(d/register-macros! :loop-type [go-loop])
 
 (clog (d/show-macros :let-type))
 (clog (d/show-macros))
 
 (clogn (my-let [a 10 b (+ a 10)] (+ a b)))
+
+(doseq [n (range 10)]
+  (+ 20 (clogn (* n 10) :if (even? n))))
+
+
+
+;; go-loop test
+(clogn (go-loop [seconds 1]
+         (when (< seconds 3)
+           (<! (timeout 1000))
+           (println "waited" seconds "seconds.")
+           (recur (inc seconds)) )))
+
 

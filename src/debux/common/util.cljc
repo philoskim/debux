@@ -1,17 +1,11 @@
 (ns debux.common.util
-  "util common for clojure and clojurescript"
+  "Utilities common for clojure and clojurescript"
   (:refer-clojure :exclude [coll?])
   (:require [clojure.string :as str]
             [clojure.pprint :as pp]
             [clojure.zip :as z]
             [cljs.analyzer.api :as ana]
             [clojure.repl :as repl] ))
-
-(def indent-level* (atom 1))
-
-(defn reset-indent-level! []
-  (reset! indent-level* 1))
-
 
 ;;; For internal debugging
 (defmacro d
@@ -23,23 +17,18 @@
      return#))
 
 
+;;; indent-level control
+(def indent-level* (atom 1))
+
+(defn reset-indent-level! []
+  (reset! indent-level* 1))
+
+
 ;;; general
 (defmacro read-source [sym]
   `(-> (repl/source ~sym)
        with-out-str
        read-string))
-
-(defmacro prog1 [arg1 & args]
-  `(let [return# ~arg1]
-     ~@args
-     return#))
-
-(defmacro prog2 [arg1 arg2 & args]
-  `(do
-     ~arg1
-     (let [return# ~arg2]
-       ~@args
-       return#)))
 
 (defn cljs-env? [env]
   (boolean (:ns env)))
@@ -178,9 +167,6 @@
 
 ;;; parse options
 (defn parse-opts
-  "Parses <opts> into a map.
-   <opts (<arg any>*)>
-   <return {}>"
   [opts]
   (loop [opts opts
          acc {}]
@@ -227,13 +213,12 @@
   (((comp set flatten) form) 'recur))
 
 #?(:clj
-   (defn final-target? [sym env]
+   (defn final-target? [sym targets env]
      (let [ns-sym (ns-symbol sym env)]
-       (or (#{'clojure.core/loop 'cljs.core/loop} ns-sym)
+       (or (get targets ns-sym)
            (some #(= % ns-sym)
                  '[clojure.core/defn clojure.core/defn- clojure.core/fn
-                   cljs.core/defn cljs.core/defn- cljs.core/fn
-                   clojure.core.async/go-loop cljs.core.async.macros/go-loop] )))))
+                   cljs.core/defn cljs.core/defn- cljs.core/fn] )))))
 
 (defn o-skip? [sym]
   (= 'debux.common.macro-specs/o-skip sym))

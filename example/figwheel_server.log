@@ -3301,3 +3301,102 @@ notifying browser that file changed:  resources/public/js/out/example/async.js
 notifying browser that file changed:  resources/public/js/out/goog/deps.js
 notifying browser that file changed:  resources/public/js/out/cljs_deps.js
 notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 1.266 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/clogn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 1.212 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/clogn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 1.266 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/clogn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 1.259 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/clogn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.368 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/clog.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.423 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/clog.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.461 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/clog.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.359 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/clog.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.268 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/options.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.278 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/options.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.272 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/options.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.251 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/options.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.246 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/options.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.242 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/options.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.231 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/options.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.261 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/options.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.257 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/options.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.294 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/options.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.352 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/example/options.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.208 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 2.517 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/clogn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 2.78 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/clogn.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.247 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.235 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.278 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js
+[0mCompiling "resources/public/js/app.js" from ["src/cljs"]...[0m
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.308 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/example/core.js

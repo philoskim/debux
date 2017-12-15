@@ -40,8 +40,6 @@
     @mt/macro-types*))
 
 
-;;;; dbgn macro
-
 ;;; insert skip
 (defn insert-skip
    "Marks the form to skip."
@@ -76,7 +74,8 @@
                 recur)
             
 
-            ((:let-type (macro-types env)) sym)
+            (or ((:let-type (macro-types env)) sym)
+                ((:loop-type (macro-types env)) sym))
             (-> (z/replace loc (sk/insert-skip-in-let node))
                 z/next
                 recur)
@@ -215,9 +214,7 @@
          n#    (or (:n opts#) 100)
          
          result# ~form
-         result# (if (seq? result#)
-                   (take n# result#)
-                   result#)]
+         result#  (ut/take-n-if-seq n# result#)]
      (ut/print-form-with-indent (ut/form-header '~(remove-d form 'debux.dbgn/d) msg#)
                                 @ut/indent-level*)
      (ut/pprint-result-with-indent result# @ut/indent-level*)
@@ -257,13 +254,14 @@
                                opts)
          condition#         ~condition]
      (try
-       (when (or (nil? condition#) condition#)
-         (println "\ndbgn:" (ut/truncate (pr-str '~form)) "=>")
-         ~(-> (if (ut/include-recur? form)
-                (sk/insert-o-skip-for-recur form &env)
-                form)
-              (insert-skip &env)
-              (insert-d 'debux.dbgn/d &env)
-              remove-skip))
+       (if (or (nil? condition#) condition#)
+         (let [title# (str "\ndbgn: " (ut/truncate (pr-str '~form)) " =>")]
+           (println title#)
+           ~(-> (if (ut/include-recur? form)
+                  (sk/insert-o-skip-for-recur form &env)
+                  form)
+                (insert-skip &env)
+                (insert-d 'debux.dbgn/d &env)
+                remove-skip))
+         ~form)
        (catch Exception ~'e (throw ~'e)) )))
-

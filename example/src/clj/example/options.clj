@@ -14,6 +14,6 @@
 
 
 ;; :if option
-(for [i (range 10)]
+(doseq [i (range 10)]
   (dbg i :if (even? i)))
 

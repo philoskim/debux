@@ -1,4 +1,5 @@
-(ns example.dbgn)
+(ns example.dbgn
+  (:require [clojure.core.async :refer [<! go-loop timeout]]))
 
 (use 'debux.core)
 
@@ -149,9 +150,9 @@
 
 ;;; the form which includes recur
 (dbgn (loop [acc 1 n 3]
-          (if (zero? n)
-            acc
-            (recur (* acc n) (dec n)))))
+        (if (zero? n)
+          acc
+          (recur (* acc n) (dec n)))))
 
 (dbgn (defn fact [num]
         (loop [acc 1 n num]
@@ -173,10 +174,21 @@
 (defmacro my-let [bindings & body]
   `(let ~bindings ~@body))
 
-(register-macros! :let-type `[my-let])
+(register-macros! :let-type [my-let])
+(register-macros! :loop-type [go-loop])
+
 
 (dbg (show-macros :let-type))
 (dbg (show-macros))
 
 (dbgn (my-let [a 10 b (+ a 10)] (+ a b)))
+
+
+;; go-loop test
+(future
+  (dbgn (go-loop [seconds 1]
+          (when (< seconds 3)
+            (<! (timeout 1000))
+            (println "waited" seconds "seconds.")
+            (recur (inc seconds)) ))))
 

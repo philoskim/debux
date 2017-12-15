@@ -2,7 +2,6 @@
   (:require [clojure.set :as set]
             [debux.common.util :as ut] ))
 
-;;; macro management
 (def macro-types*
   (atom {:def-type '#{def cljs.core/defonce}
          :defn-type '#{cljs.core/defn cljs.core/defn-}
@@ -13,6 +12,7 @@
             cljs.core/if-some cljs.core/loop cljs.core/when-first cljs.core/when-let
             cljs.core/when-some cljs.core/with-out-str cljs.core/with-redefs}
          :letfn-type '#{cljs.core/letfn}
+         :loop-type '#{cljs.core/loop}
          
          :for-type '#{cljs.core/for cljs.core/doseq}
          :case-type '#{cljs.core/case}

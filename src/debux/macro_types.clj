@@ -2,7 +2,6 @@
   (:require [clojure.set :as set]
             [debux.common.util :as ut] ))
 
-;;; macro management
 (def macro-types*
   (atom {:def-type `#{def defonce}
          :defn-type `#{defn defn-}
@@ -13,6 +12,7 @@
             when-some with-in-str with-local-vars with-open with-out-str
             with-redefs}
          :letfn-type `#{letfn}
+         :loop-type `#{loop}
          
          :for-type `#{for doseq}
          :case-type `#{case}
@@ -34,16 +34,21 @@
             some-> some->>}
          :dot-type `#{.} }))
 
-(defn- merge-symbols [old-symbols new-symbols]
+(defn merge-symbols [old-symbols new-symbols]
   (->> (map #(ut/ns-symbol %) new-symbols)
        set
        (set/union old-symbols) ))
 
-(defn register-macros! [macro-type new-symbols]
-  (swap! macro-types* update macro-type
-         #(merge-symbols % new-symbols)))
+(defmacro register-macros! [macro-type new-symbols]
+  (-> (swap! macro-types* update macro-type
+             #(merge-symbols % new-symbols))
+      ut/quote-vals))
 
-(defn show-macros
-  ([] @macro-types*)
-  ([macro-type] (select-keys @macro-types* [macro-type])))
+(defmacro show-macros
+  ([] (-> @macro-types*
+          ut/quote-vals))
+  ([macro-type] (-> (select-keys @macro-types* [macro-type])
+                    ut/quote-vals)))
+
+
 

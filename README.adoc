@@ -23,11 +23,15 @@ dependencies:
 
 [source]
 ....
-[philoskim/debux "0.4.0"]
+[philoskim/debux "0.4.1"]
 ....
 
 
 ## Change logs
+
+* v0.4.1
+** Fixed: The print errors are fixed in `dbgn` and `clogn`,
+** Added: :lopo-type is added to the macro types.
 
 * v0.4.0
 ** Revived: The old useful features of `dbg` in version 0.2.1 are revived for practicality.
@@ -464,9 +468,10 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 | :def-type   | def defonce
 | :defn-type  | defn defn-
 | :fn-type    | fn fn*
-| :let-type   | let binding dotimes if-let if-some loop when-first when-let when-some
+| :let-type   | let binding dotimes if-let if-some when-first when-let when-some
                 with-in-str with-local-vars with-open with-out-str with-redefs
 | :letfn-type | letfn
+| :loop-type  | loop
 | :for-type   | for doseq
 | :case-type  | case
 | :skip-arg-1-type     | set! with-precision
@@ -812,6 +817,10 @@ dbgn: (letfn [(twice [x] (* x 2)) (six-times [y] (* (twice y) 3))] (six-time ...
 | (letfn [(twice [x] (* x 2)) (six-times [y] (* (twice y) 3))] (six-time ... =>
 |   90
 ----
+
+#### `:loop-type` example
+
+This type of macro is similiar to `:let-type` but has a significant difference because the `recur` has to be placed at the tail positon with the `loop` form. So it needs a special handling in the implementation of `dbgn`/`clogn`. Refer to <<recur-support>> for details.
 
 
 #### `:for-type` example
@@ -1259,10 +1268,6 @@ dbgn: (. (java.util.Date.) getMonth) =>
 
 |===
 
-TIP: `clogn` doesn't support the form including `recur`. So in ClojureScript you have to
-     use `dbgn` to debug the form including `recur`, because the evaluated results of
-     `dbgn` in ClojureScript go to the browser's DevTool console window as well.
-
 
 #### `loop` ~ `recur`
 
@@ -1598,6 +1603,7 @@ dbg: (show-macros) =>
 |      clojure.core/when-first},
 |    :skip-arg-2-type #{clojure.core/as->},
 |    :defn-type #{clojure.core/defn clojure.core/defn-},
+|    :loop-type #{clojure.core/loop},
 |    :for-type #{clojure.core/for clojure.core/doseq},
 |    :def-type #{clojure.core/defonce def},
 |    :letfn-type #{clojure.core/letfn},
@@ -1705,6 +1711,7 @@ dbg: (d/show-macros) =>
 |      cljs.core/dotimes},
 |    :skip-arg-2-type #{cljs.core/as->},
 |    :defn-type #{cljs.core/defn- cljs.core/defn},
+|    :loop-type #{cljs.core/loop},
 |    :for-type #{cljs.core/doseq cljs.core/for},
 |    :def-type #{cljs.core/defonce def},
 |    :letfn-type #{cljs.core/letfn},
@@ -1864,7 +1871,7 @@ browser.
 (clogn (repeat 5 (repeat 5 "x")) "25 times repeat")
 ....
 
-image::clog-1.png[title="clog and clogn example", width=600]
+image::clog-1.png[title="clog and clogn example", width=550]
 
 
 #### Predefined style keywords
@@ -2045,7 +2052,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.854"]
-                 [philoskim/debux "0.4.0"]]
+                 [philoskim/debux "0.4.1"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]
