@@ -31,7 +31,7 @@ dependencies:
 
 * v0.4.1
 ** Fixed: The print errors are fixed in `dbgn` and `clogn`,
-** Added: :lopo-type is added to the macro types.
+** Added: :loop-type is added to the macro types.
 
 * v0.4.0
 ** Revived: The old useful features of `dbg` in version 0.2.1 are revived for practicality.
