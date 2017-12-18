@@ -14,20 +14,14 @@
 
     ;; When the left mouse button double-clicked
     (cond
-      ;; If the char-after-point is blank
-      ;;   <ex> ' ' --> (dbg )
-      ((string-match "[ \n]" char-after-point)
-       (insert (concat prefix ")"))
-       (backward-char))
-
       ;; If the char-after-point is not one of the parentheses
       ;;   <ex> abc  --> (dbg abc)
       ((string-match "[^[{(]" char-after-point)
        (insert prefix)
-       (nonincremental-re-search-forward "[ \n]")
+       (nonincremental-re-search-forward "[] \n)}]")
        (backward-char)
        (insert ")")
-       (backward-char))
+       (backward-list))
 
       ;; If the char-after-point is one of the parentheses
       ((string-match "[[{(]" char-after-point)
@@ -54,12 +48,17 @@
             (forward-list)
             (insert ")")
             (backward-list)
-            (indent-sexp)
-            (forward-list) )))))))
+            (indent-sexp) )))))))
 
 (defun debux-toggle-dbgn ()
   (interactive)
   (debux-toggle-dbg "n"))
+
+(defun debux-down-mouse-1 (orig-fun &rest args)
+  (let ((res (apply orig-fun args)))
+    (when (eq major-mode 'clojure-mode)
+      (set-mark-command (point)))
+    res))
 
 (defun my-clojure-mode-init ()
   "Initializes clojure mode."
@@ -67,8 +66,8 @@
 
   ;; mouse-1: the left mouse button
   ;; Disables the default global <down-mouse-1> and <C-down-mouse-1> key
-  (global-unset-key (kbd "<down-mouse-1>"))
   (global-unset-key (kbd "<C-down-mouse-1>"))
+  (advice-add 'mouse-drag-region :around #'debux-down-mouse-1)
 
   (local-set-key (kbd "<double-mouse-1>") 'debux-toggle-dbg)
   (local-set-key (kbd "C-<double-mouse-1>") 'debux-toggle-dbgn))

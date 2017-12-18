@@ -4,8 +4,9 @@
 :sectnums:
 
 * v0.4.1
-** Fixed: The print errors are fixed in `dbgn` and `clogn`,
-** Added: :looo-type is added to the macro types.
+** Fixed: The print errors of `dbgn` and `clogn` in ClojureScript are fixed.
+** Fixed: The errors of `dbg` and `clog` in ClojureScript are fixed.
+** Added: `:loop-type` is added to the macro types.
 
 * v0.4.0
 ** Revived: The old useful features of `dbg` in version 0.2.1 are revived for practicality.

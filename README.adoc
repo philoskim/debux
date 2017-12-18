@@ -30,8 +30,9 @@ dependencies:
 ## Change logs
 
 * v0.4.1
-** Fixed: The print errors are fixed in `dbgn` and `clogn`,
-** Added: :loop-type is added to the macro types.
+** Fixed: The print errors of `dbgn` and `clogn` in ClojureScript are fixed.
+** Fixed: The errors of `dbg` and `clog` in ClojureScript are fixed.
+** Added: `:loop-type` is added to the macro types.
 
 * v0.4.0
 ** Revived: The old useful features of `dbg` in version 0.2.1 are revived for practicality.
@@ -193,7 +194,7 @@ This is an example of thread-first macro `pass:[->]`.
 ;=> "X"
 ....
 
-.REPL output:
+.REPL output
 [listing]
 ----
 dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>
@@ -229,7 +230,7 @@ Another example.
 ; => "Creve Coeur"
 ....
 
-.REPL output: 
+.REPL output 
 ....
 dbg: (-> person :employer :address :city) =>
 | person =>
@@ -272,7 +273,7 @@ This is an example of thread-last macro `pass:[->>]`.
 ; => 3/4
 ....
   
-.REPL output:
+.REPL output
 ....
 dbg: (->> c (+ 3) (/ 2) (- 1)) =>
 | c =>
@@ -286,7 +287,7 @@ dbg: (->> c (+ 3) (/ 2) (- 1)) =>
 ....
 
 If you want to debug one of the expressions in the thread macro `pass:[->]` or
-`pass:[->>]`, don't do it like this. You will have some exception.
+`pass:[->>]`, don't do it like this.
 
 [source]
 ....
@@ -297,7 +298,7 @@ If you want to debug one of the expressions in the thread macro `pass:[->]` or
 ;    Don't know how to create ISeq from: java.lang.Long
 ....
 
-Instead, do it like this.
+You will have some exception. Instead, do it like this.
 
 [source]
 ....
@@ -308,7 +309,7 @@ Instead, do it like this.
 ; => [1 2 3]
 ....
 
-.REPL output:
+.REPL output
 ....
 dbg: (get {:a [1 2]} :a) =>
 |   [1 2]
@@ -326,7 +327,7 @@ Another example.
 ; => ("2" "3")
 ....
   
-.REPL output:
+.REPL output
 ....
 dbg: (map inc (filter pos? [-1 0 1 2])) =>
 |   (2 3)
@@ -348,7 +349,7 @@ When debugging `let` form,
 
 each binding will be printed like this.
   
-.REPL output: 
+.REPL output 
 ....
 dbg: (let [a (take 5 (range)) {:keys [b c d], :or {d 10, b 20, c 30}} {:c 5 ... =>
 | a =>
@@ -370,7 +371,7 @@ When debugging `comp` form,
 ....
 the result of each function will be printed like this.
   
-.REPL output: 
+.REPL output 
 ....
 dbg: (comp inc inc +) =>
 | + =>
@@ -461,7 +462,7 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 
 
 [#macro-type-table, cols="^3m,<7m", options="header"]
-.Categorized 15 types of macros in `dbgn`/`clogn`
+.Categorized 16 types of macros in `dbgn`/`clogn`
 |===
 
 | Macro types | Macros in `clojure.core` and special forms
@@ -1980,7 +1981,7 @@ you can inspect the internal structures of ClojureScript data types.
 image::clog-5.png[title=":js option example", width=550]
 
 
-## `break`
+## `break` examples
 
 ### `break` options
 
@@ -2228,6 +2229,6 @@ When you double-click on one of the open parentheses and the following string is
 
 
 ## License
-Copyright © 2015--2017 Young Tae Kim
+Copyright © 2015--2018 Young Tae Kim
 
 Distributed under the Eclipse Public License either version 1.0 or any later version.

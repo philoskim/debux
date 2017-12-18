@@ -1,7 +1,8 @@
 /target
-.nrepl-port
 /out
+.nrepl-port
 .nrepl-history
+.lein-repl-history
 /pom.xml
 /pom.xml.asc
 figwheel_server.log
