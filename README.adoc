@@ -1265,11 +1265,12 @@ dbgn: (. (java.util.Date.) getMonth) =>
 |===
 
 |                        | dbgn  | clogn
-| loop ~ recur           |   O   |   X   
-| defn/defn-/fn ~ recur  |  △   |   X    
+| loop ~ recur           |   O   |   O   
+| defn/defn-/fn ~ recur  |  △   |  △          
 
 |===
 
+* Legend: O (supported), △ (limitedly supported)
 
 #### `loop` ~ `recur`
 
