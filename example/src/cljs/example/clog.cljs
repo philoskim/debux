@@ -1,7 +1,6 @@
 (ns example.clog
   (:require [debux.cs.core :as d :refer-macros [clog clogn clog clogn break]]))
 
-
 ;;;; clog examples
 
 

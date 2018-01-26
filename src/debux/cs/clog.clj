@@ -7,7 +7,7 @@
   [form {:keys [n msg condition style js once] :as opts} body]
   `(let [condition# ~condition]
      (if (or (nil? condition#) condition#)
-       (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
+       (let [title# (str "\n%cclog: %c " (ut/truncate (pr-str '~form))
                          " %c" (and ~msg (str "   <" ~msg ">"))
                          " =>" (and ~once "   (:once mode)"))
              style# (or ~style :debug)]
@@ -38,8 +38,12 @@
   `(clog-base ~form ~opts
      (let ~(->> (partition 2 bindings)
                 (mapcat (fn [[sym value :as binding]]
-                          [sym value '_ `(cs.ut/spy-first ~sym '~sym ~opts)]))
-                (concat ['& ''&])
+                          [sym value
+                           '_ `(cs.ut/spy-first ~(if (coll? sym)
+                                                   (ut/replace-& sym)
+                                                   sym)
+                                                '~sym
+                                                ~opts) ]))
                 vec)
        ~@subforms) ))
 

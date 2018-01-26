@@ -94,3 +94,10 @@
 ;; (my-fun3)
 
 
+(clog (range 200))
+
+(d/set-print-seq-length! 10)
+
+(clog (range))
+
+(clog (range) 5)

@@ -211,7 +211,7 @@
 (defmacro d [form]
   `(let [opts# ~'+debux-dbg-opts+
          msg#  (:msg opts#)
-         n#    (or (:n opts#) 100)
+         n#    (or (:n opts#) @ut/print-seq-length*)
          
          result# ~form
          result#  (ut/take-n-if-seq n# result#)]

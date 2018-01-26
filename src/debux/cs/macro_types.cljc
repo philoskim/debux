@@ -27,7 +27,9 @@
             cljs.core/defmulti cljs.core/defprotocol cljs.core/defrecord
             cljs.core/deftype cljs.core/extend-protocol cljs.core/extend-type
             finally cljs.core/import cljs.core/memfn new quote
-            cljs.core/refer-clojure cljs.core/reify var throw}
+            cljs.core/refer-clojure cljs.core/reify var throw
+            debux.cs.core/dbg debux.cs.core/dbgn
+            debux.cs.core/clog debux.cs.core/clogn}
 
          :expand-type
          '#{cljs.core/.. cljs.core/-> cljs.core/->> cljs.core/doto

@@ -27,7 +27,7 @@
             defprotocol defrecord defstruct deftype extend-protocol
             extend-type finally gen-class gen-interface import memfn
             new ns proxy proxy-super quote refer-clojure reify sync
-            var throw}
+            var throw debux.core/dbg debux.core/dbgn}
 
          :expand-type
          `#{clojure.core/.. -> ->> doto cond-> cond->> condp import 
@@ -48,7 +48,7 @@
   ([] (-> @macro-types*
           ut/quote-vals))
   ([macro-type] (-> (select-keys @macro-types* [macro-type])
-                    ut/quote-vals)))
+                   ut/quote-vals)))
 
 
 

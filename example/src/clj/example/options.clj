@@ -10,6 +10,10 @@
 ;; number option
 (dbg (range 200))
 
+(set-print-seq-length! 10)
+
+(dbg (range))
+
 (dbg (range) 5)
 
 

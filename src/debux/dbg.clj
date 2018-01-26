@@ -35,8 +35,12 @@
   `(dbg-base ~form ~opts
      (let ~(->> (partition 2 bindings)
                 (mapcat (fn [[sym value :as binding]]
-                          [sym value '_ `(ut/spy-first ~sym '~sym ~opts)]))
-                (concat ['& ''&])
+                          [sym value
+                           '_ `(ut/spy-first ~(if (coll? sym)
+                                                (ut/replace-& sym)
+                                                sym)
+                                             '~sym
+                                             ~opts)] ))
                 vec)
        ~@subforms) ))
 
@@ -48,23 +52,20 @@
        (ut/pprint-result-with-indent (ut/take-n-if-seq ~n form#) 1)
        result#)))
 
+(def dbg*
+  {:->   '#{clojure.core/-> cljs.core/->}
+   :->>  '#{clojure.core/->> cljs.core/->>}
+   :comp '#{clojure.core/comp cljs.core/comp}
+   :let  '#{clojure.core/let cljs.core/let}})
+
 (defmacro dbg
   [form & [{:as opts}]]
   (if (list? form)
     (let [ns-sym (ut/ns-symbol (first form) &env)]
-      (cond 
-        ('#{clojure.core/-> cljs.core/->} ns-sym)
-        `(dbg-> ~form ~opts)
-        
-        ('#{clojure.core/->> cljs.core/->>} ns-sym)
-        `(dbg->> ~form ~opts)
-        
-        ('#{clojure.core/comp cljs.core/comp} ns-sym)
-        `(dbg-comp ~form ~opts)
-        
-        ('#{clojure.core/let cljs.core/let} ns-sym)
-        `(dbg-let ~form ~opts)
-
-        :else
+      (condp get ns-sym 
+        (:-> dbg*)   `(dbg-> ~form ~opts)
+        (:->> dbg*)  `(dbg->> ~form ~opts)
+        (:comp dbg*) `(dbg-comp ~form ~opts)
+        (:let dbg*)  `(dbg-let ~form ~opts)
         `(dbg-others ~form ~opts) ))
     `(dbg-others ~form ~opts) ))

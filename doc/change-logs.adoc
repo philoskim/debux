@@ -3,6 +3,12 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.4.2
+** Fixed: Bindings spec violaton error in clojure-1.9.0 caused by `&` symbol in
+   `clojure.core/let` is fixed.
+** Added: `set-print-seq-length!` function is added to change the default number in
+   printing `seq` data type.
+
 * v0.4.1
 ** Fixed: The print errors of `dbgn` and `clogn` in ClojureScript are fixed.
 ** Fixed: The errors of `dbg` and `clog` in ClojureScript are fixed.

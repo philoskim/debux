@@ -10,6 +10,8 @@
 #?(:cljs (enable-console-print!))
 
 (def reset-indent-level! ut/reset-indent-level!)
+(def set-print-seq-length! ut/set-print-seq-length!)
+
 
 ;;; debugging APIs
 (defmacro dbg [form & opts]

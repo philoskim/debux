@@ -4,6 +4,7 @@
   (:require [clojure.string :as str]
             [clojure.pprint :as pp]
             [clojure.zip :as z]
+            [clojure.walk :as walk]
             [cljs.analyzer.api :as ana]
             [clojure.repl :as repl] ))
 
@@ -22,6 +23,13 @@
 
 (defn reset-indent-level! []
   (reset! indent-level* 1))
+
+
+;;; print-seq-length
+(def print-seq-length* (atom 100))
+
+(defn set-print-seq-length! [num]
+  (reset! print-seq-length* num))
 
 
 ;;; general
@@ -48,15 +56,17 @@
                    `[~(keyword (str elm)) ~elm])
                  v) ))
 
+(defn replace-& [v]
+  (walk/postwalk-replace {'& ''&} v))
+
 
 ;;; zipper
 (defn sequential-zip [root]
-  (z/zipper 
-    sequential?
-    identity
-    (fn [x children]
-      (if (vector? x) (vec children) children))
-    root))
+  (z/zipper sequential?
+            identity
+            (fn [x children]
+              (if (vector? x) (vec children) children))
+            root))
 
 (defn right-or-next [loc]
   (if-let [right (z/right loc)]
@@ -114,7 +124,7 @@
 ;;; print
 (defn take-n-if-seq [n result]
   (if (seq? result)
-    (take (or n 100) result)
+    (take (or n @print-seq-length*) result)
     result))
 
 (defn truncate [s]
