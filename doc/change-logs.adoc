@@ -8,6 +8,8 @@
    `clojure.core/let` is fixed.
 ** Added: `set-print-seq-length!` function is added to change the default number in
    printing `seq` data type.
+** Added: `dbgn` can be put inside `dbg` or vice versa. `clogn` can be put inside `clog`
+   or vice versa.
 
 * v0.4.1
 ** Fixed: The print errors of `dbgn` and `clogn` in ClojureScript are fixed.
