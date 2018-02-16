@@ -34,7 +34,7 @@ dependencies:
    `clojure.core/let` is fixed.
 ** Added: `set-print-seq-length!` function is added to change the default number in
    printing `seq` data type.
-** Added: `dbgn` can be put inside `dbg` or vice versa. `clogn` can be put inside `clog`
+** Added: `dbg` can be put inside `dbgn` or vice versa. `clog` can be put inside `clogn`
    or vice versa.
 
 * v0.4.1
