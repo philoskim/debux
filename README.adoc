@@ -1742,6 +1742,52 @@ dbg: (d/show-macros) =>
 image::register-macros.png[title="register-macros! example", width=600]
 
 
+[#mixed-use]
+## Mixed use of `dbg` and `dbgn`
+
+`dbg` can be used inside `dbgn` or vice versa since the version 0.4.2. If you want to see
+the printed results of pass:q[`->`], pass:q[`->>`], `let` or `comp` in `dbg` when using
+`dbgn`, do it like this.
+
+[source]
+....
+(defn my-fun [a b c]
+  (dbgn (+ a b c
+           (dbg (->> (range (- b a))
+                     (map #(* % %))
+                     (filter even?)
+                     (take a)
+                     (reduce +))))))
+
+(my-fun 10 20 100)
+....
+
+[listing]
+.REPL output:
+----
+dbgn: (+ a b c (dbg (->> (range (- b a)) (map (fn* [p1__16770#] (* p1__16770 ... =>
+| a =>
+|   10
+| b =>
+|   20
+| c =>
+|   100
+
+dbg: (->> (range (- b a)) (map (fn* [p1__16770#] (* p1__16770# p1__16770#)) ... =>
+| (range (- b a)) =>
+|   (0 1 2 3 4 5 6 7 8 9)
+| (map (fn* [p1__16770#] (* p1__16770# p1__16770#))) =>
+|   (0 1 4 9 16 25 36 49 64 81)
+| (filter even?) =>
+|   (0 4 16 36 64)
+| (take a) =>
+|   (0 4 16 36 64)
+| (reduce +) =>
+|   120
+| (+ a b c (dbg (->> (range (- b a)) (map (fn* [p1__16770#] (* p1__16770 ... =>
+|   250
+----
+
 
 ## Various options
 
@@ -2020,53 +2066,6 @@ you can inspect the internal structures of ClojureScript data types.
 ....
 
 image::clog-5.png[title=":js option example", width=550]
-
-[#mixed-use]
-## Mixed use of 'dbg' and 'dbgn'
-
-`dbg` can be used inside `dbgn` or vice versa since the version 0.4.2. If you want to see
-the printed results of pass:q[`->`], pass:q[`->>`], `let` or `comp` in `dbg` when using
-`dbgn`, do it like this.
-
-[source]
-....
-(defn my-fun [a b c]
-  (dbgn (+ a b c
-           (dbg (->> (range (- b a))
-                     (map #(* % %))
-                     (filter even?)
-                     (take a)
-                     (reduce +))))))
-
-(my-fun 10 20 100)
-....
-
-[listing]
-.REPL output:
-----
-dbgn: (+ a b c (dbg (->> (range (- b a)) (map (fn* [p1__16770#] (* p1__16770 ... =>
-| a =>
-|   10
-| b =>
-|   20
-| c =>
-|   100
-
-dbg: (->> (range (- b a)) (map (fn* [p1__16770#] (* p1__16770# p1__16770#)) ... =>
-| (range (- b a)) =>
-|   (0 1 2 3 4 5 6 7 8 9)
-| (map (fn* [p1__16770#] (* p1__16770# p1__16770#))) =>
-|   (0 1 4 9 16 25 36 49 64 81)
-| (filter even?) =>
-|   (0 4 16 36 64)
-| (take a) =>
-|   (0 4 16 36 64)
-| (reduce +) =>
-|   120
-| (+ a b c (dbg (->> (range (- b a)) (map (fn* [p1__16770#] (* p1__16770 ... =>
-|   250
-----
-
 
 
 ## `break` examples
