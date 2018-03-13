@@ -18,6 +18,10 @@
 
 (my-function 10)
 
+(dbgn (def my-function-2 "my-function doc string"
+        (fn [x] (* x x x))) :dup)
+
+(my-function-2 10)
 
 ;;; :defn-type example
 (dbgn (defn add

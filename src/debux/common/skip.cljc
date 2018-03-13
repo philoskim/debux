@@ -23,13 +23,13 @@
 (defn- insert-indent-info
   "Inserts dbg-count in front of form."
   [form]
-  `((ms/skip let) (ms/skip [~'+debux-dbg-opts+ ~'+debux-dbg-opts+])
-     ((ms/skip try)
-        (ms/skip (swap! ut/indent-level* inc))
-        (ms/skip (ut/insert-blank-line))
-         ~@form
-        (ms/skip (catch Exception ~'e (throw ~'e)))
-        (ms/skip (finally (swap! ut/indent-level* dec))) )))
+  `((ms/skip try)
+      (ms/skip (reset! (:evals ~'+debux-dbg-opts+) {}))
+      (ms/skip (swap! ut/config* update :indent-level inc))
+      (ms/skip (ut/insert-blank-line))
+       ~@form
+      (ms/skip (catch Exception ~'e (throw ~'e)))
+      (ms/skip (finally (swap! ut/config* update :indent-level dec))) ))
 
 (defn- insert-indent-info-in-defn-body [arity]
   (let [body (get-in arity [:body 1])
@@ -51,10 +51,16 @@
 
 ;;; :fn-type
 (defn insert-skip-in-fn [form]
-  (->> (s/conform ::ms/fn-args (next form))
-       (s/unform ::ms/fn-args)
-       (cons (first form)) ))
-
+  (let [name (first form)
+        conf (s/conform ::ms/fn-args (next form))
+        arity-1 (get-in conf [:bs 1])
+        arity-n (get-in conf [:bs 1 :bodies])]
+    (->> (cond
+           arity-n (assoc-in conf [:bs 1 :bodies] (mapv insert-indent-info-in-defn-body
+                                                        arity-n))
+           arity-1 (assoc-in conf [:bs 1] (insert-indent-info-in-defn-body arity-1)))
+         (s/unform ::ms/fn-args)
+         (cons name) )))
 
 ;;; :let-type
 (defn- process-let-binding [[binding form]]
@@ -65,7 +71,9 @@
   (let [bs' (->> (partition 2 bs)
                  (mapcat process-let-binding)
                  vec)]
-    (list* name `(ms/o-skip ~bs') body) ))
+    (list* name `(ms/o-skip ~bs')
+           `(ms/skip (ut/insert-blank-line))
+           body) ))
 
 
 ;;; :letfn-type
@@ -91,9 +99,12 @@
 (defn insert-skip-in-for
   [[name bindings & body]]
   (let [bindings' (->> (partition 2 bindings)
-                 (mapcat process-for-binding)
-                 vec)]
-    `(~name (ms/o-skip ~bindings') ~@body) ))
+                       (mapcat process-for-binding)
+                       vec)]
+    `(~name (ms/o-skip ~bindings')
+       ((ms/skip do)
+          (ms/skip (ut/insert-blank-line))
+          ~@body) )))
 
 
 ;;; :case-type

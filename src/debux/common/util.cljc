@@ -5,8 +5,7 @@
             [clojure.pprint :as pp]
             [clojure.zip :as z]
             [clojure.walk :as walk]
-            [cljs.analyzer.api :as ana]
-            [clojure.repl :as repl] ))
+            [cljs.analyzer.api :as ana] ))
 
 ;;; For internal debugging
 (defmacro d
@@ -17,27 +16,17 @@
      (println ">> dbg_:" (pr-str '~form) "=>\n" (pr-str return#) "<<")
      return#))
 
-
-;;; indent-level control
-(def indent-level* (atom 1))
-
-(defn reset-indent-level! []
-  (reset! indent-level* 1))
-
-
-;;; print-seq-length
-(def print-seq-length* (atom 100))
+;;; config
+(def config*
+  (atom {:print-seq-length 100
+         :indent-level 1} ))
 
 (defn set-print-seq-length! [num]
-  (reset! print-seq-length* num))
+  (swap! config* assoc :print-seq-length num)
+  nil)
 
-
+      
 ;;; general
-(defmacro read-source [sym]
-  `(-> (repl/source ~sym)
-       with-out-str
-       read-string))
-
 (defn cljs-env? [env]
   (boolean (:ns env)))
 
@@ -45,7 +34,7 @@
   (instance? clojure.lang.IPending coll))
 
 (defn vec->map
-  "Transsub-forms a vector into an array-map with key/value pairs.
+  "Transforms a vector into an array-map with key/value pairs.
   (def a 10)
   (def b 20)
   (vec-map [a b :c [30 40]])
@@ -121,10 +110,21 @@
        sym) ))
 
 
+;;; :dup option
+(defn eval-changed?
+  [evals form return]
+  ;; init
+  (when-not (contains? @evals form)
+    (swap! evals assoc form ""))
+
+  ;; update
+  (and (not= return (get @evals form))
+       (swap! evals assoc form return) ))
+
 ;;; print
 (defn take-n-if-seq [n result]
   (if (seq? result)
-    (take (or n @print-seq-length*) result)
+    (take (or n (:print-seq-length @config*)) result)
     result))
 
 (defn truncate [s]
@@ -171,8 +171,8 @@
     (flush) ))
 
 (defn insert-blank-line []
-  (println " ")
-  (flush))
+  #?(:clj (do (println " ") (flush))
+     :cljs (.log js/console " ")))
 
 
 ;;; parse options
@@ -184,7 +184,7 @@
           s (second opts)]
       (cond
         (empty? opts)
-        acc
+        (assoc acc :evals '(atom {}))
 
         (number? f)
         (recur (next opts) (assoc acc :n f))
@@ -194,6 +194,10 @@
 
         (= f :if)
         (recur (nnext opts) (assoc acc :condition s))
+
+        (= f :dup)
+        (recur (next opts) (assoc acc :dup true))
+        
 
         ;;; for clojurescript
         (= f :js)

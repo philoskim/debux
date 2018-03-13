@@ -4,8 +4,9 @@
             [debux.macro-types :as mt]
             [debux.common.util :as ut]))
 
-(def reset-indent-level! ut/reset-indent-level!)
+;;; config APIs
 (def set-print-seq-length! ut/set-print-seq-length!)
+
 
 ;;; debugging APIs
 (defmacro dbg [form & opts]

@@ -42,18 +42,18 @@
 (clog @a :once)
 
 ;; This will not be printed,
-;; because the evaluated result will be the same as before.
+;; because the evaluated result is the same as before.
 (clog @a :once)
 
 
 (reset! a 20)
 
 ;; This will be printed,
-;; because the evaluated result will not be the same as before.
+;; because the evaluated result is not the same as before.
 (clog @a :once)
 
 ;; This will not be printed,
-;; because the evaluated result will be the same as before.
+;; because the evaluated result is the same as before.
 (clog @a :once)
 
 

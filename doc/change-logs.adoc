@@ -3,12 +3,17 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.4.3 
+** Changed: The same duplicate evaluated results are not printed by default.
+** Enhanced: The readability is enhanced for the loop constructs such as `for`, `loop`,
+   `map` and the others by inserting a blank line whenever iterations happen. 
+
 * v0.4.2
 ** Fixed: Bindings spec violaton error in clojure-1.9.0 caused by `&` symbol in
    `clojure.core/let` is fixed.
-** Added: `set-print-seq-length!` function is added to change the default number in
+** Added: `set-print-seq-length!` function is added to change the default number when
    printing `seq` data type.
-** Added: `dbg` can be put inside `dbgn` or vice versa. `clog` can be put inside `clogn`
+** Added: `dbg` can be used inside `dbgn` or vice versa. `clog` can be used inside `clogn`
    or vice versa.
 
 * v0.4.1

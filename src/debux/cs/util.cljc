@@ -115,9 +115,9 @@
      (fn [result quoted-form {:keys [n msg style js] :as opts}]
        (clog-form-with-indent (form-header quoted-form msg)
                               (or style :debug)
-                              @ut/indent-level*)
+                              (:indent-level @ut/config*))
        (clog-result-with-indent (ut/take-n-if-seq n result)
-                                @ut/indent-level* js)
+                                (:indent-level @ut/config*) js)
        result) ))
 
 #?(:cljs
@@ -125,9 +125,9 @@
      (fn [quoted-form {:keys [n msg style js] :as opts} result]
        (clog-form-with-indent (form-header quoted-form msg)
                               (or style :debug)
-                              @ut/indent-level*)
+                              (:indent-level @ut/config*))
        (clog-result-with-indent (ut/take-n-if-seq n result)
-                                @ut/indent-level* js)
+                                (:indent-level @ut/config*) js)
        result) ))
 
 #?(:cljs
@@ -137,8 +137,8 @@
        (let [result (apply form arg)]
          (clog-form-with-indent (form-header quoted-form msg)
                                 (or style :debug)
-                                @ut/indent-level*)
+                                (:indent-level @ut/config*))
          (clog-result-with-indent (ut/take-n-if-seq n result)
-                                  @ut/indent-level* js)
+                                  (:indent-level @ut/config*) js)
          result) )))
 

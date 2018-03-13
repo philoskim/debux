@@ -209,15 +209,18 @@
 
    
 (defmacro d [form]
-  `(let [opts# ~'+debux-dbg-opts+
-         msg#  (:msg opts#)
-         n#    (or (:n opts#) @ut/print-seq-length*)
-         
+  `(let [opts#   ~'+debux-dbg-opts+
+         msg#    (:msg opts#)
+         n#      (or (:n opts#) (:print-seq-length @ut/config*))
+         dup#    (:dup opts#)
+         evals#  (:evals opts#)
+         form#   '~(remove-d form 'debux.dbgn/d)
          result# ~form
-         result#  (ut/take-n-if-seq n# result#)]
-     (ut/print-form-with-indent (ut/form-header '~(remove-d form 'debux.dbgn/d) msg#)
-                                @ut/indent-level*)
-     (ut/pprint-result-with-indent result# @ut/indent-level*)
+         result# (ut/take-n-if-seq n# result#)]
+     (when (or dup# (ut/eval-changed? evals# form# result#))
+       (ut/print-form-with-indent (ut/form-header form# msg#)
+                                  (:indent-level @ut/config*))
+       (ut/pprint-result-with-indent result# (:indent-level @ut/config*)))
      result#))
 
 

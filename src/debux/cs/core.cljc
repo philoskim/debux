@@ -9,9 +9,7 @@
 
 #?(:cljs (enable-console-print!))
 
-(def reset-indent-level! ut/reset-indent-level!)
 (def set-print-seq-length! ut/set-print-seq-length!)
-
 
 ;;; debugging APIs
 (defmacro dbg [form & opts]
@@ -30,9 +28,11 @@
   (let [opts' (ut/parse-opts opts)]
     `(debux.cs.clogn/clogn ~form ~opts')))
 
+
 (defmacro break [& opts]
-  (let [opts' (ut/parse-opts opts)]
-    `(debux.cs.clogn/break ~opts')))
+  (when (:debug-mode @ut/config*)
+    (let [opts' (ut/parse-opts opts)]
+      `(debux.cs.clogn/break ~opts'))))
 
 
 ;;; macro registering APIs

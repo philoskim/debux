@@ -106,7 +106,3 @@
 (def c (dbg (comp inc inc +)))
 (c 10 20)
 
-
-(doseq [i (range 10)]
-  (dbg i :if (even? i)))
-

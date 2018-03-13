@@ -53,7 +53,7 @@
      (let [result# ~form
            form# ~(if (vector? form) (ut/vec->map form) form)]
        (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n form#)
-                                      @ut/indent-level* ~js)
+                                      (:indent-level @ut/config*) ~js)
        result#) ))
 
 (defmacro clog-once
@@ -68,7 +68,7 @@
              style# (or ~style :debug)]
            (cs.ut/clog-header title# style#)
            (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n result#)
-                                          @ut/indent-level* ~js) ))
+                                          (:indent-level @ut/config*) ~js) ))
      result#))
        
 

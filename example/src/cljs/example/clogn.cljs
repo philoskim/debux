@@ -3,7 +3,6 @@
             [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]])
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]
                    [example.macro :refer [my-let]] ))
-(comment
   
 ;;; simple example
 (clogn (defn foo [a b & [c]]
@@ -145,7 +144,28 @@
 ;;; etc example
 (clogn (.-closed js/window))
 
-) ; end of comment
+
+;;; the form which includes recur
+(clogn (loop [acc 1 n 3]
+          (if (zero? n)
+            acc
+            (recur (* acc n) (dec n)))))
+
+(clogn (defn fact [num]
+        (loop [acc 1 n num]
+          (if (zero? n)
+            acc
+            (recur (* acc n) (dec n))))))
+
+(fact 3)
+
+(clogn (defn factorial [acc n]
+        (if (zero? n)
+          acc
+          (factorial (* acc n) (dec n)))))
+
+(factorial 1 3)
+
 
 
 ;;; Registering your own macros
