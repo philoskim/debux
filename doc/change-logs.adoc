@@ -5,8 +5,9 @@
 
 * v0.4.3 
 ** Changed: The same duplicate evaluated results are not printed by default.
-** Enhanced: The readability is enhanced for the loop constructs such as `for`, `loop`,
-   `map` and the others by inserting a blank line whenever iterations happen. 
+** Enhanced: The readability is enhanced for the looping constructs such as `map`,
+   `reduce`, `for`, `loop`, and so on by inserting a blank line whenever iteration
+   happens.
 
 * v0.4.2
 ** Fixed: Bindings spec violaton error in clojure-1.9.0 caused by `&` symbol in

@@ -32,9 +32,9 @@ dependencies:
 * v0.4.3 
 ** Changed: The same duplicate evaluated results are not printed by default. See
    <<dup-option>> for detalis.
-** Enhanced: The readability is enhanced for the loop constructs such as `for`, `loop`,
-   `map` and the others by inserting a blank line whenever iterations happen. See
-   <<enhanced-readability, here>> for examples.
+** Enhanced: The readability is enhanced for the looping constructs such as `map`,
+   `reduce`, `for`, `loop`, and so on by inserting a blank line whenever iteration
+   happens. See <<enhanced-readability, here>> for examples.
  
 * v0.4.2
 ** Fixed: Bindings spec violaton error in clojure-1.9.0 caused by `&` symbol in
@@ -676,6 +676,7 @@ dbgn: (defn calc3 [m1 m2] (* 10 (calc2 m1 m2))) =>
 This type of macros have the binding vector argument which must not be evaluated and can
 have optional function name. So it is a little different from `:defn-type` macros.
 
+[[enhanced-readability]] 
 [source]
 ....
 (dbgn (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]))
@@ -841,7 +842,7 @@ This type of macro is similiar to `:let-type` but has a significant difference b
 
 This type of macros have a little different syntax from `:let-type` macros, because it
 can have `:let`, `:when`, or `:while` clause.
- 
+
 [source]
 ....
 (dbgn (for [x [0 1 2 3 4 5]
@@ -851,7 +852,6 @@ can have `:let`, `:when`, or `:while` clause.
 ; => (0 6 12)
 ....
 
-[[enhanced-readability]]
 [listing]
 .REPL output
 ----
@@ -875,6 +875,7 @@ dbgn: (for [x [0 1 2 3 4 5] :let [y (* x 3)] :when (even? y)] y) =>
 |   3
 | (even? y) =>
 |   false
+
 | x =>
 |   2
 | (* x 3) =>
@@ -883,7 +884,7 @@ dbgn: (for [x [0 1 2 3 4 5] :let [y (* x 3)] :when (even? y)] y) =>
 |   6
 | (even? y) =>
 |   true
- 
+
 | x =>
 |   3
 | (* x 3) =>
@@ -892,6 +893,7 @@ dbgn: (for [x [0 1 2 3 4 5] :let [y (* x 3)] :when (even? y)] y) =>
 |   9
 | (even? y) =>
 |   false
+
 | x =>
 |   4
 | (* x 3) =>
@@ -1778,7 +1780,7 @@ IMPORTANT: The number option applies only to seqs. This option doesn't apply to 
 [source]
 ....
 (dbg (range 200))
-; => (0 1 ... 99)
+; => (0 1 2 ... 99)
 ....
 
 .REPL output
@@ -1957,8 +1959,8 @@ going on.
 Compare the two printed results.
 
 [listing]
+.REPL output
 ----
-
 dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
  
 | n =>
