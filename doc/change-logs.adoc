@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.4.5
+** No new features are added. Just for matching with the fixed version of `debux-stubs`.
+
 * v0.4.4
 ** Added: The new `debux-stubs` library is added for production mode support.
 ** Added: `set-debug-mode!` is added.

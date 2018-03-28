@@ -18,18 +18,19 @@ this library to debug my own Clojure(Script) code and to analyze other developer
 [[two-libraries]]
 ## Two libraries
 
-*In development*, you want to include the `philoskim/debux` library. When you use *debux*
- macros and functions from this library, it will emit debugging messages to REPL window or
- chrome DevTools' console.
+*In development*, use the `philoskim/debux` library. When you use *debux* macros and
+ functions from this library, it will emit debugging messages to the REPL window or the
+ Chrome DevTools' console.
 
-*In production*, you want to include the `philoskim/debux-stubs` library. This has the
- same public API as `philoskim/debux`, but the macros simply expand to the given original
- form.
+*In production*, Use the `philoskim/debux-stubs` library. This has the same public API as
+ `philoskim/debux` but the macros simply expand only to the given original form
+ itself. Never use `philoskim/debux` library in production because it will impose too much
+ overhead on the peformance, especially in using `dbgn` and `clogn`.
 
 With this setup, your use of *debux* macros will have zero runtime and compile time cost
 in production builds, and are able to be turned off at development time too via the
-`set-debug-mode!` function. This ensures that you can leave your code instrumented at all
-times, but not pay any costs in production.
+`set-debug-mode!` function.
+
 
 ## Installation
 
@@ -40,18 +41,21 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.4.4"]
+[philoskim/debux "0.4.5"]
 ....
 
 and this to your production dependencies (make sure they are production only):
 
 [source]
 ....
-[philoskim/debux-stubs "0.4.4"]
+[philoskim/debux-stubs "0.4.5"]
 ....
 
 
 ## Change logs
+
+* v0.4.5
+** No new features are added. Just for matching with the fixed version of `debux-stubs`.
 
 * v0.4.4
 ** Added: The new `debux-stubs` library is added for production mode support. See
@@ -2293,7 +2297,7 @@ image:break-4.png[]
 ....
 (set-debug-mode! false)
 
-;; The folowings take no effect at all 
+;; The folowings take no effect at all. 
 (set-ns-whitelist! ["my-app.*" ])
 (set-ns-blacklist! ["my-app.foo" "my-app.bar.*"])  
 ....
@@ -2336,7 +2340,7 @@ is an example.
   (d/set-ns-whitelist! ["example.dbg*"])
   (d/set-ns-blacklist! ["example.dbgn"])  
 
-  ;; You should require dynamically the namespaces that you want to laod. 
+  ;; You should require dynamically the namespaces that you want to load. 
   (require 'example.dbg)
   (require 'example.options)
   (require 'example.dbgn))
@@ -2380,7 +2384,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.854"]
-                 [philoskim/debux "0.4.4"]]
+                 [philoskim/debux "0.4.5"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]
