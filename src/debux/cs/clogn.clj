@@ -7,19 +7,16 @@
 
 (defmacro d [form]
   `(let [opts# ~'+debux-dbg-opts+
-         msg#  (:msg opts#)
          n#    (or (:n opts#) (:print-seq-length @ut/config*))
          form-style# (or (:style opts#) :debug)
-         dup#    (:dup opts#)
-         evals#  (:evals opts#)
          form#   '~(dbgn/remove-d form 'debux.cs.clogn/d)
          result# ~form
-         result# (ut/take-n-if-seq n# result#)]
-     (when (or dup# (ut/eval-changed? evals# form# result#))
-       (cs.ut/clog-form-with-indent (cs.ut/form-header form# msg#)
+         result2# (ut/take-n-if-seq n# result#)]
+     (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result2#))
+       (cs.ut/clog-form-with-indent (cs.ut/form-header form# (:msg opts#))
                                     form-style#
                                     (:indent-level @ut/config*))
-       (cs.ut/clog-result-with-indent result# (:indent-level @ut/config*)))
+       (cs.ut/clog-result-with-indent result2# (:indent-level @ut/config*)))
      result#))
 
 (defmacro clogn

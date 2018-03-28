@@ -15,6 +15,7 @@
 
 (foo 2 3 10)
 
+  
 (dbgn (defn bar [a b & [c]]
         (if c
           (* a b c)
@@ -211,34 +212,3 @@
           acc
           (recur (* acc n) (dec n)))) :dup)
 
-(debux.dbgn/dbgn
-  (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n))))
-  {:evals (atom {})})
-
-(let [+debux-dbg-opts+ {:evals (atom {})} condition__4712__auto__ nil]
-  (try
-    (if (or (nil? condition__4712__auto__) condition__4712__auto__)
-      (let [title__4713__auto__ (str
-                                  "\ndbgn: "
-                                  (debux.common.util/truncate
-                                    (pr-str
-                                      '(loop 
-                                         [acc 1 n 3]
-                                         (if
-                                           (zero? n)
-                                           acc
-                                           (recur
-                                             (* acc n)
-                                             (dec n))))))
-                                  " =>")]
-        (println title__4713__auto__)
-        (debux.dbgn/d
-          (loop [acc 1 n 3]
-            (println " ") (flush)
-            (if (debux.dbgn/d (zero? (debux.dbgn/d n)))
-              (debux.dbgn/d acc)
-              (recur
-                (debux.dbgn/d (* (debux.dbgn/d acc) (debux.dbgn/d n)))
-                (debux.dbgn/d (dec (debux.dbgn/d n))))))))
-      (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))))
-    (catch java.lang.Exception e (throw e))))

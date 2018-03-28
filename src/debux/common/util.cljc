@@ -1,6 +1,5 @@
 (ns debux.common.util
   "Utilities common for clojure and clojurescript"
-  (:refer-clojure :exclude [coll?])
   (:require [clojure.string :as str]
             [clojure.pprint :as pp]
             [clojure.zip :as z]
@@ -16,16 +15,60 @@
      (println ">> dbg_:" (pr-str '~form) "=>\n" (pr-str return#) "<<")
      return#))
 
+
 ;;; config
 (def config*
-  (atom {:print-seq-length 100
+  (atom {:debug-mode true
+         :ns-blacklist nil
+         :ns-whitelist nil         
+         :print-seq-length 100
          :indent-level 1} ))
 
 (defn set-print-seq-length! [num]
   (swap! config* assoc :print-seq-length num)
   nil)
 
-      
+(defn set-debug-mode! [val]
+  (swap! config* assoc :debug-mode val)
+  nil)
+
+(defn set-ns-blacklist! [blacklist]
+  (swap! config* assoc :ns-blacklist blacklist)
+  nil)
+
+(defn set-ns-whitelist! [whitelist]
+  (swap! config* assoc :ns-whitelist whitelist)
+  nil)
+
+(defn ns-match? [current-ns target-ns]
+  ;(println current-ns target-ns)
+  (-> (re-pattern (str/escape target-ns {\. "\\." \* ".*"}))
+      (re-matches current-ns)))
+
+(defn in-ns-list? [current-ns ns-list]
+  (some #(ns-match? current-ns %) ns-list))
+
+(defn debug-enabled? [current-ns]
+  ;(println (pr-str "config: " @config*))
+  ;(println (pr-str "*ns* " current-ns))
+  (let [{:keys [debug-mode ns-whitelist ns-blacklist]} @config*]
+    (when debug-mode
+      (cond
+        (and (empty? ns-whitelist)
+             (empty? ns-blacklist))
+        true
+
+        (empty? ns-whitelist)
+        (not (in-ns-list? current-ns ns-blacklist))
+
+        (empty? ns-blacklist)
+        (in-ns-list? current-ns ns-whitelist)
+
+        :else
+        (and (in-ns-list? current-ns ns-whitelist)
+             (not (in-ns-list? current-ns ns-blacklist)) )) )))
+
+
 ;;; general
 (defn cljs-env? [env]
   (boolean (:ns env)))

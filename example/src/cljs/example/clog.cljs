@@ -14,7 +14,7 @@
 ; => 60
 
 
-; Sometimes you need to see several forms evaluated. To do so, a literal vector
+                                        ; Sometimes you need to see several forms evaluated. To do so, a literal vector
 ; form can be used like this.
 
 (defn my-fun
@@ -87,4 +87,3 @@
 
 (def c (clog (comp inc inc +)))
 (c 10 20)
-

@@ -7,15 +7,27 @@
 ;;; config APIs
 (def set-print-seq-length! ut/set-print-seq-length!)
 
+(def set-debug-mode! ut/set-debug-mode!)
+
+(defmacro set-ns-blacklist! [blacklist]
+  `(ut/set-ns-blacklist! ~blacklist))
+
+(defmacro set-ns-whitelist! [whitelist]
+  `(ut/set-ns-whitelist! ~whitelist))
+
 
 ;;; debugging APIs
 (defmacro dbg [form & opts]
-  (let [opts' (ut/parse-opts opts)]
-    `(dbg/dbg ~form ~opts')))
+  (let [ns (str *ns*)]
+    `(if (ut/debug-enabled? ~ns)
+       (dbg/dbg ~form ~(ut/parse-opts opts))
+       ~form)))
 
 (defmacro dbgn [form & opts]
-  (let [opts' (ut/parse-opts opts)]
-    `(dbgn/dbgn ~form ~opts')))
+  (let [ns (str *ns*)]
+    `(if (ut/debug-enabled? ~ns)
+       (dbgn/dbgn ~form ~(ut/parse-opts opts))
+       ~form)))
 
 
 ;;; macro registering APIs

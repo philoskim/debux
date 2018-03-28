@@ -3,6 +3,11 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.4.4
+** Added: The new `debux-stubs` library is added for production mode support.
+** Added: `set-debug-mode!` is added.
+** Added: `set-ns-whitelist!` and `set-ns-blacklist!` are added.
+
 * v0.4.3 
 ** Changed: The same duplicate evaluated results are not printed by default.
 ** Enhanced: The readability is enhanced for the looping constructs such as `map`,

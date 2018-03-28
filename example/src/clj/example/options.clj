@@ -6,15 +6,14 @@
 ;; string option
 (dbg (repeat 5 "x") "five repeat")
 
-
 ;; number option
-(dbg (range 200))
+(dbgn (count (range 200)))
+(dbgn (count (range 200)) 200)
+(dbgn (take 5 (range)))
 
 (set-print-seq-length! 10)
 
-(dbg (range))
-
-(dbg (range) 5)
+(dbgn (take 5 (range)))
 
 
 ;; :if option

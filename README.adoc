@@ -15,19 +15,50 @@ this library to debug my own Clojure(Script) code and to analyze other developer
 * clojurescript 1.9.854 or later
 
 
+[[two-libraries]]
+## Two libraries
+
+*In development*, you want to include the `philoskim/debux` library. When you use *debux*
+ macros and functions from this library, it will emit debugging messages to REPL window or
+ chrome DevTools' console.
+
+*In production*, you want to include the `philoskim/debux-stubs` library. This has the
+ same public API as `philoskim/debux`, but the macros simply expand to the given original
+ form.
+
+With this setup, your use of *debux* macros will have zero runtime and compile time cost
+in production builds, and are able to be turned off at development time too via the
+`set-debug-mode!` function. This ensures that you can leave your code instrumented at all
+times, but not pay any costs in production.
+
 ## Installation
 
-To include *debux* in your project, simply add the following to your *project.clj*
-dependencies:
+First, please be sure to read the "Two libraries" section immediately above for background.
 
+To include `debux` in your project for development, simply add the following to your
+*project.clj* development dependencies:
 
 [source]
 ....
-[philoskim/debux "0.4.3"]
+[philoskim/debux "0.4.4"]
+....
+
+and this to your production dependencies (make sure they are production only):
+
+[source]
+....
+[philoskim/debux-stubs "0.4.4"]
 ....
 
 
 ## Change logs
+
+* v0.4.4
+** Added: The new `debux-stubs` library is added for production mode support. See
+   <<two-libraries, here>> for details.
+** Added: `set-debug-mode!` is added. See <<debux-config, here>> for details.
+** Added: `set-ns-whitelist!` and `set-ns-blacklist!` are added. See <<debux-config,
+   here>> for details.
 
 * v0.4.3 
 ** Changed: The same duplicate evaluated results are not printed by default. See
@@ -40,7 +71,7 @@ dependencies:
 ** Fixed: Bindings spec violaton error in clojure-1.9.0 caused by `&` symbol in
    `clojure.core/let` is fixed.
 ** Added: `set-print-seq-length!` function is added to change the default number when
-   printing `seq` data type.
+   printing `seq` data type. See <<set-print-seq-length, here>> for example.
 ** Added: `dbg` can be used inside `dbgn` or vice versa. `clog` can be used inside `clogn`
    or vice versa. See <<mixed-use>> for details.
 
@@ -1479,7 +1510,7 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ...
 ### How to register your own macros in using `dbgn`/`clogn`
 
 * If you have some error when analyzing some source code using `dbgn`/`clogn`, first
-  of all, you have to figure out what kind of macro (refer to <<macro-type-table>>) caused
+  of all, you have to figure out what type of macro (refer to <<macro-type-table>>) caused
   the error and then register the macro by using `register-macros!`.
 
 * You can see the registered macros by using `show-macros`.
@@ -1779,30 +1810,36 @@ IMPORTANT: The number option applies only to seqs. This option doesn't apply to 
 
 [source]
 ....
-(dbg (range 200))
-; => (0 1 2 ... 99)
+(dbgn (count (range 200)))
+; => 200
 ....
 
 .REPL output
 [listing]
 ----
-dbg: (range 200) =>
-|   (0 1 2  ... 99)
+dbgn: (count (range 200)) =>
+| (range 200) =>
+|   (0 1 2 ... 99)
+| (count (range 200)) =>
+|   200
 ----
 
 So, if you want to print less or more than default 100 items, specify the number
 explicitly like this.
 
 ....
-(dbg (range 200) 200)
-; => (0 1 2 ... 199)
+(dbgn (count (range 200)) 200)
+; => 200
 ....
 
 .REPL output
 [listing]
 ----
-dbg: (range 200) =>
+dbgn: (count (range 200)) =>
+| (range 200) =>
 |   (0 1 2 ... 199)
+| (count (range 200)) =>
+|   200
 ----
 
 The same rule applies in case of evaluating an *infinite lazy-seq*. If you omit the number
@@ -1811,16 +1848,20 @@ in evaluating an *infinite lazy-seq*, in the same manner it will print and retur
 
 [source]
 ....
-(dbg (range))
-; => (0 1 2 ... 99)
+(dbgn (take 5 (range)))
+; => (0 1 2 3 4)
 ....
   
 .REPL output
 ....
-dbg: (range) =>
+dbgn: (count (range)) =>
+| (range) =>
 |   (0 1 2 ... 99)
+| (take 5 (range)) =>
+|   (0 1 2 3 4)
 ....
 
+[[set-print-seq-length]]
 If you want to change the default number of 100, use `set-print-seq-length!` function like
 this.
 
@@ -1829,15 +1870,19 @@ this.
 ;; in Clojure
 (set-print-seq-length! 10)
 
-(dbg (range))
+(dbgn (take 5 (range)))
+; => (0 1 2 3 4)
 ....
 
 
 [listing]
 .REPL output
 ----
-dbg: (range) =>
+dbgn: (count (range)) =>
+| (range) =>
 |   (0 1 2 ... 9)
+| (take 5 (range)) =>
+|   (0 1 2 3 4)
 ----
 
 [source]
@@ -1848,7 +1893,7 @@ dbg: (range) =>
 
 (d/set-print-seq-length! 10)
 
-(clog (range))
+(clogn (take 5 (range)))
 ....
 
 
@@ -2238,6 +2283,91 @@ When using `break`, you can use `:if` like this.
 image:break-4.png[]
 
 
+[[debux-config]]
+## How to configure *debux*
+
+* When `(set-debug-mode! false)` is run, the effects of `set-ns-whitelist!` and
+  `set-ns-blacklist!` will be ignored.
++
+[source]
+....
+(set-debug-mode! false)
+
+;; The folowings take no effect at all 
+(set-ns-whitelist! ["my-app.*" ])
+(set-ns-blacklist! ["my-app.foo" "my-app.bar.*"])  
+....
+
+* When `set-ns-whitelist!` and `set-ns-blaklist!` are both run like this, all `my-app.*`
+  except `my-app.foo` will be run.
++
+[source]
+....
+(set-ns-whitelist! ["my-app.*" ])
+(set-ns-blacklist! ["my-app.foo" "my-app.bar.*"])  
+....
+
+The following (in https://github.com/philoskim/debux/tree/master/example[example] folder)
+is an example.
+
+
+### in Clojure
+
+[listing]
+.example/project.clj
+----
+(defproject example
+  ,,,,,,
+  :main example.core
+  ,,,,,,)
+----
+
+[source]
+.example/src/clj/example/core.clj
+....
+(ns example.core
+  (:require [debux.core :as d])
+  (:gen-class))
+
+(defn -main []
+  (println "\nRunning debux examples...\n")
+
+  ;(d/set-debug-mode! false)
+  (d/set-ns-whitelist! ["example.dbg*"])
+  (d/set-ns-blacklist! ["example.dbgn"])  
+
+  ;; You should require dynamically the namespaces that you want to laod. 
+  (require 'example.dbg)
+  (require 'example.options)
+  (require 'example.dbgn))
+....
+
+
+### in ClojureScript
+
+[listing]
+.example/project.clj
+----
+(defproject example
+  ,,,,,,
+  :cljsbuild {:builds [{,,,,,,
+                        :compiler {,,,,,,
+                                   :preloads [example.preload]
+                                   ,,,,,,}}]})
+----
+
+[source]
+.example/src/cljs/example/preload.cljs
+....
+(ns example.preload
+  (:require [debux.cs.core :as d]))
+
+;(d/set-debug-mode! false)
+(d/set-ns-whitelist! ["example.clog*"])
+(d/set-ns-blacklist! ["example.clogn"])
+....
+
+
 [#browser-repl]
 ## Usage in ClojureScript on Browser REPL
 
@@ -2250,7 +2380,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.854"]
-                 [philoskim/debux "0.4.3"]]
+                 [philoskim/debux "0.4.4"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

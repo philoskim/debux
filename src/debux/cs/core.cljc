@@ -11,28 +11,46 @@
 
 (def set-print-seq-length! ut/set-print-seq-length!)
 
+(defmacro set-debug-mode! [val]
+  `(ut/set-debug-mode! ~val))
+
+(defmacro set-ns-whitelist! [whitelist]
+  `(ut/set-ns-whitelist! ~whitelist))
+
+(defmacro set-ns-blacklist! [blacklist]
+  `(ut/set-ns-blacklist! ~blacklist))
+
+
 ;;; debugging APIs
 (defmacro dbg [form & opts]
-  (let [opts' (ut/parse-opts opts)]
-    `(debux.dbg/dbg ~form ~opts')))
+  (let [ns (str *ns*)]
+    `(if (ut/debug-enabled? ~ns)
+       (debux.dbg/dbg ~form ~(ut/parse-opts opts))
+       ~form)))
 
 (defmacro dbgn [form & opts]
-  (let [opts' (ut/parse-opts opts)]
-    `(debux.dbgn/dbgn ~form ~opts')))
+  (let [ns (str *ns*)]
+   `(if (ut/debug-enabled? ~ns)
+      (debux.dbgn/dbgn ~form ~(ut/parse-opts opts))
+      ~form)))
 
 (defmacro clog [form & opts]
-  (let [opts' (ut/parse-opts opts)]
-    `(debux.cs.clog/clog ~form ~opts')))
+  (let [ns (str *ns*)]
+    `(if (ut/debug-enabled? ~ns)
+       (debux.cs.clog/clog ~form ~(ut/parse-opts opts))
+       ~form)))
 
 (defmacro clogn [form & opts]
-  (let [opts' (ut/parse-opts opts)]
-    `(debux.cs.clogn/clogn ~form ~opts')))
+  (let [ns (str *ns*)]
+    `(if (ut/debug-enabled? ~ns)
+       (debux.cs.clogn/clogn ~form ~(ut/parse-opts opts))
+       ~form)))
 
 
 (defmacro break [& opts]
-  (when (:debug-mode @ut/config*)
-    (let [opts' (ut/parse-opts opts)]
-      `(debux.cs.clogn/break ~opts'))))
+  (let [ns (str *ns*)]
+    `(when (ut/debug-enabled? ~ns)
+       (debux.cs.clogn/break  ~(ut/parse-opts opts)))))
 
 
 ;;; macro registering APIs
