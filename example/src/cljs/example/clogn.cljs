@@ -2,7 +2,7 @@
   (:require [cljs.core.async :refer [<! timeout]]
             [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]])
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]
-                   [example.macro :refer [my-let m]] ))
+                   [example.macro :refer [my-let]] ))
   
 ;;; simple example
 (clogn (defn foo [a b & [c]]
@@ -180,20 +180,9 @@
 (doseq [n (range 10)]
   (+ 20 (clogn (* n 10) :if (even? n))))
 
-
-
 ;; go-loop test
 ;; (clogn (go-loop [seconds 1]
 ;;          (when (< seconds 3)
 ;;            (<! (timeout 1000))
 ;;            (println "waited" seconds "seconds.")
 ;;            (recur (inc seconds)) )))
-
-
-;; ;(m 10)
-;; (clog (m 10))
-;; (clog (resolve 'clogn))
-;; (clog (resolve 'clog))
-;; (clog (resolve '->))
-
-
