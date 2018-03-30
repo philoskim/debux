@@ -35,7 +35,8 @@ With this setup
   function.
 
 WARNING: Never use `philoskim/debux` library in production because it will impose too much
-         overhead on the peformance, especially in using `dbgn` and `clogn`.
+         overhead on the peformance, especially in using `dbgn` and `clogn`, even though
+         `(set-debug-mode! false)` is run.
 
 
 ## Installation
