@@ -2416,7 +2416,7 @@ dbgn: (+ 2 (* 3 4)) =>
 |   14
 ----
 
-Of course, you should use the `clog`/`clogn` instead of `dbg`/`dbgn`
+Of course, you should use the `clog`/`clogn` instead of `dbg`/`dbgn` in
 link:https://electronjs.org/[Electron] apps on Node.js, because Electron supports colors
 in its `console.log` function.
 
