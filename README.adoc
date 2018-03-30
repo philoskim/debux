@@ -151,9 +151,9 @@ file.
 . `dbg`/`dbgn` , `clog`/`clogn` and `break` can be used in the browser console window
   like Chrome DevTools.
 
-[sidebar]
-.Recommendations on use of *Debux* macros
-****
+:sectnums!:
+### Recommendations on use of *Debux* macros
+
 You should use `clog`/`clogn` instead of `dbg`/`dbgn` in the browser console window,
 because `clog`/`clogn` uses the `console.log` function of browser's developer tools to
 style the form. You can see its effect <<style-option, here>>.
@@ -195,9 +195,9 @@ dbgn: (+ 2 (* 3 4)) =>
 Of course, you should use the `clog`/`clogn` macros in
 link:https://electronjs.org/[Electron] apps on Node.js, because Electron supports colors
 in its `console.log` function.
-****
 
 
+:sectnums:
 ## `dbg` examples
 
 NOTE: You can see every example source code of this document in
