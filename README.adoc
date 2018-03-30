@@ -152,49 +152,9 @@ file.
   like Chrome DevTools.
 
 
-### Recommendations on use of *Debux* macros
-
-You should use `clog`/`clogn` instead of `dbg`/`dbgn` in the browser console window,
-because `clog`/`clogn` uses the `console.log` function of browser's developer tools to
-style the form. You can see its effect <<style-option, here>>.
-
-However, you should use `dbg`/`dbgn` instead of `clog`/`clogn` on Node.js JavaScript
-console, because Node.js doesn't support colors in its `console.log` function. The
-following shows the example.
-
-[source]
-.example.node
-....
-(ns example.node
-  (:require [cljs.nodejs :as nodejs]
-            [debux.cs.core :refer-macros [clog clogn dbg dbgn]] ))
-
-(defn -main [& args]
-  (dbgn (+ 2 (* 3 4)))
-  (clogn (+ 2 (* 3 4))))
-
-(set! *main-cli-fn* -main)
-....
-
-[listing]
-.JavaScript console output on Node.js
-----
-dbgn: (+ 2 (* 3 4)) =>
-| (* 3 4) =>
-|   12
-| (+ 2 (* 3 4)) =>
-|   14
-
-%cclogn: %c (+ 2 (* 3 4)) %c => color: #8b008b background: #ffc125; color: black color: black
-| %c (* 3 4) %c => background: #ffc125; color: black color: black
-|   12
-| %c (+ 2 (* 3 4)) %c => background: #ffc125; color: black color: black
-|   14
-----
-
-Of course, you should use the `clog`/`clogn` macros in
-link:https://electronjs.org/[Electron] apps on Node.js, because Electron supports colors
-in its `console.log` function.
+TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in the browser
+     console window, because `clog`/`clogn` uses the `console.log` function of browser's
+     developer tools to style the form. You can see its effect <<style-option, here>>.
 
 
 ## `dbg` examples
@@ -579,7 +539,7 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 | :skip-form-itself-type  | catch comment declare definline definterface defmacro defmulti
                             defprotocol defrecord defstruct deftype extend-protocol
                             extend-type finally gen-class gen-interface import memfn new
-                            ns proxy proxy-super quote refer-clojure reify sync var throw
+                            ns proxy proxy-super quote refer-clojure reify sync throw var
 | :expand-type | pass:q[.. -> ->> doto cond-> cond->> condp import some-> some->>]
 | :dot-type    | .
 
@@ -2334,6 +2294,7 @@ When using `break`, you can use `:if` like this.
 image:break-4.png[]
 
 
+
 [[debux-config]]
 ## How to configure *debux*
 
@@ -2417,6 +2378,47 @@ is an example.
 (d/set-ns-whitelist! ["example.clog*"])
 (d/set-ns-blacklist! ["example.clogn"])
 ....
+
+
+## Using *debux* macros on Node.js
+
+You should use `dbg`/`dbgn` instead of `clog`/`clogn` on Node.js JavaScript
+console, because Node.js doesn't support colors in its `console.log` function. The
+following shows the example.
+
+[source]
+.example.node
+....
+(ns example.node
+  (:require [cljs.nodejs :as nodejs]
+            [debux.cs.core :refer-macros [clog clogn dbg dbgn]] ))
+
+(defn -main [& args]
+  (dbgn (+ 2 (* 3 4)))
+  (clogn (+ 2 (* 3 4))))
+
+(set! *main-cli-fn* -main)
+....
+
+[listing]
+.JavaScript console output on Node.js
+----
+dbgn: (+ 2 (* 3 4)) =>
+| (* 3 4) =>
+|   12
+| (+ 2 (* 3 4)) =>
+|   14
+
+%cclogn: %c (+ 2 (* 3 4)) %c => color: #8b008b background: #ffc125; color: black color: black
+| %c (* 3 4) %c => background: #ffc125; color: black color: black
+|   12
+| %c (+ 2 (* 3 4)) %c => background: #ffc125; color: black color: black
+|   14
+----
+
+Of course, you should use the `clog`/`clogn` instead of `dbg`/`dbgn`
+link:https://electronjs.org/[Electron] apps on Node.js, because Electron supports colors
+in its `console.log` function.
 
 
 [#browser-repl]
