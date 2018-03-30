@@ -149,12 +149,53 @@ file.
 ** Refer to <<browser-repl>> for Browser REPL usage.
 
 . `dbg`/`dbgn` , `clog`/`clogn` and `break` can be used in the browser console window
-  like Google DevTool.
-+
+  like Chrome DevTools.
 
-TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in the browser
-     console window, because `clog`/`clogn` uses the `console.log` function of browser's
-     developer tools to style the form.
+[sidebar]
+.Recommendations on use of *Debux* macros
+****
+You should use `clog`/`clogn` instead of `dbg`/`dbgn` in the browser console window,
+because `clog`/`clogn` uses the `console.log` function of browser's developer tools to
+style the form. You can see its effect <<style-option, here>>.
+
+However, you should use `dbg`/`dbgn` instead of `clog`/`clogn` on Node.js JavaScript
+console, because Node.js doesn't support colors in its `console.log` function. The
+following shows the example.
+
+[source]
+.example.node
+....
+(ns example.node
+  (:require [cljs.nodejs :as nodejs]
+            [debux.cs.core :refer-macros [clog clogn dbg dbgn]] ))
+
+(defn -main [& args]
+  (dbgn (+ 2 (* 3 4)))
+  (clogn (+ 2 (* 3 4))))
+
+(set! *main-cli-fn* -main)
+....
+
+[listing]
+.JavaScript console output on Node.js
+----
+dbgn: (+ 2 (* 3 4)) =>
+| (* 3 4) =>
+|   12
+| (+ 2 (* 3 4)) =>
+|   14
+
+%cclogn: %c (+ 2 (* 3 4)) %c => color: #8b008b background: #ffc125; color: black color: black
+| %c (* 3 4) %c => background: #ffc125; color: black color: black
+|   12
+| %c (+ 2 (* 3 4)) %c => background: #ffc125; color: black color: black
+|   14
+----
+
+Of course, you should use the `clog`/`clogn` macros in
+link:https://electronjs.org/[Electron] apps on Node.js, because Electron supports colors
+in its `console.log` function.
+****
 
 
 ## `dbg` examples
@@ -2110,10 +2151,10 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 |   6
 ----
 
+[[style-option]]
 ### `:style` option (CSS Styling)
 
-The following is the example of using `clog` and `clogn` in Google Chrome
-browser.
+The following is the example of using `clog` and `clogn` in Chrome browser.
  
 [source]
 .example/core.cljs
@@ -2249,7 +2290,7 @@ option for message, or `:if` option for conditional break.
 (break :if (< 10 20) "10 is less than 20")
 ....
 
-You can see the message in DevTool's console window.
+You can see the message in DevTools' console window.
 
 image:break-1.png[title="break examples", width=550]
 
@@ -2257,7 +2298,7 @@ image:break-1.png[title="break examples", width=550]
 ### Callstack, locals, etc
 
 After setting the breakpoint, you can inspect the callstack, locals, etc. in the browser's
-DevTool window.
+DevTools window.
 
 [source]
 ....
@@ -2271,7 +2312,7 @@ DevTool window.
 
 image:break-2.png[]
 
-You can see the message in DevTool's console window.
+You can see the message in DevTools' console window.
 
 image:break-3.png[width=550]
   
@@ -2570,3 +2611,7 @@ When you double-click on one of the open parentheses and the following string is
 Copyright © 2015--2018 Young Tae Kim
 
 Distributed under the Eclipse Public License either version 1.0 or any later version.
+
+
+
+
