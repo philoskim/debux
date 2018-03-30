@@ -41,7 +41,6 @@
   nil)
 
 (defn ns-match? [current-ns target-ns]
-  ;(println current-ns target-ns)
   (-> (re-pattern (str/escape target-ns {\. "\\." \* ".*"}))
       (re-matches current-ns)))
 
@@ -49,8 +48,6 @@
   (some #(ns-match? current-ns %) ns-list))
 
 (defn debug-enabled? [current-ns]
-  ;(println (pr-str "config: " @config*))
-  ;(println (pr-str "*ns* " current-ns))
   (let [{:keys [debug-mode ns-whitelist ns-blacklist]} @config*]
     (when debug-mode
       (cond

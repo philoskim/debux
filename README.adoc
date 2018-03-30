@@ -22,14 +22,20 @@ this library to debug my own Clojure(Script) code and to analyze other developer
  functions from this library, it will emit debugging messages to the REPL window or the
  Chrome DevTools' console.
 
-*In production*, Use the `philoskim/debux-stubs` (link:https://github.com/philoskim/debux-stubs[]) library. This has the same public API as
- `philoskim/debux` but the macros simply expand only to the given original form
- itself. Never use `philoskim/debux` library in production because it will impose too much
- overhead on the peformance, especially in using `dbgn` and `clogn`.
+*In production*, Use the `philoskim/debux-stubs`
+ (link:https://github.com/philoskim/debux-stubs[]) library. This has the same public API
+ as `philoskim/debux` but the macros simply expand only to the given original form itself.
 
-With this setup, your use of *debux* macros will have zero runtime and compile time cost
-in production builds, and are able to be turned off at development time too via the
-`set-debug-mode!` function.
+With this setup
+
+* *in production*, your use of *debux* macros will have zero runtime and compile time
+   cost,
+
+* *in development*, *debux* macros are able to be turned off too via the `set-debug-mode!`
+  function.
+
+WARNING: Never use `philoskim/debux` library in production because it will impose too much
+         overhead on the peformance, especially in using `dbgn` and `clogn`.
 
 
 ## Installation
