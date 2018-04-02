@@ -28,7 +28,7 @@ this library to debug my own Clojure(Script) code and to analyze other developer
 
 With this setup
 
-* *in production*, your use of *debux* macros will have zero runtime and compile time
+* *in production*, your use of *debux* macros will have zero run-time and compile-time
    cost,
 
 * *in development*, *debux* macros are able to be turned off too via the `set-debug-mode!`
@@ -59,45 +59,36 @@ and this to your production dependencies (make sure they are production only):
 ....
 
 
-## Change logs
+## Summary of change logs
+
+NOTE: You can see _All change logs since v0.3.0_
+https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.4.5
 ** No new features are added. Just for matching with the fixed version of `debux-stubs`.
 
 * v0.4.4
-** Added: The new `debux-stubs` library is added for production mode support. See
+** The new `debux-stubs` library is introduced for production mode support. See
    <<two-libraries, here>> for details.
-** Added: `set-debug-mode!` is added. See <<debux-config, here>> for details.
-** Added: `set-ns-whitelist!` and `set-ns-blacklist!` are added. See <<debux-config,
-   here>> for details.
+** `set-debug-mode!` is added. See <<debux-config, here>> for details.
+** `set-ns-whitelist!` and `set-ns-blacklist!` are added. See <<debux-config, here>> for
+    details.
 
-* v0.4.3 
-** Changed: The same duplicate evaluated results are not printed by default. See
-   <<dup-option>> for detalis.
-** Enhanced: The readability is enhanced for the looping constructs such as `map`,
-   `reduce`, `for`, `loop`, and so on by inserting a blank line whenever iteration
-   happens. See <<enhanced-readability, here>> for examples.
+* v0.4.3
+** The same duplicate evaluated results are not printed by default. See <<dup-option>> for
+   detalis.
+** The readability is enhanced for the looping constructs such as `map`, `reduce`, `for`,
+  `loop`, and so on by inserting a blank line whenever iteration happens. See
+  <<enhanced-readability, here>> for examples.
  
 * v0.4.2
-** Fixed: Bindings spec violaton error in clojure-1.9.0 caused by `&` symbol in
-   `clojure.core/let` is fixed.
-** Added: `set-print-seq-length!` function is added to change the default number when
-   printing `seq` data type. See <<set-print-seq-length, here>> for example.
-** Added: `dbg` can be used inside `dbgn` or vice versa. `clog` can be used inside `clogn`
-   or vice versa. See <<mixed-use>> for details.
+** `set-print-seq-length!` function is added to change the default number when printing
+   `seq` data type. See <<set-print-seq-length, here>> for example.
+** `dbg` can be used inside `dbgn` or vice versa. `clog` can be used inside `clogn` or vice
+    versa. See <<mixed-use>> for details.
 
-* v0.4.1
-** Fixed: The print errors of `dbgn` and `clogn` in ClojureScript are fixed.
-** Fixed: The errors of `dbg` and `clog` in ClojureScript are fixed.
-** Added: `:loop-type` is added to the macro types.
-** Upgraded: `debux.el` is upgraded.
-
-* v0.4.0
-** Revived: The old useful features of `dbg` in version 0.2.1 are revived for practicality.
-
-NOTE: You can see _All change logs since v0.3.0_
-https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
-
+* 0.4.1
+** `debux.el` is upgraded.
 
 
 ## How to use
@@ -150,8 +141,7 @@ file.
 
 . `dbg`/`dbgn` , `clog`/`clogn` and `break` can be used in the browser console window
   like Chrome DevTools.
-
-
++
 TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in the browser
      console window, because `clog`/`clogn` uses the `console.log` function of browser's
      developer tools to style the form. You can see its effect <<style-option, here>>.
@@ -2612,7 +2602,3 @@ When you double-click on one of the open parentheses and the following string is
 Copyright © 2015--2018 Young Tae Kim
 
 Distributed under the Eclipse Public License either version 1.0 or any later version.
-
-
-
-
