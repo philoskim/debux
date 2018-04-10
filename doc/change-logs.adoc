@@ -3,6 +3,17 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.4.6
+** The following missing macros of `cljs.core` are added.
+*** `:skip-form-itself-type`
++
+`goog-define` `import-macros` `js-comment` `js-inline-comment` `require` `require-macros` 
+`simple-benchmark`  `specify` `specify!` `use` `use-macros`
+
+*** `:skip-arg-1-type`
++
+`this-as`
+
 * v0.4.5
 ** No new features are added. Just for matching with the fixed version of `debux-stubs`.
 

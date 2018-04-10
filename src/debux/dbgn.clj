@@ -34,6 +34,44 @@
 ;;      (d (+ (d a) (d b))))
 
 
+;;; Basic strategy for dbgn when recur included
+
+;; 1. origingal form
+;; (loop [acc 1
+;;        n   3]
+;;   (if (zero? n)
+;;     acc
+;;     (recur (* acc n) (dec n))))
+
+;; 2. after insert-o-skip-for-recur
+;; (loop [acc 1
+;;        n   3]
+;;   (o-skip (if (zero? n)
+;;             acc
+;;             (o-skip (recur (* acc n) (dec n))))))
+
+;; 3. after insert-skip
+;; (loop (o-skip [(skip acc) 1
+;;                (skip n)   3])
+;;   (o-skip (if (zero? n)
+;;             acc
+;;             (o-skip (recur (* acc n) (dec n))))))
+
+;; 4. after insert-d
+;; (d (loop (o-skip [(skip acc) 1
+;;                   (skip n)   3])
+;;      (o-skip (if (d (zero? (d n)))
+;;                (d acc)
+;;                (o-skip (recur (d (* (d acc) (d n))) (d (dec (d n)))))))))
+
+;; 5. after remove-skip
+;; (d (loop [acc 1
+;;           n   3]
+;;      (if (d (zero? (d n)))
+;;        (d acc)
+;;        (recur (d (* (d acc) (d n))) (d (dec (d n)))))))
+
+
 (defn- macro-types [env]
   (if (ut/cljs-env? env)
     @cs.mt/macro-types*

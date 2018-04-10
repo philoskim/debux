@@ -1,5 +1,6 @@
 (ns example.core
-  (:require example.clogn
+  (:require #_ example.lab
+            example.clogn
             example.clog
             example.dbgn
             example.dbg
