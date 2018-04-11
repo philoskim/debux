@@ -48,14 +48,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.4.6"]
+[philoskim/debux "0.4.7"]
 ....
 
 and this to your production dependencies (make sure they are production only):
 
 [source]
 ....
-[philoskim/debux-stubs "0.4.6"]
+[philoskim/debux-stubs "0.4.7"]
 ....
 
 
@@ -63,6 +63,14 @@ and this to your production dependencies (make sure they are production only):
 
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
+
+* v0.4.7
+** The following exception error is fixed.
++
+[listing]
+----
+CompilerException java.lang.Exception: No namespace: cljs.core found, compiling:(debux/cs/macro_types.cljc:5:1)
+----
 
 * v0.4.6
 ** The following missing macros of `cljs.core` are added.
@@ -2448,7 +2456,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.854"]
-                 [philoskim/debux "0.4.6"]]
+                 [philoskim/debux "0.4.7"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

@@ -22,3 +22,8 @@ dbg
 (dbg 10)
 (dbg (+ 2 10))
 (dbg "hello")
+(use 'debux.core)
+(dbg (+ 10 200))
+(dbg 1)
+(use 'debux.core)
+(dbgn (+ 2 3 (* 4 5)))

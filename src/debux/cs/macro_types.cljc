@@ -2,44 +2,44 @@
   (:require [clojure.set :as set]
             [debux.common.util :as ut] ))
 
-(alias 'core 'cljs.core)
-
 (def macro-types*
-  (atom {:def-type `#{def core/defonce}
-         :defn-type `#{core/defn core/defn-}
-         :fn-type `#{core/fn fn*}
+  (atom {:def-type '#{def cljs.core/defonce}
+         :defn-type '#{cljs.core/defn cljs.core/defn-}
+         :fn-type '#{cljs.core/fn fn*}
 
          :let-type
-         `#{core/let core/binding core/dotimes core/if-let core/if-some core/loop
-            core/when-first core/when-let core/when-some core/with-out-str
-            core/with-redefs}
-         :letfn-type `#{core/letfn}
-         :loop-type `#{core/loop}
+         '#{cljs.core/let cljs.core/binding cljs.core/dotimes cljs.core/if-let
+            cljs.core/if-some cljs.core/loop cljs.core/when-first cljs.core/when-let
+            cljs.core/when-some cljs.core/with-out-str cljs.core/with-redefs}
+         :letfn-type '#{cljs.core/letfn}
+         :loop-type '#{cljs.core/loop}
          
-         :for-type `#{core/for core/doseq}
-         :case-type `#{core/case}
+         :for-type '#{cljs.core/for cljs.core/doseq}
+         :case-type '#{cljs.core/case}
 
-         :skip-arg-1-type `#{core/this-as set!}
-         :skip-arg-2-type `#{core/as->}
-         :skip-arg-1-2-type `#{}
-         :skip-arg-2-3-type `#{core/amap core/areduce}
-         :skip-arg-1-3-type `#{core/defmethod}
+         :skip-arg-1-type '#{cljs.core/this-as set!}
+         :skip-arg-2-type '#{cljs.core/as->}
+         :skip-arg-1-2-type '#{}
+         :skip-arg-2-3-type '#{cljs.core/amap cljs.core/areduce}
+         :skip-arg-1-3-type '#{cljs.core/defmethod}
          :skip-form-itself-type
-         `#{catch core/comment core/declare core/defmacro core/defmulti core/defprotocol
-            core/defrecord core/deftype core/extend-protocol core/extend-type finally
-            core/goog-define core/import core/import-macros core/js-comment
-            core/js-inline-comment core/memfn new quote core/refer-clojure core/reify
-            core/require core/require-macros core/simple-benchmark core/specify core/specify!
-            throw core/use core/use-macros var 
+         '#{catch cljs.core/comment cljs.core/declare cljs.core/defmacro
+            cljs.core/defmulti cljs.core/defprotocol cljs.core/defrecord
+            cljs.core/deftype cljs.core/extend-protocol cljs.core/extend-type
+            finally cljs.core/goog-define cljs.core/import cljs.core/import-macros
+            cljs.core/js-comment cljs.core/js-inline-comment cljs.core/memfn
+            new quote cljs.core/refer-clojure cljs.core/reify cljs.core/require
+            cljs.core/require-macros cljs.core/simple-benchmark cljs.core/specify
+            cljs.core/specify! throw cljs.core/use cljs.core/use-macros var 
 
-            debux.cs.core/dbg debux.cs.core/dbgn
-            debux.cs.core/clog debux.cs.core/clogn}
+            debux.cs.cljs.core/dbg debux.cs.cljs.core/dbgn
+            debux.cs.cljs.core/clog debux.cs.cljs.core/clogn}
 
          :expand-type
-         `#{core/.. core/-> core/->> core/doto
-            core/cond-> core/cond->> core/condp core/import
-            core/some-> core/some->>}
-         :dot-type `#{.} }))
+         '#{cljs.core/.. cljs.core/-> cljs.core/->> cljs.core/doto
+            cljs.core/cond-> cljs.core/cond->> cljs.core/condp cljs.core/import
+            cljs.core/some-> cljs.core/some->>}
+         :dot-type '#{.} }))
 
 
 (defn- merge-symbols [old-symbols new-symbols env]

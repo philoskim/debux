@@ -3,6 +3,14 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.4.7
+** The following exception error is fixed.
++
+[listing]
+----
+CompilerException java.lang.Exception: No namespace: cljs.core found, compiling:(debux/cs/macro_types.cljc:5:1)
+----
+
 * v0.4.6
 ** The following missing macros of `cljs.core` are added.
 *** `:skip-form-itself-type`

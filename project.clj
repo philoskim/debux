@@ -1,4 +1,4 @@
-(defproject philoskim/debux "0.4.6"
+(defproject philoskim/debux "0.4.7"
   :description "Debux library for debugging Clojure and ClojureScript"
   :url "https://github.com/philoskim/debux"
   :license {"Eclipse Public License"
