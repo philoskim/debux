@@ -65,16 +65,10 @@ NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.4.7
-** The following exception error is fixed.
-+
-[listing]
-----
-CompilerException java.lang.Exception: No namespace: cljs.core found, compiling:(debux/cs/macro_types.cljc:5:1)
-----
+** link:https://github.com/philoskim/debux/issues/6[Issue #6] bug fixed.
 
 * v0.4.6
-** The following missing macros of `cljs.core` are added.
-
+** The following missing macros of `cljs.core` in ClojureScript are added.
 *** `:skip-form-itself-type`
 +
 `goog-define` `import-macros` `js-comment` `js-inline-comment` `require` `require-macros` 
@@ -84,7 +78,7 @@ CompilerException java.lang.Exception: No namespace: cljs.core found, compiling:
 +
 `this-as`
 
-** See link:https://gist.github.com/philoskim/1d61574f69902c102d1a3c5c9112c6ba[here] for how to enumerate the `cljs.core` macros in ClojureScript.
+** See link:https://gist.github.com/philoskim/1d61574f69902c102d1a3c5c9112c6ba[here] for how to enumerate all the `cljs.core` macros in ClojureScript.
 
 * v0.4.5
 ** No new features are added. Just for matching with the fixed version of `debux-stubs`.

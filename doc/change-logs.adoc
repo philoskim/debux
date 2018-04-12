@@ -4,12 +4,7 @@
 :sectnums:
 
 * v0.4.7
-** The following exception error is fixed.
-+
-[listing]
-----
-CompilerException java.lang.Exception: No namespace: cljs.core found, compiling:(debux/cs/macro_types.cljc:5:1)
-----
+** link:https://github.com/philoskim/debux/issues/6[Issue #6] bug fixed.
 
 * v0.4.6
 ** The following missing macros of `cljs.core` are added.
