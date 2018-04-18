@@ -4,8 +4,12 @@
 
 == Special forms
 
+=== Clojure
+
 [source]
 ....
+;; As of clojure 1.8.0
+
 (keys (sort (. clojure.lang.Compiler specials)))
 ; => (& . case* catch def deftype* do finally fn* if let* letfn* loop* monitor-enter
 ;     monitor-exit new quote recur reify* set! throw try var clojure.core/import*)
@@ -13,6 +17,21 @@
 (count (keys (sort (. clojure.lang.Compiler specials))))
 ; => 24
 ....
+
+=== ClojureScript
+
+http://cljs.github.io/api/cljs.core/
+
+[listing]
+----
+;; As of clojurescript 1.10.238
+
+. case* catch def defrecord* deftype* do finally fn* if
+in-ns js* let* letfn* load load-file load-namespace loop* new ns
+ns* quote recur set! throw try var
+
+;; 총 27개
+----
 
 
 == clojure.core macro symbols
