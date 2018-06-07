@@ -65,7 +65,7 @@ NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.4.8
-** A bug in `dbg`/`clog` is fixed, which causes multipe evaluations in debugging the side
+** A bug in `dbg`/`clog` is fixed, which causes multiple evaluations in debugging the side
    effect code.
 
 * v0.4.7
