@@ -3,8 +3,12 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.4.8
+** A bug in `dbg`/`clog` is fixed, which causes multipe evaluations in debugging the side
+   effect code.
+
 * v0.4.7
-** link:https://github.com/philoskim/debux/issues/6[Issue #6] bug fixed.
+** link:https://github.com/philoskim/debux/issues/6[Issue #6] bug is fixed.
 
 * v0.4.6
 ** The following missing macros of `cljs.core` are added.

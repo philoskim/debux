@@ -30,7 +30,7 @@ http://cljs.github.io/api/cljs.core/
 in-ns js* let* letfn* load load-file load-namespace loop* new ns
 ns* quote recur set! throw try var
 
-;; 총 27개
+;; total 27 special forms
 ----
 
 
