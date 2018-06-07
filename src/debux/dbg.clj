@@ -47,10 +47,10 @@
 (defmacro dbg-others
   [form {:keys [n] :as opts}]
   `(dbg-base ~form ~opts
-     (let [result# ~form
-           form# ~(if (vector? form) (ut/vec->map form) form)]
-       (ut/pprint-result-with-indent (ut/take-n-if-seq ~n form#) 1)
-       result#)))
+     (let [result# ~form]
+       (ut/pprint-result-with-indent (ut/take-n-if-seq ~n result#) 1)
+       result#) ))
+
 
 (def dbg*
   {:->   '#{clojure.core/-> cljs.core/->}

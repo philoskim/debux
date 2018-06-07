@@ -50,9 +50,8 @@
 (defmacro clog-others
   [form {:keys [n js] :as opts}]
   `(clog-base ~form ~opts
-     (let [result# ~form
-           form# ~(if (vector? form) (ut/vec->map form) form)]
-       (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n form#)
+     (let [result# ~form]
+       (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n result#)
                                       (:indent-level @ut/config*) ~js)
        result#) ))
 
