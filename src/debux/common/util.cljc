@@ -73,18 +73,6 @@
 (defn lazy-seq? [coll]
   (instance? clojure.lang.IPending coll))
 
-(defn vec->map
-  "Transforms a vector into an array-map with key/value pairs.
-  (def a 10)
-  (def b 20)
-  (vec-map [a b :c [30 40]])
-  => {:a 10 :b 20 ::c :c :[30 40] [30 40]}"
-  [v]
-  (apply array-map
-         (mapcat (fn [elm]
-                   `[~(keyword (str elm)) ~elm])
-                 v) ))
-
 (defn replace-& [v]
   (walk/postwalk-replace {'& ''&} v))
 
