@@ -31,20 +31,33 @@
       (ms/skip (catch Exception ~'e (throw ~'e)))
       (ms/skip (finally (swap! ut/config* update :indent-level dec))) ))
 
+(defn insert-skip-in-prepost [prepost]
+  `(ms/skip ~prepost))
+
 (defn- insert-indent-info-in-defn-body [arity]
-  (let [body (get-in arity [:body 1])
-        body' (insert-indent-info body)]
-    (assoc-in arity [:body 1] [body']) ))
+  (let [body (:body arity)
+        body' (ut/vec->map body)]
+    (cond
+      (:body body') (update-in arity [:body 1]
+                               #(vector (insert-indent-info %)))
+      
+      (:prepost+body body')
+      (-> arity
+          (update-in [:body 1 :prepost] insert-skip-in-prepost)
+          (update-in [:body 1 :body] #(vector (insert-indent-info %))) ))))
 
 (defn insert-skip-in-defn [form]
   (let [name (first form)
         conf (s/conform ::ms/defn-args (next form))
-        arity-1 (get-in conf [:bs 1])
-        arity-n (get-in conf [:bs 1 :bodies])]
-    (->> (cond
-           arity-n (assoc-in conf [:bs 1 :bodies] (mapv insert-indent-info-in-defn-body
-                                                        arity-n))
-           arity-1 (assoc-in conf [:bs 1] (insert-indent-info-in-defn-body arity-1)))
+        attr-map (get conf :meta)
+        bs (-> (get conf :bs) ut/vec->map)
+        arity-1 (get bs :arity-1)
+        arity-n (get bs :arity-n)]
+    (->> (cond-> conf
+           attr-map (assoc :meta `(ms/skip ~attr-map))
+           arity-1 (update-in [:bs 1] insert-indent-info-in-defn-body)
+           arity-n (assoc-in [:bs 1 :bodies] (mapv insert-indent-info-in-defn-body
+                                                       (:bodies arity-n))))
          (s/unform ::ms/defn-args)
          (cons name) )))
 
@@ -198,3 +211,5 @@
         (recur (z/next loc) false)
 
         :else (recur (z/next loc) false) ))))
+
+

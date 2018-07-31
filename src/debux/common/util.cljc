@@ -76,6 +76,9 @@
 (defn replace-& [v]
   (walk/postwalk-replace {'& ''&} v))
 
+(defn vec->map [v]
+  (apply hash-map v))
+
 
 ;;; zipper
 (defn sequential-zip [root]

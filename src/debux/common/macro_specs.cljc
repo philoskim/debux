@@ -61,6 +61,37 @@
      {:added "1.0"}
      [x y]
      (+ x y)))
+; => #'debux.common.macro-specs/f1
+
+(s/conform ::defn-args (next f1))
+; => {:name add1,
+;     :docstring "add1 docstring",
+;     :meta {:added "1.0"},
+;     :bs [:arity-1 {:args {:args [x y]},
+;                    :body [:body [(+ x y)]]}]}
+
+(def f1-1
+  '(defn add1
+     "add1 docstring"
+     {:added "1.0"}
+     [x y]
+     {:pre [(and (pos? x) (pos? y))]
+      :post [(pos? %)]}
+     (+ x y)))
+
+(s/conform ::defn-args (next f1-1))
+; => {:name add1,
+;     :docstring "add1 docstring",
+;     :meta {:added "1.0"},
+;     :bs
+;     [:arity-1
+;      {:args {:args [x y]},
+;       :body
+;       [:prepost+body
+;        {:prepost {:pre [(and (pos? x) (pos? y))], :post [(pos? %)]},
+;         :body [(+ x y)]}]}]}
+(s/explain ::defn-args (next f1))
+
 
 (def f2
   '(defn add2
@@ -71,23 +102,48 @@
      ([x y] (+ x y))
      ([x y & zs] (apply + x y zs))))
 
-(s/conform ::defn-args (next f1))
-; => {:name add1, :docstring "add1 docstring", :meta {:added "1.0"},
-;     :bs [:arity-1 {:args {:args [x y]},
-;                    :body [:body [(+ x y)]]}]}
-(s/explain ::defn-args (next f1))
-
 (s/conform ::defn-args (next f2))
-; => {:name add2, :docstring "add2 docstring", :meta {:added "1.0"},
-;     :bs [:arity-n {:bodies [{:args {}, :body [:body [0]]}
-;                             {:args {:args [x]}, :body [:body [x]]}
-;                             {:args {:args [x y]}, :body [:body [(+ x y)]]}
-;                             {:args {:args [x y & zs]}, :body [:body [(apply + x y zs)]]}]}]}
+; => {:name add2,
+;     :docstring "add2 docstring",
+;     :meta {:added "1.0"},
+;     :bs
+;     [:arity-n
+;      {:bodies
+;       [{:args {}, :body [:body [0]]}
+;        {:args {:args [x]}, :body [:body [x]]}
+;        {:args {:args [x y]}, :body [:body [(+ x y)]]}
+;        {:args {:args [x y & zs]}, :body [:body [(apply + x y zs)]]}]}]}
+
+(def f2-2
+  '(defn add2
+     "add2 docstring"
+     {:added "1.0"}
+     ([] 0)
+     ([x] {:pre [(pos? x)]} x)
+     ([x y] {:pre [(pos? x)]} (+ x y))
+     ([x y & zs] {:pre [(pos? x)]} (apply + x y zs))))
+
+(s/conform ::defn-args (next f2-2))
+; => {:name add2,
+;     :docstring "add2 docstring",
+;     :meta {:added "1.0"},
+;     :bs
+;     [:arity-n
+;      {:bodies
+;       [{:args {}, :body [:body [0]]}
+;        {:args {:args [x]},
+;         :body [:prepost+body {:prepost {:pre [(pos? x)]},
+;                               :body [x]}]}
+;        {:args {:args [x y]},
+;         :body [:prepost+body {:prepost {:pre [(pos? x)]}, :body [(+ x y)]}]}
+;        {:args {:args [x y & zs]},
+;         :body [:prepost+body {:prepost {:pre [(pos? x)]}, :body [(apply + x y zs)]}]}]}]}
 (s/explain ::defn-args (next f2))
 
 
 (def f3
-  '(fn add1 [x y]
+  '(fn add1
+     [x y]
      (+ x y)))
 
 (def f4
@@ -117,6 +173,6 @@
 ; => {:bs [:arity-1 {:args {:args [p1__30164# p2__30165#]},
 ;                    :body [:body [(+ p1__30164# p2__
 (s/explain ::fn-args (next f5))
-
+  
 ) ; end of comment
 
