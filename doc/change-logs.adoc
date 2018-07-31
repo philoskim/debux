@@ -3,6 +3,10 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.4.9
+** link:https://github.com/philoskim/debux/issues/7[Issue #7] bug fixed: _attr-map_ and
+   _prepost-map_ in `defn` or `defn-` are preperly handled now.
+
 * v0.4.8
 ** A bug in `dbg`/`clog` is fixed, which causes multiple evaluations in debugging the side
    effect code.

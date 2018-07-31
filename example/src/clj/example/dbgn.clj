@@ -61,7 +61,34 @@
 
 (calc3 2 5)
 
+;; defns with attr-map and prepost-map
+(dbgn (defn add-pos
+        "attr-map-fn doc-string"
+        {:aaa 10}
+        [a b]
+        {:pre [(and (pos? a) (pos? b))]
+         :post [(pos? %)]}
+        (+ a b)))
 
+(add-pos 10 20)
+
+(dbgn (defn add-pos2
+        "attr-map-fn doc-string"
+        {:aaa 1000}
+        ([a]
+         {:pre [(pos? a)]
+          :post [(pos? %)]}
+         (+ a 100))
+
+        ([a b]
+         {:pre [(and (pos? a) (pos? b))]
+          :post [(pos? %)]}
+         (+ a b))))
+
+(add-pos2 10)
+(add-pos2 10 20)
+
+  
 ;;; :fn-type example
 (dbgn (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]))
 (dbgn (map #(* % 10) [1 5 9]))
