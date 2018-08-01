@@ -79,14 +79,12 @@
 (defn- process-let-binding [[binding form]]
    [`(ms/skip ~binding) form])
 
-(def non-insert-blank-line-let-type* '#{if-let if-some})
-  
 (defn insert-skip-in-let
   [[name bs & body]]
   (let [bs' (->> (partition 2 bs)
                  (mapcat process-let-binding)
                  vec)]
-    (if (non-insert-blank-line-let-type* name)
+    (if ('#{if-let if-some} name)
       (list* name `(ms/o-skip ~bs') body)
       (list* name `(ms/o-skip ~bs')
              `(ms/skip (ut/insert-blank-line))
