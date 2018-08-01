@@ -48,14 +48,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.4.9"]
+[philoskim/debux "0.4.10"]
 ....
 
 and this to your production dependencies (make sure they are production only):
 
 [source]
 ....
-[philoskim/debux-stubs "0.4.9"]
+[philoskim/debux-stubs "0.4.10"]
 ....
 
 
@@ -63,6 +63,10 @@ and this to your production dependencies (make sure they are production only):
 
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
+
+* v0.4.10
+** link:https://github.com/philoskim/debux/issues/8[Issue #8] bug fixed: `if-let` and
+   `if-some` in `dbgn`/'clogn` work without error now.
 
 * v0.4.9
 ** link:https://github.com/philoskim/debux/issues/7[Issue #7] bug fixed: _attr-map_ and
@@ -2427,7 +2431,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.854"]
-                 [philoskim/debux "0.4.9"]]
+                 [philoskim/debux "0.4.10"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

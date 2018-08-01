@@ -3,6 +3,10 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.4.10
+** link:https://github.com/philoskim/debux/issues/8[Issue #8] bug fixed: `if-let` and
+   `if-some` in `dbgn`/'clogn` work without error now.
+
 * v0.4.9
 ** link:https://github.com/philoskim/debux/issues/7[Issue #7] bug fixed: _attr-map_ and
    _prepost-map_ in `defn` or `defn-` are preperly handled now.

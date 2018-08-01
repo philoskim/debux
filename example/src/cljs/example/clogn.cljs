@@ -88,6 +88,14 @@
             [b c] [(+ a 10) (* a 2)]] 
          (- (+ a b) c)))
 
+(clogn (if-let [user-json nil]
+          ::then
+          ::else))
+
+(clogn (if-some [user-json nil]
+          ::then
+          ::else))
+
 
 ;;; :letfn-type
 (clogn (letfn [(twice [x]

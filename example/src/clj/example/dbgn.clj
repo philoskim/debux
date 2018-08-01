@@ -100,6 +100,14 @@
             [b c] [(+ a 10) (* a 2)]] 
          (- (+ a b) c)))
 
+(dbgn (if-let [user-json nil]
+        ::then
+        ::else))
+
+(dbgn (if-some [user-json nil]
+        ::then
+        ::else))
+
 
 ;;; :letfn-type
 (dbgn (letfn [(twice [x]
