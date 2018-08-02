@@ -10,6 +10,8 @@ figwheel_server.log
 /example/target
 /example/resources/public/js
 /example/figwheel_server.log
+/example/.rebel_readline_history
+
 
 /resources/public/js/
 

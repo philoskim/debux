@@ -108,10 +108,12 @@
 ;;; symbol with namespace
 #?(:clj
    (defn- var->symbol [v]
-     (let [m    (meta v)
-           ns   (str (ns-name (:ns m)))
-           name (str (:name m))]
-       (symbol ns name) )))
+     (if (= (type v) java.lang.Class)
+       v
+       (let [m    (meta v)
+             ns   (str (ns-name (:ns m)))
+             name (str (:name m))]
+         (symbol ns name) ))))
 
 #?(:clj
    (defn- ns-symbol-for-clj [sym]
