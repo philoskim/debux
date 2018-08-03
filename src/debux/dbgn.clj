@@ -110,7 +110,6 @@
             (-> (z/replace loc (sk/insert-skip-in-fn node))
                 z/next
                 recur)
-            
 
             (or ((:let-type (macro-types env)) sym)
                 ((:loop-type (macro-types env)) sym))
@@ -118,6 +117,11 @@
                 z/next
                 recur)
 
+            ((:if-let-type (macro-types env)) sym)
+            (-> (z/replace loc (sk/insert-skip-in-if-let node))
+                z/next
+                recur)            
+            
             ((:letfn-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-letfn node))
                 z/next

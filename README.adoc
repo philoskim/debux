@@ -510,15 +510,16 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 
 
 [#macro-type-table, cols="^3m,<7m", options="header"]
-.Categorized 16 types of macros in `dbgn`/`clogn`
+.Categorized 17 types of macros in `dbgn`/`clogn`
 |===
 
 | Macro types | Macros in `clojure.core` and special forms
 | :def-type   | def defonce
 | :defn-type  | defn defn-
 | :fn-type    | fn fn*
-| :let-type   | let binding dotimes if-let if-some when-first when-let when-some
-                with-in-str with-local-vars with-open with-out-str with-redefs
+| :let-type   | let binding dotimes when-first when-let when-some with-in-str
+                with-local-vars with-open with-out-str with-redefs
+| :if-let-type | if-let if-some
 | :letfn-type | letfn
 | :loop-type  | loop
 | :for-type   | for doseq
@@ -828,6 +829,36 @@ dbgn: (let [a (+ 1 2) [b c] [(+ a 10) (* a 2)]] (- (+ a b) c)) =>
 |   10
 | (let [a (+ 1 2) [b c] [(+ a 10) (* a 2)]] (- (+ a b) c)) =>
 |   10
+----
+
+#### `:if-let-type` example
+
+This type of macros are a little different from `:let-type` macros in that they need only
+one or two forms in their body.
+
+[source]
+....
+(def a* 10)
+
+(dbgn (if-let [s a*]
+        (+ s 100)
+        false))
+; => 110
+....
+
+
+[listing]
+.REPL output
+----
+dbgn: (if-let [s a*] (+ s 100) false) =>
+| a* =>
+|   10
+| s =>
+|   10
+| (+ s 100) =>
+|   110
+| (if-let [s a*] (+ s 100) false) =>
+|   110
 ----
 
 
@@ -1579,11 +1610,11 @@ dbg: (show-macros) =>
 |    :skip-arg-1-type #{clojure.core/with-precision set!},
 |    :let-type
 |    #{clojure.core/when-let example.dbgn/my-let clojure.core/let
-|      clojure.core/with-local-vars clojure.core/if-let
-|      clojure.core/when-some clojure.core/dotimes clojure.core/with-open
-|      clojure.core/if-some clojure.core/with-redefs clojure.core/binding
+|      clojure.core/with-local-vars clojure.core/when-some clojure.core/dotimes
+|      clojure.core/with-open clojure.core/with-redefs clojure.core/binding
 |      clojure.core/with-in-str clojure.core/with-out-str clojure.core/loop
 |      clojure.core/when-first},
+|    :if-let-type #{clojure.core/if-let clojure.core/if-some} 
 |    :skip-arg-2-type #{clojure.core/as->},
 |    :defn-type #{clojure.core/defn clojure.core/defn-},
 |    :loop-type #{clojure.core/loop},
@@ -1661,47 +1692,23 @@ dbg: (d/show-macros) =>
 |   {:fn-type #{fn* cljs.core/fn},
 |    :skip-form-itself-type
 |    #{cljs.core/simple-benchmark cljs.core/defmulti cljs.core/specify!
-|      cljs.core/goog-define
-|      cljs.core/import-macros
-|      finally
-|      cljs.core/specify
-|      cljs.core/use
-|      cljs.core/defprotocol
-|      cljs.core/use-macros
-|      cljs.core/extend-protocol
-|      new
-|      cljs.core/import
-|      cljs.core/defrecord
-|      cljs.core/declare
-|      cljs.core/reify
-|      cljs.core/deftype
-|      cljs.core/require
-|      cljs.core/comment
-|      cljs.core/memfn
-|      cljs.core/require-macros
-|      var
-|      cljs.core/js-comment
-|      quote
-|      cljs.core/refer-clojure
-|      cljs.core/js-inline-comment
-|      catch
-|      cljs.core/extend-type
-|      throw
+|      cljs.core/goog-define cljs.core/import-macros finally cljs.core/specify
+|      cljs.core/use cljs.core/defprotocol cljs.core/use-macros
+|      cljs.core/extend-protocol new cljs.core/import cljs.core/defrecord
+|      cljs.core/declare cljs.core/reify cljs.core/deftype cljs.core/require
+|      cljs.core/comment cljs.core/memfn cljs.core/require-macros var
+|      cljs.core/js-comment quote cljs.core/refer-clojure 
+|      cljs.core/js-inline-comment catch cljs.core/extend-type throw
 |      cljs.core/defmacro},
 |    :case-type #{cljs.core/case},
 |    :skip-arg-2-3-type #{cljs.core/amap cljs.core/areduce},
 |    :skip-arg-1-type #{set! cljs.core/this-as},
 |    :let-type
 |    #{example.macro/my-let cljs.core/with-redefs cljs.core/binding
-|      cljs.core/when-first
-|      cljs.core/if-some
-|      cljs.core/let
-|      cljs.core/with-out-str
-|      cljs.core/loop
-|      cljs.core/when-let
-|      cljs.core/when-some
-|      cljs.core/if-let
+|      cljs.core/when-first cljs.core/if-some cljs.core/let 
+|      cljs.core/with-out-str cljs.core/when-let cljs.core/when-some
 |      cljs.core/dotimes},
+|    :if-let-type #{cljs.core/if-let cljs.core/if-some},
 |    :skip-arg-2-type #{cljs.core/as->},
 |    :defn-type #{cljs.core/defn- cljs.core/defn},
 |    :loop-type #{cljs.core/loop},
@@ -1712,12 +1719,8 @@ dbg: (d/show-macros) =>
 |    :skip-arg-1-2-type #{},
 |    :expand-type
 |    #{cljs.core/.. cljs.core/some-> cljs.core/-> cljs.core/cond->>
-|      cljs.core/import
-|      cljs.core/doto
-|      cljs.core/condp
-|      cljs.core/cond->
-|      cljs.core/some->>
-|      cljs.core/->>}, 
+|      cljs.core/import cljs.core/doto cljs.core/condp cljs.core/cond->
+|      cljs.core/some->> cljs.core/->>}, 
 |    :skip-arg-1-3-type #{cljs.core/defmethod}}
 ----
 

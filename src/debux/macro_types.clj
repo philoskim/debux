@@ -8,9 +8,9 @@
          :fn-type `#{fn fn*}
 
          :let-type
-         `#{let binding dotimes if-let if-some loop when-first when-let
-            when-some with-in-str with-local-vars with-open with-out-str
-            with-redefs}
+         `#{let binding dotimes when-first when-let when-some with-in-str
+            with-local-vars with-open with-out-str with-redefs}
+         :if-let-type `#{if-let if-some}
          :letfn-type `#{letfn}
          :loop-type `#{loop}
          

@@ -84,11 +84,16 @@
   (let [bs' (->> (partition 2 bs)
                  (mapcat process-let-binding)
                  vec)]
-    (if ('#{if-let if-some} name)
-      (list* name `(ms/o-skip ~bs') body)
-      (list* name `(ms/o-skip ~bs')
-             `(ms/skip (ut/insert-blank-line))
-             body) )))
+    (list* name `(ms/o-skip ~bs')
+           `(ms/skip (ut/insert-blank-line))
+           body) ))
+
+(defn insert-skip-in-if-let
+  [[name bs & body]]
+  (let [bs' (->> (partition 2 bs)
+                 (mapcat process-let-binding)
+                 vec)]
+    (list* name `(ms/o-skip ~bs') body) ))
 
 
 ;;; :letfn-type

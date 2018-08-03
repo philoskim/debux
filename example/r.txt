@@ -1,0 +1,1249 @@
+
+Running debux examples...
+
+
+dbg: (+ 10 20) =>
+|   30
+
+dbg: [a b c d e f g h] =>
+|   [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
+
+dbg: [a b [a b] :c] =>
+|   [10 20 [10 20] :c]
+
+dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>
+| "a b c d" =>
+|   "a b c d"
+| .toUpperCase =>
+|   "A B C D"
+| (.replace "A" "X") =>
+|   "X B C D"
+| (.split " ") =>
+|   ["X", "B", "C", "D"]
+| first =>
+|   "X"
+
+dbg: (-> person :employer :address :city) =>
+| person =>
+|   {:name "Mark Volkmann",
+|    :address
+|    {:street "644 Glen Summit",
+|     :city "St. Charles",
+|     :state "Missouri",
+|     :zip 63304},
+|    :employer
+|    {:name "Object Computing, Inc.",
+|     :address
+|     {:street "12140 Woodcrest Dr.",
+|      :city "Creve Coeur",
+|      :state "Missouri",
+|      :zip 63141}}}
+| :employer =>
+|   {:name "Object Computing, Inc.",
+|    :address
+|    {:street "12140 Woodcrest Dr.",
+|     :city "Creve Coeur",
+|     :state "Missouri",
+|     :zip 63141}}
+| :address =>
+|   {:street "12140 Woodcrest Dr.",
+|    :city "Creve Coeur",
+|    :state "Missouri",
+|    :zip 63141}
+| :city =>
+|   "Creve Coeur"
+
+dbg: (->> c (+ 3) (/ 2) (- 1)) =>
+| c =>
+|   5
+| (+ 3) =>
+|   8
+| (/ 2) =>
+|   1/4
+| (- 1) =>
+|   3/4
+
+dbg: (get {:a [1 2]} :a) =>
+|   [1 2]
+
+dbg: (map inc (filter pos? [-1 0 1 2])) =>
+|   (2 3)
+
+dbg: (let [a (take 5 (range)) {:keys [b c d], :or {d 10, b 20, c 30}} {:c 5 ... =>
+| a =>
+|   (0 1 2 3 4)
+| {:keys [b c d], :or {d 10, b 20, c 30}} =>
+|   {:keys [20 50 100], :or {100 10, 20 20, 50 30}}
+| [e f g & h] =>
+|   ["a" "b" "c" & ("d" "e")]
+
+dbg: (comp inc inc +) =>
+| + =>
+|   30
+| inc =>
+|   31
+| inc =>
+|   32
+
+dbg: (repeat 5 "x")   <five repeat> =>
+|   ("x" "x" "x" "x" "x")
+
+dbgn: (count (range 200)) =>
+| (range 200) =>
+|   (0
+|    1
+|    2
+|    3
+|    4
+|    5
+|    6
+|    7
+|    8
+|    9
+|    10
+|    11
+|    12
+|    13
+|    14
+|    15
+|    16
+|    17
+|    18
+|    19
+|    20
+|    21
+|    22
+|    23
+|    24
+|    25
+|    26
+|    27
+|    28
+|    29
+|    30
+|    31
+|    32
+|    33
+|    34
+|    35
+|    36
+|    37
+|    38
+|    39
+|    40
+|    41
+|    42
+|    43
+|    44
+|    45
+|    46
+|    47
+|    48
+|    49
+|    50
+|    51
+|    52
+|    53
+|    54
+|    55
+|    56
+|    57
+|    58
+|    59
+|    60
+|    61
+|    62
+|    63
+|    64
+|    65
+|    66
+|    67
+|    68
+|    69
+|    70
+|    71
+|    72
+|    73
+|    74
+|    75
+|    76
+|    77
+|    78
+|    79
+|    80
+|    81
+|    82
+|    83
+|    84
+|    85
+|    86
+|    87
+|    88
+|    89
+|    90
+|    91
+|    92
+|    93
+|    94
+|    95
+|    96
+|    97
+|    98
+|    99)
+| (count (range 200)) =>
+|   200
+
+dbgn: (count (range 200)) =>
+| (range 200) =>
+|   (0
+|    1
+|    2
+|    3
+|    4
+|    5
+|    6
+|    7
+|    8
+|    9
+|    10
+|    11
+|    12
+|    13
+|    14
+|    15
+|    16
+|    17
+|    18
+|    19
+|    20
+|    21
+|    22
+|    23
+|    24
+|    25
+|    26
+|    27
+|    28
+|    29
+|    30
+|    31
+|    32
+|    33
+|    34
+|    35
+|    36
+|    37
+|    38
+|    39
+|    40
+|    41
+|    42
+|    43
+|    44
+|    45
+|    46
+|    47
+|    48
+|    49
+|    50
+|    51
+|    52
+|    53
+|    54
+|    55
+|    56
+|    57
+|    58
+|    59
+|    60
+|    61
+|    62
+|    63
+|    64
+|    65
+|    66
+|    67
+|    68
+|    69
+|    70
+|    71
+|    72
+|    73
+|    74
+|    75
+|    76
+|    77
+|    78
+|    79
+|    80
+|    81
+|    82
+|    83
+|    84
+|    85
+|    86
+|    87
+|    88
+|    89
+|    90
+|    91
+|    92
+|    93
+|    94
+|    95
+|    96
+|    97
+|    98
+|    99
+|    100
+|    101
+|    102
+|    103
+|    104
+|    105
+|    106
+|    107
+|    108
+|    109
+|    110
+|    111
+|    112
+|    113
+|    114
+|    115
+|    116
+|    117
+|    118
+|    119
+|    120
+|    121
+|    122
+|    123
+|    124
+|    125
+|    126
+|    127
+|    128
+|    129
+|    130
+|    131
+|    132
+|    133
+|    134
+|    135
+|    136
+|    137
+|    138
+|    139
+|    140
+|    141
+|    142
+|    143
+|    144
+|    145
+|    146
+|    147
+|    148
+|    149
+|    150
+|    151
+|    152
+|    153
+|    154
+|    155
+|    156
+|    157
+|    158
+|    159
+|    160
+|    161
+|    162
+|    163
+|    164
+|    165
+|    166
+|    167
+|    168
+|    169
+|    170
+|    171
+|    172
+|    173
+|    174
+|    175
+|    176
+|    177
+|    178
+|    179
+|    180
+|    181
+|    182
+|    183
+|    184
+|    185
+|    186
+|    187
+|    188
+|    189
+|    190
+|    191
+|    192
+|    193
+|    194
+|    195
+|    196
+|    197
+|    198
+|    199)
+| (count (range 200)) =>
+|   200
+
+dbgn: (take 5 (range)) =>
+| (range) =>
+|   (0
+|    1
+|    2
+|    3
+|    4
+|    5
+|    6
+|    7
+|    8
+|    9
+|    10
+|    11
+|    12
+|    13
+|    14
+|    15
+|    16
+|    17
+|    18
+|    19
+|    20
+|    21
+|    22
+|    23
+|    24
+|    25
+|    26
+|    27
+|    28
+|    29
+|    30
+|    31
+|    32
+|    33
+|    34
+|    35
+|    36
+|    37
+|    38
+|    39
+|    40
+|    41
+|    42
+|    43
+|    44
+|    45
+|    46
+|    47
+|    48
+|    49
+|    50
+|    51
+|    52
+|    53
+|    54
+|    55
+|    56
+|    57
+|    58
+|    59
+|    60
+|    61
+|    62
+|    63
+|    64
+|    65
+|    66
+|    67
+|    68
+|    69
+|    70
+|    71
+|    72
+|    73
+|    74
+|    75
+|    76
+|    77
+|    78
+|    79
+|    80
+|    81
+|    82
+|    83
+|    84
+|    85
+|    86
+|    87
+|    88
+|    89
+|    90
+|    91
+|    92
+|    93
+|    94
+|    95
+|    96
+|    97
+|    98
+|    99)
+| (take 5 (range)) =>
+|   (0 1 2 3 4)
+
+dbgn: (take 5 (range)) =>
+| (range) =>
+|   (0 1 2 3 4 5 6 7 8 9)
+| (take 5 (range)) =>
+|   (0 1 2 3 4)
+
+dbg: i =>
+|   0
+
+dbg: i =>
+|   2
+
+dbg: i =>
+|   4
+
+dbg: i =>
+|   6
+
+dbg: i =>
+|   8
+
+dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
+ 
+| c =>
+|   nil
+| a =>
+|   2
+| b =>
+|   3
+| (* a b 100) =>
+|   600
+| (if c (* a b c) (* a b 100)) =>
+|   600
+ 
+| c =>
+|   10
+| a =>
+|   2
+| b =>
+|   3
+| (* a b c) =>
+|   60
+| (if c (* a b c) (* a b 100)) =>
+|   60
+
+dbgn: (defn bar [a b & [c]] (if c (* a b c) (* a b 100))) =>
+ 
+| c =>
+|   nil
+| a =>
+|   2
+| b =>
+|   3
+| (* a b 100) =>
+|   600
+| (if c (* a b c) (* a b 100)) =>
+|   600
+ 
+| c =>
+|   10
+| a =>
+|   2
+| b =>
+|   3
+| c =>
+|   10
+| (* a b c) =>
+|   60
+| (if c (* a b c) (* a b 100)) =>
+|   60
+
+dbgn: (def my-function "my-function doc string" (fn [x] (* x x x))) =>
+| (fn [x] (try (clojure.core/reset! (:evals +debux-dbg-opts+) {}) (cloju ... =>
+|   #object[example.dbgn$eval12771$result__4712__auto____12772 0x2ae25358 "example.dbgn$eval12771$result__4712__auto____12772@2ae25358"]
+| (def my-function "my-function doc string" (fn [x] (try (clojure.core/r ... =>
+|   #'example.dbgn/my-function
+ 
+| x =>
+|   10
+| (* x x x) =>
+|   1000
+
+dbgn: (defn add "add doc string" [a b] (+ a b)) =>
+ 
+| a =>
+|   10
+| b =>
+|   20
+| (+ a b) =>
+|   30
+
+dbgn: (defn my-add "my-add doc string" ([] 0) ([a] a) ([a b] (+ a b)) ([a b  ... =>
+ 
+ 
+| a =>
+|   10
+ 
+| a =>
+|   10
+| b =>
+|   20
+| (+ a b) =>
+|   30
+ 
+| + =>
+|   #object[clojure.core$_PLUS_ 0x200ef05b "clojure.core$_PLUS_@200ef05b"]
+| a =>
+|   10
+| b =>
+|   20
+| more =>
+|   (30 40)
+| (apply + a b more) =>
+|   100
+
+dbgn: (defn calc1 [a1 a2] (+ a1 a2)) =>
+
+dbgn: (defn calc2 [s1 s2] (- 100 (calc1 s1 s2))) =>
+
+dbgn: (defn calc3 [m1 m2] (* 10 (calc2 m1 m2))) =>
+ 
+| m1 =>
+|   2
+| m2 =>
+|   5
+ 
+|| s1 =>
+||   2
+|| s2 =>
+||   5
+ 
+||| a1 =>
+|||   2
+||| a2 =>
+|||   5
+||| (+ a1 a2) =>
+|||   7
+|| (calc1 s1 s2) =>
+||   7
+|| (- 100 (calc1 s1 s2)) =>
+||   93
+| (calc2 m1 m2) =>
+|   93
+| (* 10 (calc2 m1 m2)) =>
+|   930
+
+dbgn: (defn add-pos "attr-map-fn doc-string" {:aaa 10} [a b] {:pre [(and (po ... =>
+ 
+| a =>
+|   10
+| b =>
+|   20
+| (+ a b) =>
+|   30
+
+dbgn: (defn add-pos2 "attr-map-fn doc-string" {:aaa 1000} ([a] {:pre [(pos?  ... =>
+ 
+| a =>
+|   10
+| (+ a 100) =>
+|   110
+ 
+| a =>
+|   10
+| b =>
+|   20
+| (+ a b) =>
+|   30
+
+dbgn: (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]) =>
+| (fn [acc i] (try (clojure.core/reset! (:evals +debux-dbg-opts+) {}) (c ... =>
+|   #object[example.dbgn$eval13150$result__4712__auto____13151 0x40aa9bae "example.dbgn$eval13150$result__4712__auto____13151@40aa9bae"]
+| [1 5 9] =>
+|   [1 5 9]
+ 
+| acc =>
+|   0
+| i =>
+|   1
+| (+ acc i) =>
+|   1
+ 
+| acc =>
+|   1
+| i =>
+|   5
+| (+ acc i) =>
+|   6
+ 
+| acc =>
+|   6
+| i =>
+|   9
+| (+ acc i) =>
+|   15
+| (reduce (fn [acc i] (try (clojure.core/reset! (:evals +debux-dbg-opts+ ... =>
+|   15
+
+dbgn: (map (fn* [p1__13203#] (* p1__13203# 10)) [1 5 9]) =>
+| (fn* [p1__13203#] (try (clojure.core/reset! (:evals +debux-dbg-opts+)  ... =>
+|   #object[example.dbgn$eval13204$result__4712__auto____13205 0x59960ae9 "example.dbgn$eval13204$result__4712__auto____13205@59960ae9"]
+| [1 5 9] =>
+|   [1 5 9]
+ 
+| p1__13203# =>
+|   1
+| (* p1__13203# 10) =>
+|   10
+ 
+| p1__13203# =>
+|   5
+| (* p1__13203# 10) =>
+|   50
+ 
+| p1__13203# =>
+|   9
+| (* p1__13203# 10) =>
+|   90
+| (map (fn* [p1__13203#] (try (clojure.core/reset! (:evals +debux-dbg-op ... =>
+|   (10 50 90)
+
+dbgn: (let [a (+ 1 2) [b c] [(+ a 10) (* a 2)]] (- (+ a b) c)) =>
+| (+ 1 2) =>
+|   3
+| a =>
+|   3
+| (+ a 10) =>
+|   13
+| (* a 2) =>
+|   6
+| [(+ a 10) (* a 2)] =>
+|   [13 6]
+ 
+| b =>
+|   13
+| (+ a b) =>
+|   16
+| c =>
+|   6
+| (- (+ a b) c) =>
+|   10
+| (let [a (+ 1 2) [b c] [(+ a 10) (* a 2)]] (debux.common.util/insert-bl ... =>
+|   10
+
+dbgn: (if-let [user-json nil] :example.dbgn/then :example.dbgn/else) =>
+| (if-let [user-json nil] :example.dbgn/then :example.dbgn/else) =>
+|   :example.dbgn/else
+
+dbgn: (if-some [user-json nil] :example.dbgn/then :example.dbgn/else) =>
+| (if-some [user-json nil] :example.dbgn/then :example.dbgn/else) =>
+|   :example.dbgn/else
+
+dbgn: (letfn [(twice [x] (* x 2)) (six-times [y] (* (twice y) 3))] (six-time ... =>
+| y =>
+|   15
+| x =>
+|   15
+| (* x 2) =>
+|   30
+| (twice y) =>
+|   30
+| (* (twice y) 3) =>
+|   90
+| (six-times 15) =>
+|   90
+| (letfn [(twice [x] (* x 2)) (six-times [y] (* (twice y) 3))] (six-time ... =>
+|   90
+
+dbgn: (for [x [0 1 2 3 4 5] :let [y (* x 3)] :when (even? y)] y) =>
+| [0 1 2 3 4 5] =>
+|   [0 1 2 3 4 5]
+| x =>
+|   0
+| (* x 3) =>
+|   0
+| y =>
+|   0
+| (even? y) =>
+|   true
+ 
+| x =>
+|   1
+| (* x 3) =>
+|   3
+| y =>
+|   3
+| (even? y) =>
+|   false
+| x =>
+|   2
+| (* x 3) =>
+|   6
+| y =>
+|   6
+| (even? y) =>
+|   true
+ 
+| x =>
+|   3
+| (* x 3) =>
+|   9
+| y =>
+|   9
+| (even? y) =>
+|   false
+| x =>
+|   4
+| (* x 3) =>
+|   12
+| y =>
+|   12
+| (even? y) =>
+|   true
+ 
+| x =>
+|   5
+| (* x 3) =>
+|   15
+| y =>
+|   15
+| (even? y) =>
+|   false
+| (for [x [0 1 2 3 4 5] :let [y (* x 3)] :when (even? y)] (do (debux.com ... =>
+|   (0 6 12)
+
+dbgn: (let [mystr "hello"] (case mystr "" 0 "hello" (count mystr))) =>
+ 
+| mystr =>
+|   "hello"
+| (count mystr) =>
+|   5
+| (case mystr "" 0 "hello" (count mystr)) =>
+|   5
+| (let [mystr "hello"] (debux.common.util/insert-blank-line) (case mystr ... =>
+|   5
+
+dbgn: (case (quote a) (x y z) "x, y, or z" "default") =>
+| (case (quote a) (x y z) "x, y, or z" "default") =>
+|   "default"
+
+dbgn: (with-precision 10 (/ 1M 6)) =>
+| (/ 1M 6) =>
+|   0.1666666667M
+| (with-precision 10 (/ 1M 6)) =>
+|   0.1666666667M
+
+dbg: (let [a (take 5 (range)) {:keys [b c d], :or {d 10, b 20, c 30}} {:c 5 ... =>
+| a =>
+|   (0 1 2 3 4)
+| {:keys [b c d], :or {d 10, b 20, c 30}} =>
+|   {:keys [20 50 100], :or {100 10, 20 20, 50 30}}
+| [e f g & h] =>
+|   ["a" "b" "c" & ("d" "e")]
+
+dbgn: (as-> 0 n (inc n) (inc n)) =>
+| n =>
+|   0
+| (inc n) =>
+|   1
+| n =>
+|   1
+| (inc n) =>
+|   2
+| (as-> 0 n (inc n) (inc n)) =>
+|   2
+
+dbgn: (areduce xs i ret (float 0) (+ ret (aget xs i))) =>
+| xs =>
+|   [1.0, 2.0, 3.0]
+| (float 0) =>
+|   0.0
+| ret =>
+|   0.0
+| i =>
+|   0
+| (aget xs i) =>
+|   1.0
+| (+ ret (aget xs i)) =>
+|   1.0
+| ret =>
+|   1.0
+| i =>
+|   1
+| (aget xs i) =>
+|   2.0
+| (+ ret (aget xs i)) =>
+|   3.0
+| ret =>
+|   3.0
+| i =>
+|   2
+| (aget xs i) =>
+|   3.0
+| (+ ret (aget xs i)) =>
+|   6.0
+| (areduce xs i ret (float 0) (+ ret (aget xs i))) =>
+|   6.0
+
+dbgn: (defmethod greeting :english [map] (str "English greeting: " (:greetin ... =>
+| (defmethod greeting :english [map] (str "English greeting: " (:greetin ... =>
+|   #object[clojure.lang.MultiFn 0x379cfc77 "clojure.lang.MultiFn@379cfc77"]
+
+dbgn: (defmethod greeting :french [map] (str "French greeting: " (:greeting  ... =>
+| (defmethod greeting :french [map] (str "French greeting: " (:greeting  ... =>
+|   #object[clojure.lang.MultiFn 0x379cfc77 "clojure.lang.MultiFn@379cfc77"]
+| map =>
+|   {:language :english, :greeting "Hello!"}
+| (:greeting map) =>
+|   "Hello!"
+| (str "English greeting: " (:greeting map)) =>
+|   "English greeting: Hello!"
+| map =>
+|   {:language :french, :greeting "Bonjour!"}
+| (:greeting map) =>
+|   "Bonjour!"
+| (str "French greeting: " (:greeting map)) =>
+|   "French greeting: Bonjour!"
+
+dbgn: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>
+| (.toUpperCase "a b c d") =>
+|   "A B C D"
+| (.replace (.toUpperCase "a b c d") "A" "X") =>
+|   "X B C D"
+| (.split (.replace (.toUpperCase "a b c d") "A" "X") " ") =>
+|   ["X", "B", "C", "D"]
+| (first (.split (.replace (.toUpperCase "a b c d") "A" "X") " ")) =>
+|   "X"
+
+dbgn: (.. "fooBAR" toLowerCase (contains "ooba")) =>
+| (. "fooBAR" toLowerCase) =>
+|   "foobar"
+| (. (. "fooBAR" toLowerCase) (contains "ooba")) =>
+|   true
+
+dbgn: (cond-> [] (odd? x) (conj "x is odd") (zero? (rem y 3)) (conj "y is di ... =>
+| [] =>
+|   []
+| x =>
+|   1
+| (odd? x) =>
+|   true
+| G__13909 =>
+|   []
+| (conj G__13909 "x is odd") =>
+|   ["x is odd"]
+| (if (odd? x) (conj G__13909 "x is odd") G__13909) =>
+|   ["x is odd"]
+| y =>
+|   2
+| (rem y 3) =>
+|   2
+| (zero? (rem y 3)) =>
+|   false
+| G__13909 =>
+|   ["x is odd"]
+| (if (zero? (rem y 3)) (conj G__13909 "y is divisible by 3") G__13909) =>
+|   ["x is odd"]
+ 
+| (even? y) =>
+|   true
+| (conj G__13909 "y is even") =>
+|   ["x is odd" "y is even"]
+| (if (even? y) (conj G__13909 "y is even") G__13909) =>
+|   ["x is odd" "y is even"]
+| (clojure.core/let [G__13909 [] G__13909 (if (odd? x) (conj G__13909 "x ... =>
+|   ["x is odd" "y is even"]
+
+dbgn: (. (java.util.Date.) getMonth) =>
+| (java.util.Date.) =>
+|   #inst "2018-08-03T05:48:32.015-00:00"
+| (. (java.util.Date.) getMonth) =>
+|   7
+
+dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
+ 
+| n =>
+|   3
+| (zero? n) =>
+|   false
+| acc =>
+|   1
+| (* acc n) =>
+|   3
+| (dec n) =>
+|   2
+ 
+| n =>
+|   2
+| acc =>
+|   3
+| (* acc n) =>
+|   6
+| (dec n) =>
+|   1
+ 
+| n =>
+|   1
+| acc =>
+|   6
+| (dec n) =>
+|   0
+ 
+| n =>
+|   0
+| (zero? n) =>
+|   true
+| (loop [acc 1 n 3] (debux.common.util/insert-blank-line) (if (zero? n)  ... =>
+|   6
+
+dbgn: (defn fact [num] (loop [acc 1 n num] (if (zero? n) acc (recur (* acc n ... =>
+ 
+| num =>
+|   3
+ 
+| n =>
+|   3
+| (zero? n) =>
+|   false
+| acc =>
+|   1
+| (* acc n) =>
+|   3
+| (dec n) =>
+|   2
+ 
+| n =>
+|   2
+| acc =>
+|   3
+| (* acc n) =>
+|   6
+| (dec n) =>
+|   1
+ 
+| n =>
+|   1
+| acc =>
+|   6
+| (dec n) =>
+|   0
+ 
+| n =>
+|   0
+| (zero? n) =>
+|   true
+| (loop [acc 1 n num] (debux.common.util/insert-blank-line) (if (zero? n ... =>
+|   6
+
+dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ... =>
+ 
+| n =>
+|   3
+| (zero? n) =>
+|   false
+| acc =>
+|   1
+| (* acc n) =>
+|   3
+| (dec n) =>
+|   2
+ 
+|| n =>
+||   2
+|| (zero? n) =>
+||   false
+|| acc =>
+||   3
+|| (* acc n) =>
+||   6
+|| (dec n) =>
+||   1
+ 
+||| n =>
+|||   1
+||| (zero? n) =>
+|||   false
+||| acc =>
+|||   6
+||| (* acc n) =>
+|||   6
+||| (dec n) =>
+|||   0
+ 
+|||| n =>
+||||   0
+|||| (zero? n) =>
+||||   true
+|||| acc =>
+||||   6
+|||| (if (zero? n) acc (factorial (* acc n) (dec n))) =>
+||||   6
+||| (factorial (* acc n) (dec n)) =>
+|||   6
+
+dbg: (show-macros :let-type) =>
+|   {:let-type
+|    #{clojure.core/when-let example.dbgn/my-let clojure.core/let
+|      clojure.core/with-local-vars clojure.core/when-some
+|      clojure.core/dotimes clojure.core/with-open clojure.core/with-redefs
+|      clojure.core/binding clojure.core/with-in-str
+|      clojure.core/with-out-str clojure.core/when-first}}
+
+dbg: (show-macros) =>
+|   {:fn-type #{clojure.core/fn fn*},
+|    :skip-form-itself-type
+|    #{clojure.core/proxy-super clojure.core/defmacro
+|      clojure.core/definterface clojure.core/sync clojure.core/defrecord
+|      clojure.core/declare debux.core/dbg clojure.core/deftype
+|      clojure.core/comment finally clojure.core/gen-class
+|      clojure.core/refer-clojure clojure.core/memfn debux.core/dbgn
+|      clojure.core/extend-type new clojure.core/definline
+|      clojure.core/defstruct clojure.core/defmulti clojure.core/ns
+|      clojure.core/proxy clojure.core/extend-protocol var quote
+|      clojure.core/reify catch clojure.core/gen-interface
+|      clojure.core/import clojure.core/defprotocol throw},
+|    :case-type #{clojure.core/case},
+|    :skip-arg-2-3-type #{clojure.core/areduce clojure.core/amap},
+|    :skip-arg-1-type #{clojure.core/with-precision set!},
+|    :let-type
+|    #{clojure.core/when-let example.dbgn/my-let clojure.core/let
+|      clojure.core/with-local-vars clojure.core/when-some
+|      clojure.core/dotimes clojure.core/with-open clojure.core/with-redefs
+|      clojure.core/binding clojure.core/with-in-str
+|      clojure.core/with-out-str clojure.core/when-first},
+|    :skip-arg-2-type #{clojure.core/as->},
+|    :defn-type #{clojure.core/defn clojure.core/defn-},
+|    :loop-type #{clojure.core.async/go-loop clojure.core/loop},
+|    :for-type #{clojure.core/for clojure.core/doseq},
+|    :def-type #{clojure.core/defonce def},
+|    :if-let-type #{clojure.core/if-let clojure.core/if-some},
+|    :letfn-type #{clojure.core/letfn},
+|    :dot-type #{.},
+|    :skip-arg-1-2-type #{},
+|    :expand-type
+|    #{clojure.core/doto clojure.core/->> clojure.core/some->>
+|      clojure.core/.. clojure.core/-> clojure.core/some->
+|      clojure.core/cond-> clojure.core/condp clojure.core/import
+|      clojure.core/cond->>},
+|    :skip-arg-1-3-type #{clojure.core/defmethod}}
+
+dbgn: (my-let [a 10 b (+ a 10)] (+ a b)) =>
+| a =>
+|   10
+| (+ a 10) =>
+|   20
+ 
+| b =>
+|   20
+| (+ a b) =>
+|   30
+| (my-let [a 10 b (+ a 10)] (debux.common.util/insert-blank-line) (+ a b ... =>
+|   30
+
+dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
+ 
+| n =>
+|   3
+| (zero? n) =>
+|   false
+| acc =>
+|   1
+| (* acc n) =>
+|   3
+| (dec n) =>
+|   2
+ 
+| n =>
+|   2
+| acc =>
+|   3
+| (* acc n) =>
+|   6
+| (dec n) =>
+|   1
+ 
+| n =>
+|   1
+| acc =>
+|   6
+| (dec n) =>
+|   0
+ 
+| n =>
+|   0
+| (zero? n) =>
+|   true
+| (loop [acc 1 n 3] (debux.common.util/insert-blank-line) (if (zero? n)  ... =>
+|   6
+
+dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
+ 
+| n =>
+|   3
+| (zero? n) =>
+|   false
+| acc =>
+|   1
+| n =>
+|   3
+| (* acc n) =>
+|   3
+| n =>
+|   3
+| (dec n) =>
+|   2
+ 
+| n =>
+|   2
+| (zero? n) =>
+|   false
+| acc =>
+|   3
+| n =>
+|   2
+| (* acc n) =>
+|   6
+| n =>
+|   2
+| (dec n) =>
+|   1
+ 
+| n =>
+|   1
+| (zero? n) =>
+|   false
+| acc =>
+|   6
+| n =>
+|   1
+| (* acc n) =>
+|   6
+| n =>
+|   1
+| (dec n) =>
+|   0
+ 
+| n =>
+|   0
+| (zero? n) =>
+|   true
+| acc =>
+|   6
+| (loop [acc 1 n 3] (debux.common.util/insert-blank-line) (if (zero? n)  ... =>
+|   6

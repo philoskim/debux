@@ -8,9 +8,10 @@
          :fn-type '#{cljs.core/fn fn*}
 
          :let-type
-         '#{cljs.core/let cljs.core/binding cljs.core/dotimes cljs.core/if-let
-            cljs.core/if-some cljs.core/loop cljs.core/when-first cljs.core/when-let
-            cljs.core/when-some cljs.core/with-out-str cljs.core/with-redefs}
+         '#{cljs.core/let cljs.core/binding cljs.core/dotimes
+            cljs.core/when-first cljs.core/when-let cljs.core/when-some
+            cljs.core/with-out-str cljs.core/with-redefs}
+         :if-let-type `#{cljs.core/if-let cljs.core/if-some}
          :letfn-type '#{cljs.core/letfn}
          :loop-type '#{cljs.core/loop}
          
