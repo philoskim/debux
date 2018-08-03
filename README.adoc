@@ -517,7 +517,7 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 | :def-type   | def defonce
 | :defn-type  | defn defn-
 | :fn-type    | fn fn*
-| :let-type   | let binding dotimes when-first when-let when-some with-in-str
+| :let-type   | binding dotimes let when-first when-let when-some with-in-str
                 with-local-vars with-open with-out-str with-redefs
 | :if-let-type | if-let if-some
 | :letfn-type | letfn
@@ -834,7 +834,7 @@ dbgn: (let [a (+ 1 2) [b c] [(+ a 10) (* a 2)]] (- (+ a b) c)) =>
 #### `:if-let-type` example
 
 This type of macros are a little different from `:let-type` macros in that they need only
-one or two forms in their body.
+one or two forms in their bodies.
 
 [source]
 ....
@@ -1587,11 +1587,9 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ...
 dbg: (show-macros :let-type) =>
 |   {:let-type
 |    #{clojure.core/when-let example.dbgn/my-let clojure.core/let
-|      clojure.core/with-local-vars clojure.core/if-let
-|      clojure.core/when-some clojure.core/dotimes clojure.core/with-open
-|      clojure.core/if-some clojure.core/with-redefs clojure.core/binding
-|      clojure.core/with-in-str clojure.core/with-out-str clojure.core/loop
-|      clojure.core/when-first}}
+|      clojure.core/with-local-vars clojure.core/when-some clojure.core/dotimes
+|      clojure.core/with-open clojure.core/with-redefs clojure.core/binding
+|      clojure.core/with-in-str clojure.core/with-out-str clojure.core/when-first}}
 
 dbg: (show-macros) =>
 |   {:fn-type #{clojure.core/fn fn*},
@@ -1612,8 +1610,7 @@ dbg: (show-macros) =>
 |    #{clojure.core/when-let example.dbgn/my-let clojure.core/let
 |      clojure.core/with-local-vars clojure.core/when-some clojure.core/dotimes
 |      clojure.core/with-open clojure.core/with-redefs clojure.core/binding
-|      clojure.core/with-in-str clojure.core/with-out-str clojure.core/loop
-|      clojure.core/when-first},
+|      clojure.core/with-in-str clojure.core/with-out-str clojure.core/when-first},
 |    :if-let-type #{clojure.core/if-let clojure.core/if-some} 
 |    :skip-arg-2-type #{clojure.core/as->},
 |    :defn-type #{clojure.core/defn clojure.core/defn-},
@@ -1680,13 +1677,8 @@ dbgn: (my-let [a 10 b (+ a 10)] (+ a b)) =>
 dbg: (d/show-macros :let-type) =>
 |   {:let-type
 |    #{example.macro/my-let cljs.core/with-redefs cljs.core/binding
-|      cljs.core/when-first
-|      cljs.core/if-some
-|      cljs.core/let
-|      cljs.core/with-out-str
-|      cljs.core/loop
-|      cljs.core/when-let
-|      cljs.core/when-some cljs.core/if-let cljs.core/dotimes}}
+|      cljs.core/when-first cljs.core/let cljs.core/with-out-str
+|      cljs.core/when-let cljs.core/when-some cljs.core/dotimes}}
 
 dbg: (d/show-macros) =>
 |   {:fn-type #{fn* cljs.core/fn},
@@ -1705,9 +1697,8 @@ dbg: (d/show-macros) =>
 |    :skip-arg-1-type #{set! cljs.core/this-as},
 |    :let-type
 |    #{example.macro/my-let cljs.core/with-redefs cljs.core/binding
-|      cljs.core/when-first cljs.core/if-some cljs.core/let 
-|      cljs.core/with-out-str cljs.core/when-let cljs.core/when-some
-|      cljs.core/dotimes},
+|      cljs.core/when-first cljs.core/let cljs.core/with-out-str
+|      cljs.core/when-let cljs.core/when-some cljs.core/dotimes},
 |    :if-let-type #{cljs.core/if-let cljs.core/if-some},
 |    :skip-arg-2-type #{cljs.core/as->},
 |    :defn-type #{cljs.core/defn- cljs.core/defn},
