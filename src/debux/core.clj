@@ -38,8 +38,3 @@
   ([] `(mt/show-macros))
   ([macro-type] `(mt/show-macros ~macro-type)))
 
-(def a* 10)
-
-(dbgn (if-let [s a*]
-        (+ s 100)
-        false))
