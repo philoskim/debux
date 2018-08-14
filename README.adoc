@@ -67,9 +67,14 @@ https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 * v0.4.12
 ** `:if-let-type` is added to link:https://github.com/philoskim/debux#macro-type-table[the
    macro types].
-** `dbgm` is added for debugging inside the ClojureScript macros. See
-   link:https://gist.github.com/philoskim/cb5e836c1374dbe6244d6d966cfd1e77[here] for
-   details.
+
+** `dbgm` is added for debugging inside the ClojureScript macros.
++
+CAUTION: The function `dbgm` doesn't follow the usage employed in `dbg`/`clog`. It is just
+         another name of `println` which can be used at the macro-expansion time.  See
+         link:https://gist.github.com/philoskim/cb5e836c1374dbe6244d6d966cfd1e77[here] for
+         details.
+
 
 * v0.4.11
 ** link:https://github.com/philoskim/debux/issues/9[Issue #9] bug fixed: This error
