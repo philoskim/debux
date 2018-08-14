@@ -3,6 +3,13 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.4.12
+** `:if-let-type` is added to link:https://github.com/philoskim/debux#macro-type-table[the
+   macro types].
+** `dbgm` is added for debugging inside the ClojureScript macros. See
+   link:https://gist.github.com/philoskim/cb5e836c1374dbe6244d6d966cfd1e77[here] for
+   details.
+
 * v0.4.11
 ** link:https://github.com/philoskim/debux/issues/9[Issue #9] bug fixed: This error
    occured when the form including `recur` has a `java.lang.Class` type of symbol as

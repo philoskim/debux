@@ -1,8 +1,9 @@
 (ns debux.core
-  (:require [debux.dbg :as dbg]
+  (:require [cljs.util :as util]
+            [debux.dbg :as dbg]
             [debux.dbgn :as dbgn]
             [debux.macro-types :as mt]
-            [debux.common.util :as ut]))
+            [debux.common.util :as ut] ))
 
 ;;; config APIs
 (def set-print-seq-length! ut/set-print-seq-length!)
@@ -28,6 +29,11 @@
     `(if (ut/debug-enabled? ~ns)
        (dbgn/dbgn ~form ~(ut/parse-opts opts))
        ~form)))
+
+;; Only use inside the macros for ClojureScript. See the below discussion for details.
+;; https://gist.github.com/philoskim/cb5e836c1374dbe6244d6d966cfd1e77
+(defn dbgm [& args]
+  (apply util/debug-prn "\ndbgm:" args))
 
 
 ;;; macro registering APIs
