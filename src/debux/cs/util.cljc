@@ -1,9 +1,7 @@
 (ns debux.cs.util
   "Utilities for clojurescript only"
   (:require [clojure.string :as str]
-            [clojure.set :as set]
             #?(:cljs [cljs.pprint :as pp])
-            [cljs.analyzer.api :as ana]
             [debux.common.util :as ut] ))
 
 ;;; caching
@@ -33,12 +31,6 @@
          :text  "color: black"
          :title "color: #8b008b"} ))
 
-(defn merge-styles
-  "Merges <new-style> into style*.
-   <new-style {<style-name kw, style-value str>+}>"
-  [new-style]
-  (swap! style* merge new-style))
-
 (defn- get-style
   "<styke kw|str> style-name
    <return str?>"
@@ -64,29 +56,25 @@
     (string? style)
     style))
 
+(defn merge-styles
+  "Merges <new-style> into style*.
+   <new-style {<style-name kw, style-value str>+}>"
+  [new-style]
+  (swap! style* merge new-style))
+
 
 ;;; printing for browser console
-(defn form-header [form & [msg]]
-  (str "%c " (ut/truncate (pr-str form))
-       " %c" (and msg (str "   <" msg ">"))
-       " =>"))
-
 #?(:cljs
-   (defn cgroup
-     [header form-style]
-     (.group js/console header (:title @style*)
-             (get-style form-style) (:text @style*) )))
+   (defn- form-header [form & [msg]]
+     (str "%c " (ut/truncate (pr-str form))
+          " %c" (and msg (str "   <" msg ">"))
+          " =>") ))
 
 #?(:cljs
    (defn clog-header
      [header form-style]
      (.log js/console header (:title @style*)
            (get-style form-style) (:text @style*) )))
-
-#?(:cljs
-   (defn cgroup-end
-     [] 
-     (.groupEnd js/console) ))
 
 #?(:cljs
    (defn clog-form-with-indent

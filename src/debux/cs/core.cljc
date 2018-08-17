@@ -1,9 +1,9 @@
 (ns debux.cs.core
-  #?(:cljs (:require-macros [debux.dbg :as dbg]
-                            [debux.dbgn :as dbgn]
-                            [debux.cs.clog :as clog]
-                            [debux.cs.clogn :as clogn]
-                            [debux.cs.macro-types :as mt] ))
+  #?(:cljs (:require-macros debux.dbg
+                            debux.dbgn
+                            debux.cs.clog
+                            debux.cs.clogn
+                            debux.cs.macro-types))
   (:require [debux.common.util :as ut]
             [debux.cs.util :as cs.ut] ))
 

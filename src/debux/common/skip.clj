@@ -1,12 +1,11 @@
 (ns debux.common.skip
   (:require [clojure.zip :as z]
-            #?(:clj  [clojure.spec.alpha :as s]
-               :cljs [cljs.spec.alpha :as s])
+            [clojure.spec.alpha :as s]
             [debux.macro-types :as mt]
             [debux.cs.macro-types :as cs.mt]
             [debux.common.macro-specs :as ms]
             [debux.common.util :as ut] ))
-
+          
 (defn- macro-types [env]
   (if (ut/cljs-env? env)
     @cs.mt/macro-types*
