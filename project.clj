@@ -1,4 +1,4 @@
-(defproject philoskim/debux "0.4.12"
+(defproject philoskim/debux "0.4.13"
   :description "A trace-based debugging library for Clojure and ClojureScript"
   :url "https://github.com/philoskim/debux"
   :license {"Eclipse Public License"
@@ -14,21 +14,5 @@
 
   :source-paths ["src"]
 
-  :clean-targets ^{:protect false}
-  ["target"
-   "resources/public/js/out"
-   "resources/public/js/main.js"]
-
-  :cljsbuild
-  {:builds
-   [{:id "dev"
-     :source-paths ["src" "dev"]
-     :figwheel true
-     :compiler {:main debux.cs.test.main
-                :output-to "resources/public/js/main.js"
-                :output-dir "resources/public/js/out/"
-                :asset-path "js/out/"
-                :optimizations :none
-                :source-map true
-                :pretty-print true} }]})
+  :clean-targets ^{:protect false} ["target"])
                 
