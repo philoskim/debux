@@ -288,26 +288,6 @@
 
  
 ;;; dbgn
-(defmacro dbgn0
-  "DeBuG every Nested forms of a form.s"
-  [form & [{:keys [condition] :as opts}]]
-  `(let [~'+debux-dbg-opts+ ~(if (ut/cljs-env? &env)
-                               (dissoc opts :style :js :once)
-                               opts)
-         condition#         ~condition]
-     (try
-       (if (or (nil? condition#) condition#)
-         (let [title# (str "\ndbgn: " (ut/truncate (pr-str '~form)) " =>")]
-           (println title#)
-           ~(-> (if (ut/include-recur? form)
-                  (sk/insert-o-skip-for-recur form &env)
-                  form)
-                (insert-skip &env)
-                (insert-d 'debux.dbgn/d &env)
-                remove-skip))
-         ~form)
-       (catch Exception ~'e (throw ~'e)) )))
-
 (defmacro dbgn
   "DeBuG every Nested forms of a form.s"
   [form & [{:keys [condition] :as opts}]]

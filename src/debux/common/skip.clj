@@ -19,16 +19,6 @@
 
 
 ;;; :defn-type
-(defn- insert-indent-info0
-  [form]
-  `((ms/skip try)
-      (ms/skip (reset! (:evals ~'+debux-dbg-opts+) {}))
-      (ms/skip (swap! ut/config* update :indent-level inc))
-      (ms/skip (ut/insert-blank-line))
-       ~@form
-      (ms/skip (catch Exception ~'e (throw ~'e)))
-      (ms/skip (finally (swap! ut/config* update :indent-level dec))) ))
-
 (defn- insert-indent-info
   [form]
   `((ms/skip binding) (ms/skip [ut/*indent-level* (inc ut/*indent-level*)])
