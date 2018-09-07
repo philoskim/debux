@@ -136,12 +136,6 @@
 ;;; :skip-arg-1-type example
 (dbgn (with-precision 10 (/ 1M 6)))
 
-(dbg (let [a (take 5 (range))
-           {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}
-           [e f g & h] ["a" "b" "c" "d" "e"]]
-       [a b c d e f g h]))
-; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
-
 
 ;;; :skip-arg-2-type example
 (dbgn (as-> 0 n
@@ -247,3 +241,23 @@
           acc
           (recur (* acc n) (dec n)))) :dup)
 
+
+
+(def n 10)
+
+(defn add [a b]
+  (dbgn (+ a b)))
+
+(defn mul [a b]
+  (dbgn (* a b)))
+
+(dbgn (+ n (mul 3 4) (add 10 20)))
+
+
+(defn add2 [a b]
+  (dbg (+ a b)))
+
+(defn mul2 [a b]
+  (dbg (* a b)))
+
+(dbgn (+ n (mul2 3 4) (add2 10 20)))

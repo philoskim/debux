@@ -5,12 +5,14 @@
   [form {:keys [msg condition] :as opts} body]
   `(let [condition# ~condition]
      (if (or (nil? condition#) condition#)
-       (do
-         (println (str "\ndbg: " (ut/truncate (pr-str '~form))
-                       (and ~msg (str "   <" ~msg ">"))
-                       " =>"))
-         ~body)
-       ~form)))
+       (binding [ut/*indent-level* (inc ut/*indent-level*)]
+         (let [title# (str "dbg: " (ut/truncate (pr-str '~form))
+                           (and ~msg (str "   <" ~msg ">"))
+                           " =>")]
+           (ut/insert-blank-line)
+           (ut/print-title-with-indent title#)
+           ~body))
+         ~form) ))
 
 (defmacro dbg->
   [[_ & subforms :as form] opts]
@@ -48,7 +50,7 @@
   [form {:keys [n] :as opts}]
   `(dbg-base ~form ~opts
      (let [result# ~form]
-       (ut/pprint-result-with-indent (ut/take-n-if-seq ~n result#) 1)
+       (ut/pprint-result-with-indent (ut/take-n-if-seq ~n result#))
        result#) ))
 
 

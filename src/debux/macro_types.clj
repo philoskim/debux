@@ -22,6 +22,8 @@
          :skip-arg-1-2-type `#{}
          :skip-arg-1-3-type `#{defmethod}
          :skip-arg-2-3-type `#{amap areduce}
+         :skip-arg-1-2-3-type `#{}
+         
          :skip-form-itself-type
          `#{catch comment declare definline definterface defmacro defmulti
             defprotocol defrecord defstruct deftype extend-protocol

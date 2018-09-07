@@ -1,4 +1,4 @@
-(defproject philoskim/debux "0.4.12"
+(defproject philoskim/debux "0.5.0"
   :description "A trace-based debugging library for Clojure and ClojureScript"
   :url "https://github.com/philoskim/debux"
   :license {"Eclipse Public License"
@@ -8,9 +8,6 @@
                  [clojure-future-spec "1.9.0-alpha17"]]
 
   :min-lein-version "2.6.0"
-
-  :plugins [[lein-cljsbuild "1.1.6"]
-            [lein-figwheel "0.5.10"]]
 
   :source-paths ["src"]
 

@@ -80,14 +80,30 @@ user> (->> (ns-publics 'cljs.core)
            (filter #(get (meta %) :macro))
            (map str)
            sort)
-("->" "->>" ".." "aget" "alength" "amap" "and" "areduce" "array" "array-map" "as->" "aset" "assert" "binding" "bit-test" "bitpos" "byte" "caching-hash" "case" "coercive-=" "coercive-boolean" "coercive-not" "coercive-not=" "comment" "cond" "cond->" "cond->>" "condp" "copy-arguments" "declare" "defmacro" "defmethod" "defmulti" "defn" "defn-" "defonce" "defprotocol" "defrecord" "deftype" "delay" "doseq" "dotimes" "doto" "double" "es6-iterable" "exists?" "extend-protocol" "extend-type" "false?" "float" "fn" "for" "gen-apply-to" "gen-apply-to-simple" "goog-define" "hash-map" "hash-set" "identical?" "if-let" "if-not" "if-some" "implements?" "import" "import-macros" "instance?" "js-arguments" "js-comment" "js-debugger" "js-delete" "js-in" "js-inline-comment" "js-obj" "js-str" "keyword?" "lazy-cat" "lazy-seq" "let" "letfn" "list" "load-file*" "locking" "loop" "macroexpand" "macroexpand-1" "make-array" "mask" "memfn" "nil?" "ns-imports" "ns-interns" "ns-publics" "ns-unmap" "number?" "or" "refer-clojure" "reify" "require" "require-macros" "resolve" "satisfies?" "short" "simple-benchmark" "some->" "some->>" "some?" "specify" "specify!" "str" "string?" "symbol?" "this-as" "time" "true?" "truth_" "undefined?" "unsafe-cast" "use" "use-macros" "vector" "vswap!" "when" "when-first" "when-let" "when-not" "when-some" "while" "with-out-str" "with-redefs")
+; ("->" "->>" ".." "aget" "alength" "amap" "and" "areduce" "array" "array-map" "as->" "aset"
+;  "assert" "binding" "bit-test" "bitpos" "byte" "caching-hash" "case" "coercive-=" 
+;  "coercive-boolean" "coercive-not" "coercive-not=" "comment" "cond" "cond->" "cond->>" 
+;  "condp" "copy-arguments" "declare" "defmacro" "defmethod" "defmulti" "defn" "defn-"
+;  "defonce" "defprotocol" "defrecord" "deftype" "delay" "doseq" "dotimes" "doto" "double"
+;  "es6-iterable" "exists?" "extend-protocol" "extend-type" "false?" "float" "fn" "for"
+;  "gen-apply-to" "gen-apply-to-simple" "goog-define" "hash-map" "hash-set" "identical?"
+;  "if-let" "if-not" "if-some" "implements?" "import" "import-macros" "instance?"
+;  "js-arguments" "js-comment" "js-debugger" "js-delete" "js-in" "js-inline-comment"
+;  "js-obj" "js-str" "keyword?" "lazy-cat" "lazy-seq" "let" "letfn" "list" "load-file*"
+;  "locking" "loop" "macroexpand" "macroexpand-1" "make-array" "mask" "memfn" "nil?"
+;  "ns-imports" "ns-interns" "ns-publics" "ns-unmap" "number?" "or" "refer-clojure"
+;  "reify" "require" "require-macros" "resolve" "satisfies?" "short" "simple-benchmark"
+;  "some->" "some->>" "some?" "specify" "specify!" "str" "string?" "symbol?" "this-as"
+;  "time" "true?" "truth_" "undefined?" "unsafe-cast" "use" "use-macros" "vector"
+;  "vswap!" "when" "when-first" "when-let" "when-not" "when-some" "while"
+;  "with-out-str" "with-redefs")
 ....
 
+
+=== ClojureScript macros included in the debux library additionally
 
 [source]
 ....
-;; ClojureScript macros to add specially
-
 :skip-form-itself-type
   "goog-define" "import-macros" "js-comment" "js-inline-comment" "require" "require-macros" 
   "simple-benchmark"  "specify" "specify!" "use" "use-macros"

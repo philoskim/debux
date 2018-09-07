@@ -71,27 +71,28 @@
           " =>") ))
 
 #?(:cljs
-   (defn clog-header
-     [header form-style]
-     (.log js/console header (:title @style*)
+   (defn clog-title
+     [title form-style]
+     (.log js/console
+           (ut/prepend-bars-in-title title (dec ut/*indent-level*)) (:title @style*)
            (get-style form-style) (:text @style*) )))
 
 #?(:cljs
    (defn clog-form-with-indent
-     [form style indent-level]
-     (.log js/console (ut/prepend-bars form indent-level)
+     [form style]
+     (.log js/console (ut/prepend-bars form ut/*indent-level*)
            (get-style style) (:text @style*) )))
 
 #?(:cljs
    (defn clog-result-with-indent
-     [result indent-level & [js-mode]]
+     [result & [js-mode]]
      (let [pprint  (str/trim (with-out-str (pp/pprint result)))
            pprint' (if (fn? result)
                      (str (first (str/split pprint #" " 2)) "]")
                      pprint)]
        (.log js/console (->> (str/split pprint' #"\n")
                              ut/prepend-blanks
-                             (mapv #(ut/prepend-bars % indent-level))
+                             (mapv #(ut/prepend-bars % ut/*indent-level*))
                              (str/join "\n") ))
        (when js-mode
          (.log js/console "%O" result) ))))
@@ -102,31 +103,26 @@
    (def spy-first
      (fn [result quoted-form {:keys [n msg style js] :as opts}]
        (clog-form-with-indent (form-header quoted-form msg)
-                              (or style :debug)
-                              (:indent-level @ut/config*))
-       (clog-result-with-indent (ut/take-n-if-seq n result)
-                                (:indent-level @ut/config*) js)
+                              (or style :debug))
+       (clog-result-with-indent (ut/take-n-if-seq n result) js)
        result) ))
 
 #?(:cljs
    (def spy-last
      (fn [quoted-form {:keys [n msg style js] :as opts} result]
        (clog-form-with-indent (form-header quoted-form msg)
-                              (or style :debug)
-                              (:indent-level @ut/config*))
-       (clog-result-with-indent (ut/take-n-if-seq n result)
-                                (:indent-level @ut/config*) js)
+                              (or style :debug))
+       (clog-result-with-indent (ut/take-n-if-seq n result) js)
        result) ))
 
 #?(:cljs
    (defn spy-comp
      [quoted-form form {:keys [n msg style js] :as opts}]
      (fn [& arg]
-       (let [result (apply form arg)]
-         (clog-form-with-indent (form-header quoted-form msg)
-                                (or style :debug)
-                                (:indent-level @ut/config*))
-         (clog-result-with-indent (ut/take-n-if-seq n result)
-                                  (:indent-level @ut/config*) js)
-         result) )))
+       (binding [ut/*indent-level* (inc ut/*indent-level*)]
+         (let [result (apply form arg)]
+           (clog-form-with-indent (form-header quoted-form msg)
+                                  (or style :debug))
+           (clog-result-with-indent (ut/take-n-if-seq n result) js)
+           result) ))))
 

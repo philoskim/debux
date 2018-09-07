@@ -19,8 +19,7 @@
 
 
 ;;; :defn-type
-(defn- insert-indent-info
-  "Inserts dbg-count in front of form."
+(defn- insert-indent-info0
   [form]
   `((ms/skip try)
       (ms/skip (reset! (:evals ~'+debux-dbg-opts+) {}))
@@ -29,6 +28,13 @@
        ~@form
       (ms/skip (catch Exception ~'e (throw ~'e)))
       (ms/skip (finally (swap! ut/config* update :indent-level dec))) ))
+
+(defn- insert-indent-info
+  [form]
+  `((ms/skip binding) (ms/skip [ut/*indent-level* (inc ut/*indent-level*)])
+      (ms/skip (reset! (:evals ~'+debux-dbg-opts+) {}))
+      (ms/skip (ut/insert-blank-line))
+       ~@form))
 
 (defn insert-skip-in-prepost [prepost]
   `(ms/skip ~prepost))
@@ -159,6 +165,10 @@
 (defn insert-skip-arg-2-3
   [[name arg1 arg2 arg3 & body]]
   (list* name arg1 `(ms/skip ~arg2) `(ms/skip ~arg3) body))
+
+(defn insert-skip-arg-1-2-3
+  [[name arg1 arg2 arg3 & body]]
+  (list* name `(ms/skip ~arg1) `(ms/skip ~arg2) `(ms/skip ~arg3) body))
 
 
 ;;; :skip-form-itself-type

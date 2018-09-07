@@ -1,0 +1,195 @@
+# Macro debugging in ClojureScript
+:sectnums:
+:source-language: clojure
+
+The following gist is the summary and solution from the discussions of
+link:https://groups.google.com/forum/#!topic/clojurescript/BEGF_AjSjmQ[].
+
+## Problem
+
+### My question
+ 
+I wrote a macro in ClojureScript and wanted to test the macro by using `println` function
+like this,
+
+```
+;; qna/macro.clj
+(ns qna.macro)
+
+(defmacro my-add [a b]
+  (println "a =" a "b =" b)   ; <-- Here
+  `(+ ~a ~b))
+
+
+;; qna/core.cljs
+(ns qna.core
+  (:require-macros [qna.macro :refer [my-add]]))
+
+(defn ^:export main []
+  (my-add 2 3))
+```
+
+The source of `project.clj` and `resources/public/index.html` are like the following.
+
+```
+;; project.clj
+(defproject qna "0.1.0-SNAPSHOT"
+  :dependencies [[org.clojure/clojure "1.9.0"]
+                 [org.clojure/clojurescript "1.10.339"]
+                 [philoskim/debux "0.4.12"]]
+  :min-lein-version "2.6.0"
+  :plugins [[lein-cljsbuild "1.1.7"]
+            [lein-figwheel "0.5.16"]]
+  :clean-targets ^{:protect false}
+  ["target"
+   "resources/public/js/out"
+   "resources/public/js/core.js"]
+  :cljsbuild
+  {:builds
+   [{:id "dev"
+     :source-paths ["src"]
+     :compiler {:main      qna.core
+                :output-to "resources/public/js/core.js"
+                :output-dir "resources/public/js/out/"
+                :asset-path "js/out/"
+                :optimizations :none
+                :source-map true
+                :pretty-print true} }]})
+
+
+;; resources/public/index.html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset='utf-8'>
+    <title>QnA Demo</title>
+  </head>
+  
+  <body>
+    <h2>QnA Demo</h1>
+    <div id="app"></div> 
+
+    <script src="js/core.js"></script>
+    <script>qna.core.main();</script>
+  </body>
+</html>
+
+
+```
+
+When I open the above `.html` file in the browser, I encounter the following error.
+
+```
+Uncaught SyntaxError: Unexpected identifier in core.js:4
+```
+
+And the compiled `core.js` file is like this.
+
+```
+// Compiled by ClojureScript 1.10.339 {}
+goog.provide('qna.core');
+goog.require('cljs.core');
+a = 2 b = 3  // <-- embedded printed result
+qna.core.main = (function qna$core$main(){
+return ((2) + (3));
+});
+goog.exportSymbol('qna.core.main', qna.core.main);
+
+//# sourceMappingURL=core.js.map
+```
+
+To sum up, whenever I use `println` function within a macro for ClojureScript, the
+printed result doesn't go to the REPL but is embedded into the compiled `.js` file.
+
+If this is a bug of ClojureScript, I will register this error in the ClojureScript JIRA.
+
+
+### The answers
+
+#### Thomas Heller
+
+[verse]
+____
+You can use `cljs.util/debug-prn` if you need to print during macro expansion.
+
+Whether or not this should be called a bug I don't know.
+____
+
+
+#### David Nolen
+
+[verse]
+____
+The compiler emits to `\*out*` during compilation. You will need to print 
+to some other output stream like `\*err*` for now.
+
+David
+____
+
+
+## Solutions
+
+### Using `cljs.util/debug-prn`
+
+```
+;; qna/macro.clj
+(ns qna.macro
+  (:require [cljs.util :as ut]))
+
+(defmacro my-add [a b]
+  (ut/debug-prn "a =" a "b =" b)  ; <-- Here
+  `(+ ~a ~b))
+  
+  
+;; qna/core.cljs
+(ns qna.core
+  (:require-macros [qna.macro :refer [my-add]]))
+
+(defn ^:export main []
+  (my-add 2 3))
+```
+
+```
+$ lein cljsbuild once
+Compiling ClojureScript...
+Compiling ["resources/public/js/core.js"] from ["src"]...
+a = 2 b = 3
+Successfully compiled ["resources/public/js/core.js"] in 0.496 seconds.
+```
+
+### Using `debux.core/dbgm`
+
+If you use my link:https://github.com/philoskim/debux[*debux*] library, use `dbg-prn` function like this.
+
+CAUTION: All the macros for ClojureScript are compiled by the Clojure compiler, not by the ClojureScript compiler.
+So you have to use `debux.core`, not `debux.cs.core`, like the following.
+
+```
+;; qna/macro.clj
+(ns qna.macro)
+
+(use 'debux.core)
+
+(defmacro my-add [a b]
+  (dbg-prn "a =" a "b =" b)   ;; Use dbg-prn in debux
+  `(+ ~a ~b))
+
+
+;; qna/core.cljs
+(ns qna.core
+  (:require-macros [qna.macro :refer [my-add]]))
+
+(defn ^:export main []
+  (my-add 2 3))
+```
+You can see the printed output of `dbgm` only in the ClojureScript compiling process like this.
+
+```
+$ lein cljsbuild once
+Compiling ClojureScript...
+Compiling ["resources/public/js/core.js"] from ["src"]...
+
+dbg-prn: a = 2 b = 3
+Successfully compiled ["resources/public/js/core.js"] in 0.495 seconds.
+```
+

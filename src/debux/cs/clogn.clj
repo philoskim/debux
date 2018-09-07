@@ -14,9 +14,8 @@
          result2# (ut/take-n-if-seq n# result#)]
      (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result2#))
        (cs.ut/clog-form-with-indent (cs.ut/form-header form# (:msg opts#))
-                                    form-style#
-                                    (:indent-level @ut/config*))
-       (cs.ut/clog-result-with-indent result2# (:indent-level @ut/config*)))
+                                    form-style#)
+       (cs.ut/clog-result-with-indent result2#))
      result#))
 
 (defmacro clogn
@@ -24,21 +23,21 @@
   [form & [{:keys [condition msg style] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :js :once)
          condition#         ~condition]
-     (try
-       (if (or (nil? condition#) condition#)
-         (let [title# (str "\n%cclogn: %c " (ut/truncate (pr-str '~form))
-                           " %c" (and ~msg (str "   <" ~msg ">"))
-                           " =>")
-               style# (or ~style :debug)]
-           (cs.ut/clog-header title# style#) 
+     (if (or (nil? condition#) condition#)
+       (let [title# (str "%cclogn: %c " (ut/truncate (pr-str '~form))
+                         " %c" (and ~msg (str "   <" ~msg ">"))
+                         " =>")
+             style# (or ~style :debug)]
+         (binding [ut/*indent-level* (inc ut/*indent-level*)]
+           (ut/insert-blank-line)
+           (cs.ut/clog-title title# style#) 
            ~(-> (if (ut/include-recur? form)
                   (sk/insert-o-skip-for-recur form &env)
                   form)
                 (dbgn/insert-skip &env)
                 (dbgn/insert-d 'debux.cs.clogn/d &env)
-                dbgn/remove-skip))
-         ~form)
-       (catch js/Error ~'e (throw ~'e)) )))
+                dbgn/remove-skip) ))
+       ~form) ))
 
 
 ;;; break

@@ -23,6 +23,8 @@
          :skip-arg-1-2-type '#{}
          :skip-arg-2-3-type '#{cljs.core/amap cljs.core/areduce}
          :skip-arg-1-3-type '#{cljs.core/defmethod}
+         :skip-arg-1-2-3-type `#{}
+
          :skip-form-itself-type
          '#{catch cljs.core/comment cljs.core/declare cljs.core/defmacro
             cljs.core/defmulti cljs.core/defprotocol cljs.core/defrecord

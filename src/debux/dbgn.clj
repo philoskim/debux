@@ -71,7 +71,6 @@
 ;;        (d acc)
 ;;        (recur (d (* (d acc) (d n))) (d (dec (d n)))))))
 
-
 (defn- macro-types [env]
   (if (ut/cljs-env? env)
     @cs.mt/macro-types*
@@ -126,7 +125,6 @@
             (-> (z/replace loc (sk/insert-skip-in-letfn node))
                 z/next
                 recur)
-            
                         
             ((:for-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-for node))
@@ -163,13 +161,17 @@
             (-> (z/replace loc (sk/insert-skip-arg-1-3 node))
                 z/next
                 recur)
-            
+
+            ((:skip-arg-1-2-3-type (macro-types env)) sym)
+            (-> (z/replace loc (sk/insert-skip-arg-1-2-3 node))
+                z/next
+                recur)
+
             ((:skip-form-itself-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-form-itself node))
                 ut/right-or-next
                 recur)
             
-
             ((:expand-type (macro-types env)) sym)
             (-> (z/replace loc (seq (if (ut/cljs-env? env)
                                       (analyzer/macroexpand-1 env node)
@@ -256,9 +258,8 @@
          result# ~form
          result2# (ut/take-n-if-seq n# result#)]
      (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result2#))
-       (ut/print-form-with-indent (ut/form-header form# (:msg opts#))
-                                  (:indent-level @ut/config*))
-       (ut/pprint-result-with-indent result2# (:indent-level @ut/config*)))
+       (ut/print-form-with-indent (ut/form-header form# (:msg opts#)))
+       (ut/pprint-result-with-indent result2#))
      result#))
 
 
@@ -287,7 +288,7 @@
 
  
 ;;; dbgn
-(defmacro dbgn
+(defmacro dbgn0
   "DeBuG every Nested forms of a form.s"
   [form & [{:keys [condition] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(if (ut/cljs-env? &env)
@@ -306,5 +307,25 @@
                 remove-skip))
          ~form)
        (catch Exception ~'e (throw ~'e)) )))
+
+(defmacro dbgn
+  "DeBuG every Nested forms of a form.s"
+  [form & [{:keys [condition] :as opts}]]
+  `(let [~'+debux-dbg-opts+ ~(if (ut/cljs-env? &env)
+                               (dissoc opts :style :js :once)
+                               opts)
+         condition#         ~condition]
+     (if (or (nil? condition#) condition#)
+       (binding [ut/*indent-level* (inc ut/*indent-level*)] 
+         (let [title# (str "dbgn: " (ut/truncate (pr-str '~form)) " =>")]
+           (ut/insert-blank-line)
+           (ut/print-title-with-indent title#)
+           ~(-> (if (ut/include-recur? form)
+                  (sk/insert-o-skip-for-recur form &env)
+                  form)
+                (insert-skip &env)
+                (insert-d 'debux.dbgn/d &env)
+                remove-skip) ))
+       ~form) ))
 
 

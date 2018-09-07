@@ -8,6 +8,7 @@
 figwheel_server.log
 
 /example/target
+/example/pom.xml
 /example/resources/public/js
 /example/figwheel_server.log
 /example/.rebel_readline_history

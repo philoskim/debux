@@ -7,12 +7,14 @@
   [form {:keys [n msg condition style js once] :as opts} body]
   `(let [condition# ~condition]
      (if (or (nil? condition#) condition#)
-       (let [title# (str "\n%cclog: %c " (ut/truncate (pr-str '~form))
-                         " %c" (and ~msg (str "   <" ~msg ">"))
-                         " =>" (and ~once "   (:once mode)"))
-             style# (or ~style :debug)]
-         (cs.ut/clog-header title# style#)
-         ~body)
+       (binding [ut/*indent-level* (inc ut/*indent-level*)]
+         (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
+                           " %c" (and ~msg (str "   <" ~msg ">"))
+                           " =>" (and ~once "   (:once mode)"))
+               style# (or ~style :debug)]
+           (ut/insert-blank-line)
+           (cs.ut/clog-title title# style#)
+           ~body))
        ~form) ))
 
 (defmacro clog->
@@ -65,7 +67,7 @@
                          " %c" (and ~msg (str "   <" ~msg ">"))
                          " =>" (and ~once "   (:once mode)"))
              style# (or ~style :debug)]
-           (cs.ut/clog-header title# style#)
+           (cs.ut/clog-title title# style#)
            (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n result#)
                                           (:indent-level @ut/config*) ~js) ))
      result#))

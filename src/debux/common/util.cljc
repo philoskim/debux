@@ -15,6 +15,9 @@
      (println ">> dbg_:" (pr-str '~form) "=>\n" (pr-str return#) "<<")
      return#))
 
+;;; indent
+(def ^:dynamic *indent-level* 0)
+
 
 ;;; config
 (def config*
@@ -174,14 +177,20 @@
 
 (defn prepend-bars
   [line indent-level]
-  (let [indent-level' (if (> indent-level 1)
-                        (dec indent-level)
-                        indent-level)]
-    (str (make-bars indent-level') " " line)))
+  (str (make-bars indent-level) " " line))
+
+(defn prepend-bars-in-title
+  [line indent-level]
+  (str (make-bars indent-level) line))
+
+(defn print-title-with-indent
+  [title]
+  (println (prepend-bars-in-title title (dec *indent-level*)))
+  (flush))
 
 (defn print-form-with-indent
-  [form indent-level]
-  (println (prepend-bars form indent-level))
+  [form]
+  (println (prepend-bars form *indent-level*))
   (flush))
 
 (defn form-header [form & [msg]]
@@ -195,11 +204,11 @@
   (mapv #(str "  " %) lines))
 
 (defn pprint-result-with-indent
-  [result indent-level]
+  [result]
   (let [pprint (str/trim (with-out-str (pp/pprint result)))]
     (println (->> (str/split pprint #"\n")
                    prepend-blanks
-                   (mapv #(prepend-bars % indent-level))
+                   (mapv #(prepend-bars % *indent-level*))
                    (str/join "\n")))
     (flush) ))
 
@@ -274,19 +283,20 @@
 ;;; spy functions
 (def spy-first
   (fn [result quoted-form {:keys [n] :as opts}]
-    (print-form-with-indent (form-header quoted-form) 1)
-    (pprint-result-with-indent (take-n-if-seq n result) 1)
+    (print-form-with-indent (form-header quoted-form))
+    (pprint-result-with-indent (take-n-if-seq n result))
     result))
 
 (def spy-last
   (fn [quoted-form {:keys [n] :as opts} result]
-    (print-form-with-indent (form-header quoted-form) 1)
-    (pprint-result-with-indent (take-n-if-seq n result) 1)
+    (print-form-with-indent (form-header quoted-form))
+    (pprint-result-with-indent (take-n-if-seq n result))
     result))
 
 (defn spy-comp [quoted-form form {:keys [n] :as opts}]
   (fn [& arg]
-    (let [result (apply form arg)]
-      (print-form-with-indent (form-header quoted-form) 1)
-      (pprint-result-with-indent (take-n-if-seq n result) 1)
-      result) ))
+    (binding [*indent-level* (inc *indent-level*)]
+      (let [result (apply form arg)]
+        (print-form-with-indent (form-header quoted-form))
+        (pprint-result-with-indent (take-n-if-seq n result))
+        result) )))
