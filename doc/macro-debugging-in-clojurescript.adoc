@@ -182,7 +182,9 @@ So you have to use `debux.core`, not `debux.cs.core`, like the following.
 (defn ^:export main []
   (my-add 2 3))
 ```
-You can see the printed output of `dbgm` only in the ClojureScript compiling process like this.
+
+You can see the printed output of `dbg-prn` only in the ClojureScript compiling process
+like this.
 
 ```
 $ lein cljsbuild once
