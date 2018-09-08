@@ -159,6 +159,8 @@ Successfully compiled ["resources/public/js/core.js"] in 0.496 seconds.
 
 ### Using `debux.core/dbgm`
 
+* Examples are link:../example/src/cljc/example/common.cljc[here].
+
 If you use my link:https://github.com/philoskim/debux[*debux*] library, use `dbg-prn` function like this.
 
 CAUTION: All the macros for ClojureScript are compiled by the Clojure compiler, not by the ClojureScript compiler.
@@ -194,4 +196,3 @@ Compiling ["resources/public/js/core.js"] from ["src"]...
 dbg-prn: a = 2 b = 3
 Successfully compiled ["resources/public/js/core.js"] in 0.495 seconds.
 ```
-

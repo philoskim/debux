@@ -65,8 +65,11 @@ NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.5.0
-** Multiple `dbgn` or `dbg` can be used together. See <<multiple-use, here>> for details.
+** Multiple `dbgn` and `dbg` can be used together. See <<multiple-use, here>> for details.
 ** `dbgm` is renamed `dbg-prn` to clarify the meaning. See <<dbg-prn, here>> for details.
+** `:skip-arg-1-2-3-type` is added to
+   link:https://github.com/philoskim/debux#macro-type-table[the macro types].
+** `.cljc` examples are added to link:example/src/cljc/example/common.cljc[] file.
 
 * v0.4.12
 ** `:if-let-type` is added to link:https://github.com/philoskim/debux#macro-type-table[the
@@ -1788,9 +1791,9 @@ dbg: (->> (range (- b a)) (map (fn* [p1__16770#] (* p1__16770# p1__16770#)) ... 
 ----
 
 
-### Multiple `dbgn` or `dbg`
+### Multiple `dbgn` and `dbg`
 
-Multiple `dbgn` or `dbg` can be used together.
+Multiple `dbgn` and `dbg` can be used together.
 
 [source]
 .Example 1
@@ -2348,6 +2351,8 @@ image::clog-5.png[title=":js option example", width=550]
 
 CAUTION: The function `dbg-prn` doesn't follow the usage employed in `dbg`/`clog`. It is just
          another name of `println` which can be used at the macro-expansion time.  
+
+NOTE: `dbg-prn` can be used inside the macros for Clojure.
 
 See link:doc/macro-debugging-in-clojurescript.adoc[here] for detailed explaination. 
 

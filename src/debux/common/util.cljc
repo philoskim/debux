@@ -11,9 +11,10 @@
   "The internal macro to debug dbg macro.
    <form any> a form to be evaluated"
   [form]
-  `(let [return# ~form]
-     (println ">> dbg_:" (pr-str '~form) "=>\n" (pr-str return#) "<<")
-     return#))
+  `(binding [*out* *err*]
+     (let [return# ~form]
+       (println ">> dbg_:" (pr-str '~form) "=>\n" (pr-str return#) "<<")
+       return#)))
 
 ;;; indent
 (def ^:dynamic *indent-level* 0)
@@ -24,8 +25,7 @@
   (atom {:debug-mode true
          :ns-blacklist nil
          :ns-whitelist nil         
-         :print-seq-length 100
-         :indent-level 1} ))
+         :print-seq-length 100} ))
 
 (defn set-print-seq-length! [num]
   (swap! config* assoc :print-seq-length num)
