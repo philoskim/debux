@@ -90,52 +90,6 @@ https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 ** link:https://github.com/philoskim/debux/issues/7[Issue #7] bug fixed: _attr-map_ and
    _prepost-map_ in `defn` or `defn-` are preperly handled now.
 
-* v0.4.8
-** A bug in `dbg`/`clog` is fixed, which causes multiple evaluations in debugging the side
-   effect code.
-
-* v0.4.7
-** link:https://github.com/philoskim/debux/issues/6[Issue #6] bug fixed.
-
-* v0.4.6
-** The following missing macros of `cljs.core` in ClojureScript are added.
-*** `:skip-form-itself-type`
-+
-`goog-define` `import-macros` `js-comment` `js-inline-comment` `require` `require-macros` 
-`simple-benchmark`  `specify` `specify!` `use` `use-macros`
-
-*** `:skip-arg-1-type`
-+
-`this-as`
-
-** See link:https://gist.github.com/philoskim/1d61574f69902c102d1a3c5c9112c6ba[here] for how to enumerate all the `cljs.core` macros in ClojureScript.
-
-* v0.4.5
-** No new features are added. Just for matching with the fixed version of `debux-stubs`.
-
-* v0.4.4
-** The new `debux-stubs` library is introduced for production mode support. See
-   <<two-libraries, here>> for details.
-** `set-debug-mode!` is added. See <<debux-config, here>> for details.
-** `set-ns-whitelist!` and `set-ns-blacklist!` are added. See <<debux-config, here>> for
-    details.
-
-* v0.4.3
-** The same duplicate evaluated results are not printed by default. See <<dup-option>> for
-   detalis.
-** The readability is enhanced for the looping constructs such as `map`, `reduce`, `for`,
-  `loop`, and so on by inserting a blank line whenever iteration happens. See
-  <<enhanced-readability, here>> for examples.
- 
-* v0.4.2
-** `set-print-seq-length!` function is added to change the default number when printing
-   `seq` data type. See <<set-print-seq-length, here>> for example.
-** `dbg` can be used inside `dbgn` or vice versa. `clog` can be used inside `clogn` or vice
-    versa. See <<multiple-use, here>> for details.
-
-* 0.4.1
-** `debux.el` is upgraded.
-
 
 ## How to use
  
