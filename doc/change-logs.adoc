@@ -3,6 +3,10 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.5.1
+** link:https://github.com/philoskim/debux/issues/11[Issue #6] probelm solved. Now you can
+   use *debux* library on JVM 9 or above.
+
 * v0.5.0
 ** Multiple `dbgn` or `dbg` can be used together. See <<multiple-use, here>> for details.
 ** `dbgm` is renamed `dbg-prn` to clarify the meaning. See <<dbg-prn, here>> for details.
