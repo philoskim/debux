@@ -12,7 +12,7 @@ figwheel_server.log
 /example/resources/public/js
 /example/figwheel_server.log
 /example/.rebel_readline_history
-
+/example/.lein-repl-history
 
 /resources/public/js/
 
