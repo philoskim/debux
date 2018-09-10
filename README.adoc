@@ -59,7 +59,7 @@ and this to your production dependencies (make sure they are production only):
 ....
 
 
-## Summary of change logs
+## Recent change logs
 
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
