@@ -8,7 +8,7 @@
 ** `dbgm` is renamed `dbg-prn` to clarify the meaning. See <<dbg-prn, here>> for details.
 ** `:skip-arg-1-2-3-type` is added to
    link:https://github.com/philoskim/debux#macro-type-table[the macro types].
-** `.cljc` examples are added to `example/src/cljc` directory.
+** `.cljc` examples are added to `example/src/cljc/example/common.cljc` file.
 
 * v0.4.12
 ** `:if-let-type` is added to link:https://github.com/philoskim/debux#macro-type-table[the

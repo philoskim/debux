@@ -12,7 +12,7 @@ this library to debug my own Clojure(Script) code and to analyze other developer
 ## Prerequisites
 
 * clojure 1.8.0 or later
-* clojurescript 1.9.854 or later
+* clojurescript 1.10.238 or later
 
 
 [[two-libraries]]
