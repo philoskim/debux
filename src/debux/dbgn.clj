@@ -173,9 +173,9 @@
                 recur)
             
             ((:expand-type (macro-types env)) sym)
-            (-> (z/replace loc (seq (if (ut/cljs-env? env)
-                                      (analyzer/macroexpand-1 env node)
-                                      (macroexpand-1 node) )))
+            (-> (z/replace loc (if (ut/cljs-env? env)
+                                 (analyzer/macroexpand-1 env node)
+                                 (macroexpand-1 node) ))
                 recur)
 
             ((:dot-type (macro-types env)) sym)

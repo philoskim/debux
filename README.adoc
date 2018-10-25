@@ -8,6 +8,7 @@
 *Debux* is a simple but useful library for debugging Clojure and ClojureScript. I wrote
 this library to debug my own Clojure(Script) code and to analyze other developer's one.
 
+* Clojars repository: link:https://clojars.org/philoskim/debux[]
 
 ## Prerequisites
 
