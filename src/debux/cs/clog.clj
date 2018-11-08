@@ -53,8 +53,7 @@
   [form {:keys [n js] :as opts}]
   `(clog-base ~form ~opts
      (let [result# ~form]
-       (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n result#)
-                                      (:indent-level @ut/config*) ~js)
+       (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n result#) ~js)
        result#) ))
 
 (defmacro clog-once
@@ -63,13 +62,13 @@
          result# ~form]
      (when (and (or (nil? condition#) condition#)
                 (cs.ut/changed? (str '~form " " '~opts) (str result#)))
-       (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
-                         " %c" (and ~msg (str "   <" ~msg ">"))
-                         " =>" (and ~once "   (:once mode)"))
-             style# (or ~style :debug)]
+       (binding [ut/*indent-level* (inc ut/*indent-level*)]
+         (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
+                           " %c" (and ~msg (str "   <" ~msg ">"))
+                           " =>" (and ~once "   (:once mode)"))
+               style# (or ~style :debug)]
            (cs.ut/clog-title title# style#)
-           (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n result#)
-                                          (:indent-level @ut/config*) ~js) ))
+           (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n result#) ~js) )))
      result#))
        
 

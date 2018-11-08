@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.5.2
+** The `:js` option error of `clog` is fixed.
+
 * v0.5.1
 ** link:https://github.com/philoskim/debux/issues/11[Issue #11] probelm solved. Now you can
    use *debux* library on JVM 9 or above.

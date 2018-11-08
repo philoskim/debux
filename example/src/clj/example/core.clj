@@ -15,4 +15,5 @@
   (require 'example.common)
   (require 'example.dbg)
   (require 'example.options)
-  (require 'example.dbgn))
+  (require 'example.dbgn)
+)
