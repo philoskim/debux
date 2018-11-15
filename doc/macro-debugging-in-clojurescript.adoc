@@ -157,7 +157,7 @@ a = 2 b = 3
 Successfully compiled ["resources/public/js/core.js"] in 0.496 seconds.
 ```
 
-### Using `debux.core/dbgm`
+### Using `debux.core/dbg-prn`
 
 * Examples are link:../example/src/cljc/example/common.cljc[here].
 
@@ -173,7 +173,7 @@ So you have to use `debux.core`, not `debux.cs.core`, like the following.
 (use 'debux.core)
 
 (defmacro my-add [a b]
-  (dbg-prn "a =" a "b =" b)   ;; Use dbg-prn in debux
+  (dbg-prn "a =" a "b =" b)   ;; Here!
   `(+ ~a ~b))
 
 
