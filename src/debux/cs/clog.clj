@@ -4,13 +4,13 @@
             [debux.cs.util :as cs.ut] ))
 
 (defmacro clog-base
-  [form {:keys [n msg condition style js once] :as opts} body]
+  [form {:keys [msg condition style] :as opts} body]
   `(let [condition# ~condition]
      (if (or (nil? condition#) condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
                            " %c" (and ~msg (str "   <" ~msg ">"))
-                           " =>" (and ~once "   (:once mode)"))
+                           " =>")
                style# (or ~style :debug)]
            (ut/insert-blank-line)
            (cs.ut/clog-title title# style#)

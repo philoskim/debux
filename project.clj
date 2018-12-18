@@ -6,10 +6,4 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
                  [clojure-future-spec "1.9.0-alpha17"]]
-
-  :min-lein-version "2.6.0"
-
-  :source-paths ["src"]
-
-  :clean-targets ^{:protect false} ["target"])
-                
+  :source-paths ["src"])

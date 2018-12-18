@@ -5,5 +5,6 @@
             example.clog
             example.dbgn
             example.dbg
-            example.options))
+            example.options
+))
 
