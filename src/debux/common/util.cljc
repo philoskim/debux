@@ -202,7 +202,7 @@
 (defn pprint-result-with-indent
   [result]
   (let [pprint (str/trim (with-out-str (pp/pprint result)))
-        prefix (str (make-bars *indent-level*) "  ")]
+        prefix (str (make-bars *indent-level*) "   ")]
     (println (->> (str/split pprint #"\n")
                   (mapv #(str prefix %))
                   (str/join "\n")))

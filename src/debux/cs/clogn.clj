@@ -8,6 +8,7 @@
 (defmacro d [form]
   `(let [opts# ~'+debux-dbg-opts+
          n#    (or (:n opts#) (:print-seq-length @ut/config*))
+         js#   (:js opts#)
          form-style# (or (:style opts#) :debug)
          form#   '~(dbgn/remove-d form 'debux.cs.clogn/d)
          result# ~form
@@ -15,13 +16,13 @@
      (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result2#))
        (cs.ut/clog-form-with-indent (cs.ut/form-header form# (:msg opts#))
                                     form-style#)
-       (cs.ut/clog-result-with-indent result2#))
+       (cs.ut/clog-result-with-indent result2# js#))
      result#))
 
 (defmacro clogn
   "Console LOG every Nested forms of a form."
   [form & [{:keys [condition msg style] :as opts}]]
-  `(let [~'+debux-dbg-opts+ ~(dissoc opts :js :once)
+  `(let [~'+debux-dbg-opts+ ~(dissoc opts :once)
          condition#         ~condition]
      (if (or (nil? condition#) condition#)
        (let [title# (str "%cclogn: %c " (ut/truncate (pr-str '~form))
