@@ -86,16 +86,13 @@
 #?(:cljs
    (defn clog-result-with-indent
      [result & [js-mode]]
-     (let [pprint  (str/trim (with-out-str (pp/pprint result)))
-           pprint' (if (fn? result)
-                     (str (first (str/split pprint #" " 2)) "]")
-                     pprint)]
-       (.log js/console (->> (str/split pprint' #"\n")
-                             ut/prepend-blanks
-                             (mapv #(ut/prepend-bars % ut/*indent-level*))
+     (let [pprint (str/trim (with-out-str (pp/pprint result)))
+           prefix (str (ut/make-bars ut/*indent-level*) "  ")]
+       (.log js/console (->> (str/split pprint #"\n")
+                             (mapv #(str prefix %))
                              (str/join "\n") ))
        (when js-mode
-         (.log js/console "%O" result) ))))
+         (.log js/console "%s <js> %O" prefix result) ))))
 
 
 ;;; spy functions

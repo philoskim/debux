@@ -5,7 +5,7 @@
             [debux.cs.macro-types :as cs.mt]
             [debux.common.macro-specs :as ms]
             [debux.common.util :as ut] ))
-          
+         
 (defn- macro-types [env]
   (if (ut/cljs-env? env)
     @cs.mt/macro-types*
@@ -52,7 +52,7 @@
            attr-map (assoc :meta `(ms/skip ~attr-map))
            arity-1 (update-in [:bs 1] insert-indent-info-in-defn-body)
            arity-n (assoc-in [:bs 1 :bodies] (mapv insert-indent-info-in-defn-body
-                                                       (:bodies arity-n))))
+                                                   (:bodies arity-n) )))
          (s/unform ::ms/defn-args)
          (cons name) )))
 

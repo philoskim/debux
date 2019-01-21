@@ -4,7 +4,7 @@
                  [org.clojure/core.async "0.3.465"]
                  [philoskim/debux "0.5.2"]]
   :plugins [[lein-cljsbuild "1.1.6"]
-            [lein-figwheel  "0.5.16"]]
+            [lein-figwheel  "0.5.18"]]
   :source-paths ["src/clj" "src/cljc"]
   :main example.core
   :clean-targets ^{:protect false}

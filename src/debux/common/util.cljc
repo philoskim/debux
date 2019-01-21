@@ -66,7 +66,7 @@
 
         :else
         (and (in-ns-list? current-ns ns-whitelist)
-             (not (in-ns-list? current-ns ns-blacklist)) )) )))
+             (not (in-ns-list? current-ns ns-blacklist)) )))))
 
 
 ;;; general
@@ -133,7 +133,7 @@
          ;; However, the special symbol `.` returns meta {:name / :ns nil}, which may be a bug.
          (if (nil? ns)
            sym
-           (symbol ns name)))
+           (symbol ns name) ))
        ;; special symbols except for `.`
        sym) ))
 
@@ -199,22 +199,18 @@
        " =>"))
 
 
-(defn prepend-blanks
-  [lines]
-  (mapv #(str "  " %) lines))
-
 (defn pprint-result-with-indent
   [result]
-  (let [pprint (str/trim (with-out-str (pp/pprint result)))]
+  (let [pprint (str/trim (with-out-str (pp/pprint result)))
+        prefix (str (make-bars *indent-level*) "  ")]
     (println (->> (str/split pprint #"\n")
-                   prepend-blanks
-                   (mapv #(prepend-bars % *indent-level*))
-                   (str/join "\n")))
+                  (mapv #(str prefix %))
+                  (str/join "\n")))
     (flush) ))
 
 (defn insert-blank-line []
   #?(:clj (do (println " ") (flush))
-     :cljs (.log js/console " ")))
+     :cljs (.log js/console " ") ))
 
 
 ;;; parse options
@@ -261,7 +257,7 @@
 
 (defn quote-vals [m]
   (->> (map quote-val m)
-       (into {})))
+       (into {}) ))
 
 
 ;;; for recur processing
