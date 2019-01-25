@@ -3,6 +3,10 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.5.4
+** The `:js` option color in `clogn` is changed.
+** `:skip-form-itself-type` in the macro types is renamed `:skip-all-args-type`
+
 * v0.5.3
 ** The `:js` option can be used in `clogn` now.
 
