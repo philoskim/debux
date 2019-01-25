@@ -2301,7 +2301,8 @@ NOTE: `(:once mode)` string is appended after the form header to remind you of `
 ### `:js` option
 
 If `:js` option is added after the form, the JavaScript object will be printed as well, so
-you can inspect the internal structures of ClojureScript data types.
+you can inspect the internal structures of ClojureScript data types or the JavaScript
+objects returned by JavaScript interops in ClojureScript.
 
 ....
 (clog {:a 10 :b 20} :js)

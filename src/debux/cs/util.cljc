@@ -92,9 +92,8 @@
                              (mapv #(str prefix %))
                              (str/join "\n") ))
        (when js-mode
-         (.log js/console "%s %c<js>%c %O" prefix
-               "background-color: #104e8b; color: white"
-               "background-color: white; color: black" result) ))))
+         (.log js/console "%s %c<js>%c %O" prefix (:info @style*) (:text @style*)
+                                           result) ))))
 
 
 ;;; spy functions
