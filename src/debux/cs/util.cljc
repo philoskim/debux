@@ -23,13 +23,13 @@
 
 ;;; styling
 (def style*
-  (atom {:error "background: red; color: white"
-         :warn  "background: green; color: white"
-         :info  "background: #0000cd; color: white" 
-         :debug "background: #ffc125; color: black"
+  (atom {:error "background-color: red; color: white"
+         :warn  "background-color: green; color: white"
+         :info  "background-color: #0000cd; color: white" 
+         :debug "background-color: #ffc125; color: black"
 
-         :text  "color: black"
-         :title "color: #8b008b"} ))
+         :normal "background-color: white; color: black"
+         :title "background-color: white; color: #8b008b"} ))
 
 (defn- get-style
   "<styke kw|str> style-name
@@ -75,13 +75,13 @@
      [title form-style]
      (.log js/console
            (ut/prepend-bars-in-title title (dec ut/*indent-level*)) (:title @style*)
-           (get-style form-style) (:text @style*) )))
+           (get-style form-style) (:normal @style*) )))
 
 #?(:cljs
    (defn clog-form-with-indent
      [form style]
      (.log js/console (ut/prepend-bars form ut/*indent-level*)
-           (get-style style) (:text @style*) )))
+           (get-style style) (:normal @style*) )))
 
 #?(:cljs
    (defn clog-result-with-indent
@@ -92,7 +92,7 @@
                              (mapv #(str prefix %))
                              (str/join "\n") ))
        (when js-mode
-         (.log js/console "%s %c<js>%c %O" prefix (:info @style*) (:text @style*)
+         (.log js/console "%s %c<js>%c %O" prefix (:info @style*) (:normal @style*)
                                            result) ))))
 
 

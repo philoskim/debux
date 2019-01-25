@@ -1167,7 +1167,8 @@ future possibilities of this type of macros.
 
 #### `:skip-all-args-type` example
 
-This type of macros ignores all the arguments and prints the outermost form only.
+This type of macros ignores all the arguments and prints the outermost form and its
+result.
 
 [source]
 ....
