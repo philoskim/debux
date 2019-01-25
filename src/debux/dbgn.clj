@@ -167,8 +167,8 @@
                 z/next
                 recur)
 
-            ((:skip-form-itself-type (macro-types env)) sym)
-            (-> (z/replace loc (sk/insert-skip-form-itself node))
+            ((:skip-all-args-type (macro-types env)) sym)
+            (-> (z/replace loc (sk/insert-skip-all-args node))
                 ut/right-or-next
                 recur)
             

@@ -25,7 +25,7 @@
          :skip-arg-1-3-type '#{cljs.core/defmethod}
          :skip-arg-1-2-3-type `#{}
 
-         :skip-form-itself-type
+         :skip-all-args-type
          '#{catch cljs.core/comment cljs.core/declare cljs.core/defmacro
             cljs.core/defmulti cljs.core/defprotocol cljs.core/defrecord
             cljs.core/deftype cljs.core/extend-protocol cljs.core/extend-type

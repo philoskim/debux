@@ -508,10 +508,10 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 | :skip-arg-1-3-type   | defmethod
 | :skip-arg-2-3-type   | amap areduce
 | :skip-arg-1-2-3-type |
-| :skip-form-itself-type  | catch comment declare definline definterface defmacro defmulti
-                            defprotocol defrecord defstruct deftype extend-protocol
-                            extend-type finally gen-class gen-interface import memfn new
-                            ns proxy proxy-super quote refer-clojure reify sync throw var
+| :skip-all-args-type  | catch comment declare definline definterface defmacro defmulti
+                         defprotocol defrecord defstruct deftype extend-protocol
+                         extend-type finally gen-class gen-interface import memfn new
+                         ns proxy proxy-super quote refer-clojure reify sync throw var
 | :expand-type | pass:q[.. -> ->> doto cond-> cond->> condp import some-> some->>]
 | :dot-type    | .
 
@@ -1180,11 +1180,22 @@ This type of macros have the first, second and third arguments which must not be
 type of macros in `clojure.core` namespace but add this type for completeness and the
 future possibilities of this type of macros.
 
-#### `:skip-form-itself-type` example
+#### `:skip-all-args-type` example
 
-This type of macros have too complex to parse, so `dbgn`/`clogn` skips the form itself and does
-nothing.
-  
+This type of macros ignores all the arguments and prints the outermost form only.
+
+[source]
+....
+(dbgn (quote a))
+....
+
+[listing]
+.REPL output
+----
+dbgn: (quote a) =>
+a
+----
+
 
 #### `:expand-type` example
 
@@ -1578,7 +1589,7 @@ dbg: (show-macros :let-type) =>
 
 dbg: (show-macros) =>
 |   {:fn-type #{clojure.core/fn fn*},
-|    :skip-form-itself-type
+|    :skip-all-args-type
 |    #{clojure.core/proxy-super clojure.core/defmacro
 |      clojure.core/definterface clojure.core/sync clojure.core/defrecord
 |      clojure.core/declare clojure.core/deftype clojure.core/comment
@@ -1668,7 +1679,7 @@ dbg: (d/show-macros :let-type) =>
 
 dbg: (d/show-macros) =>
 |   {:fn-type #{fn* cljs.core/fn},
-|    :skip-form-itself-type
+|    :skip-all-args-type
 |    #{cljs.core/simple-benchmark cljs.core/defmulti cljs.core/specify!
 |      cljs.core/goog-define cljs.core/import-macros finally cljs.core/specify
 |      cljs.core/use cljs.core/defprotocol cljs.core/use-macros

@@ -161,8 +161,8 @@
   (list* name `(ms/skip ~arg1) `(ms/skip ~arg2) `(ms/skip ~arg3) body))
 
 
-;;; :skip-form-itself-type
-(defn insert-skip-form-itself
+;;; :skip-all-args-type
+(defn insert-skip-all-args
   [form]
   `(ms/skip ~form))
 

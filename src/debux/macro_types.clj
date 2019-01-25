@@ -24,7 +24,7 @@
          :skip-arg-2-3-type `#{amap areduce}
          :skip-arg-1-2-3-type `#{}
          
-         :skip-form-itself-type
+         :skip-all-args-type
          `#{catch comment declare definline definterface defmacro defmulti
             defprotocol defrecord defstruct deftype extend-protocol
             extend-type finally gen-class gen-interface import memfn
