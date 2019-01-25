@@ -29,10 +29,10 @@
          :debug "background-color: #ffc125; color: black"
 
          :normal "background-color: white; color: black"
-         :title "background-color: white; color: #8b008b"} ))
+         :title  "background-color: white; color: #8b008b"} ))
 
 (defn- get-style
-  "<styke kw|str> style-name
+  "<style kw|str> style-name
    <return str?>"
   [style]
   (cond
@@ -100,16 +100,14 @@
 #?(:cljs
    (def spy-first
      (fn [result quoted-form {:keys [n msg style js] :as opts}]
-       (clog-form-with-indent (form-header quoted-form msg)
-                              (or style :debug))
+       (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
        (clog-result-with-indent (ut/take-n-if-seq n result) js)
        result) ))
 
 #?(:cljs
    (def spy-last
      (fn [quoted-form {:keys [n msg style js] :as opts} result]
-       (clog-form-with-indent (form-header quoted-form msg)
-                              (or style :debug))
+       (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
        (clog-result-with-indent (ut/take-n-if-seq n result) js)
        result) ))
 
@@ -119,8 +117,7 @@
      (fn [& arg]
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [result (apply form arg)]
-           (clog-form-with-indent (form-header quoted-form msg)
-                                  (or style :debug))
+           (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
            (clog-result-with-indent (ut/take-n-if-seq n result) js)
            result) ))))
 
