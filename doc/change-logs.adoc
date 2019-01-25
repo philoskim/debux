@@ -4,7 +4,7 @@
 :sectnums:
 
 * v0.5.4
-** The `:js` option color in `clogn` is changed.
+** The `:js` option color in `clog`/`clogn` is changed.
 ** `:skip-form-itself-type` in the macro types is renamed `:skip-all-args-type`
 
 * v0.5.3
