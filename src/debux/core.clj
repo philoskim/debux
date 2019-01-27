@@ -44,3 +44,7 @@
   ([] `(mt/show-macros))
   ([macro-type] `(mt/show-macros ~macro-type)))
 
+(dbgn (try
+       (/ 1 0)
+       (catch ArithmeticException e (str "caught exception: " (.getMessage e)))
+       (finally (prn "final exception."))))

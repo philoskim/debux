@@ -3,9 +3,10 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.future :refer :all] ))
 
-(declare skip o-skip)
+(declare skip o-skip a-skip)
 ; skip => full skip
 ; o-skip => outermost skip
+; a-skip => all args skip
 
 
 ;;; def

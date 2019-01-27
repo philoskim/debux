@@ -25,11 +25,12 @@
          :skip-arg-1-2-3-type `#{}
          
          :skip-all-args-type
-         `#{catch comment declare definline definterface defmacro defmulti
-            defprotocol defrecord defstruct deftype extend-protocol
-            extend-type finally gen-class gen-interface import memfn
-            new ns proxy proxy-super quote refer-clojure reify sync
-            throw var debux.core/dbg debux.core/dbgn}
+         `#{declare defmacro defmulti defstruct extend extend-protocol extend-type
+            import memfn new ns proxy proxy-super quote refer-clojure reify sync var}
+
+         :skip-form-itself-type
+         `#{catch definline definterface defprotocol defrecord deftype finally
+            gen-class gen-interface}
 
          :expand-type
          `#{clojure.core/.. -> ->> doto cond-> cond->> condp import 

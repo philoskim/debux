@@ -164,6 +164,12 @@
 ;;; :skip-all-args-type
 (defn insert-skip-all-args
   [form]
+  `(ms/a-skip ~form))
+
+
+;;; :skip-form-itself-type
+(defn insert-skip-form-itself
+  [form]
   `(ms/skip ~form))
 
 

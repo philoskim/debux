@@ -171,6 +171,11 @@
             (-> (z/replace loc (sk/insert-skip-all-args node))
                 ut/right-or-next
                 recur)
+
+            ((:skip-form-itself-type (macro-types env)) sym)
+            (-> (z/replace loc (sk/insert-skip-form-itself node))
+                ut/right-or-next
+                recur)
             
             ((:expand-type (macro-types env)) sym)
             (-> (z/replace loc (if (ut/cljs-env? env)
@@ -212,6 +217,12 @@
           ;; <ex> (o-skip (recur ...))
           :else 
           (recur (-> loc z/down z/next z/down ut/right-or-next)))
+
+        ;; in case of (a-skip ...)        
+        (and (seq? node)
+             (= `ms/a-skip (first node)))
+        (recur (-> (z/replace loc (concat [d-sym] [node]))
+                   ut/right-or-next))
 
         ;; in case that the first symbol is defn/defn-
         (and (seq? node)
@@ -271,9 +282,9 @@
       (cond
         (z/end? loc) (z/root loc)
 
-        ;; in case of (skip ...)
+        ;; in case of (skip ...) or (a-skip ...) 
         (and (seq? node)
-             (= `ms/skip (first node)))
+             (`#{ms/skip ms/a-skip} (first node)))
         (recur (-> (z/replace loc (second node))
                    ut/right-or-next))
 
