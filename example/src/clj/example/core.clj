@@ -11,9 +11,9 @@
 
   ;; You should require dynamically the namespaces that you want to laod
   ;; if you want to use set-ns-blacklist! or set-ns-whitelist!.
-  (require 'example.lab)
-  ;(require 'example.common)
-  ;(require 'example.dbg)
-  ;(require 'example.options)
-  ;(require 'example.dbgn)
+  ;(require 'example.lab)
+  (require 'example.common)
+  (require 'example.dbg)
+  (require 'example.options)
+  (require 'example.dbgn)
 )

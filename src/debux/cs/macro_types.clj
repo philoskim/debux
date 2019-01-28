@@ -26,15 +26,16 @@
          :skip-arg-1-2-3-type `#{}
 
          :skip-all-args-type
-         '#{catch cljs.core/comment cljs.core/declare cljs.core/defmacro
-            cljs.core/defmulti cljs.core/defprotocol cljs.core/defrecord
-            cljs.core/deftype cljs.core/extend-protocol cljs.core/extend-type
-            finally cljs.core/goog-define cljs.core/import cljs.core/import-macros
-            cljs.core/js-comment cljs.core/js-inline-comment cljs.core/memfn
-            new quote cljs.core/refer-clojure cljs.core/reify cljs.core/require
-            cljs.core/require-macros cljs.core/simple-benchmark cljs.core/specify
-            cljs.core/specify! throw cljs.core/use cljs.core/use-macros var 
+         '#{cljs.core/comment cljs.core/declare cljs.core/defmacro cljs.core/defmulti 
+            cljs.core/extend-protocol cljs.core/extend-type cljs.core/goog-define
+            cljs.core/import cljs.core/import-macros cljs.core/memfn new quote
+            cljs.core/refer-clojure cljs.core/reify cljs.core/require cljs.core/require-macros
+            cljs.core/simple-benchmark cljs.core/specify cljs.core/specify!
+            cljs.core/use cljs.core/use-macros var}
 
+         :skip-form-itself-type
+         '#{catch cljs.core/defprotocol cljs.core/defrecord cljs.core/deftype finally
+            cljs.core/js-comment cljs.core/js-inline-comment 
             debux.cs.cljs.core/dbg debux.cs.cljs.core/dbgn
             debux.cs.cljs.core/clog debux.cs.cljs.core/clogn}
 

@@ -30,7 +30,7 @@
 
          :skip-form-itself-type
          `#{catch definline definterface defprotocol defrecord deftype finally
-            gen-class gen-interface}
+            gen-class gen-interface debux.core/dbg debux.core/dbgn}
 
          :expand-type
          `#{clojure.core/.. -> ->> doto cond-> cond->> condp import 
