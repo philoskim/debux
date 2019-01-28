@@ -67,7 +67,7 @@ https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.5.5
 ** `:skip-form-itself-type` is split into the `:skip-all-args-type` and
-   `:skip-form-itself-type.
+   `:skip-form-itself-type`.
 
 * v0.5.4
 ** The `:js` option color in `clog`/`clogn` is changed.
@@ -1182,6 +1182,8 @@ result.
 .REPL output
 ----
 dbgn: (quote a) =>
+| (quote a) =>
+|   a
 a
 ----
 
@@ -1193,8 +1195,7 @@ This type of macros ignores the form itself and prints nothing.
 ....
 (dbgn (try
         (/ 1 0)
-        (catch ArithmeticException e (str "caught exception: " (.getMessage e)))
-        (finally (prn "final exception."))))
+        (catch ArithmeticException e (str "caught exception: " (.getMessage e)))))
 ....
 
 [listing]
