@@ -1175,16 +1175,16 @@ result.
 
 [source]
 ....
-(dbgn (quote a))
+(dbgn (defmacro unless [pred a b]
+        `(if (not ~pred) ~a ~b)))
 ....
 
 [listing]
 .REPL output
 ----
-dbgn: (quote a) =>
-| (quote a) =>
-|   a
-a
+dbgn: (defmacro unless [pred a b] (clojure.core/seq (clojure.core/concat (cl ... =>
+| (defmacro unless [pred a b] (clojure.core/seq (clojure.core/concat (cl ... =>
+|   #'user/unless
 ----
 
 #### `:skip-form-itself-type` example
@@ -1206,8 +1206,7 @@ dbgn: (try (/ 1 0) (catch ArithmeticException e (str "caught exception: " (. ...
 |   "caught exception: Divide by zero"
 ----
 
-NOTE: The evaluated resuts of the `catch` form itself are not printed in the above
-      example.
+NOTE: The evaluated resuts of the `catch` form are not printed in the above example.
 
 #### `:expand-type` example
 

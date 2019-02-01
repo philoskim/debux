@@ -37,7 +37,7 @@
             some-> some->>}
          :dot-type `#{.} }))
 
-(defn merge-symbols [old-symbols new-symbols]
+(defn- merge-symbols [old-symbols new-symbols]
   (->> (map #(ut/ns-symbol %) new-symbols)
        set
        (set/union old-symbols) ))

@@ -26,7 +26,7 @@
       (ms/skip (ut/insert-blank-line))
        ~@form))
 
-(defn insert-skip-in-prepost [prepost]
+(defn- insert-skip-in-prepost [prepost]
   `(ms/skip ~prepost))
 
 (defn- insert-indent-info-in-defn-body [arity]

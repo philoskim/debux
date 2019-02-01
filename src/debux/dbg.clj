@@ -54,7 +54,7 @@
        result#) ))
 
 
-(def dbg*
+(def ^:private dbg*
   {:->   '#{clojure.core/-> cljs.core/->}
    :->>  '#{clojure.core/->> cljs.core/->>}
    :comp '#{clojure.core/comp cljs.core/comp}

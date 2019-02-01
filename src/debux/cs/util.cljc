@@ -31,10 +31,7 @@
          :normal "background-color: white; color: black"
          :title  "background-color: white; color: #8b008b"} ))
 
-(defn- get-style
-  "<style kw|str> style-name
-   <return str?>"
-  [style]
+(defn- get-style [style]
   (cond
     (keyword? style)
     (cond
@@ -65,7 +62,7 @@
 
 ;;; printing for browser console
 #?(:cljs
-   (defn- form-header [form & [msg]]
+   (defn form-header [form & [msg]]
      (str "%c " (ut/truncate (pr-str form))
           " %c" (and msg (str "   <" msg ">"))
           " =>") ))
