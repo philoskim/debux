@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.5.6
+** link:https://github.com/philoskim/debux/issues/12[Issue #12] probelm solved.
+
 * v0.5.5
 ** `:skip-form-itself-type` is split into the `:skip-all-args-type` and
    `:skip-form-itself-type.

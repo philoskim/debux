@@ -73,9 +73,6 @@
 (defn cljs-env? [env]
   (boolean (:ns env)))
 
-(defn lazy-seq? [coll]
-  (instance? clojure.lang.IPending coll))
-
 (defn replace-& [v]
   (walk/postwalk-replace {'& ''&} v))
 
