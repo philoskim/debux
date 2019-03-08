@@ -66,7 +66,7 @@ NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.5.6
-** link:https://github.com/philoskim/debux/issues/12[Issue #12] problem solved.
+** link:https://github.com/philoskim/debux/issues/12[Issue #12] solved.
 
 * v0.5.5
 ** `:skip-form-itself-type` is split into the `:skip-all-args-type` and
@@ -82,8 +82,8 @@ https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 ** The `:js` option error of `clog` is fixed.
 
 * v0.5.1
-** link:https://github.com/philoskim/debux/issues/11[Issue #11] probelm solved. Now you
-   can use *debux* library on JVM 9 or above.
+** link:https://github.com/philoskim/debux/issues/11[Issue #11] solved. Now you can use
+   *debux* library on JVM 9 or above.
 
 * v0.5.0
 ** Multiple `dbgn` and `dbg` can be used together. See <<multiple-use, here>> for details.
