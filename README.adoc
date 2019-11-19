@@ -2076,7 +2076,7 @@ dbg: person =>
 |   "Creve Coeur"
 ----
 
-The above example prints `:city` part, not `person` itself.
+The above example prints the most inner `:city` part, not `person` itself.
 
 
 [#dup-option]
