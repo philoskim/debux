@@ -2031,12 +2031,15 @@ dbg: i =>
 IMPORTANT: The `:print` option applies only to `dbg/clog`.
  
 If you don't want to see the evaluated result itself but the result applied to another
-operations, use `:print anonymous-function` (or `:p anonymous-function`) option like this.
+operations, use '`:print one-arg-fn`' (or '`:p one-arg-fn`') option like this.
 
 [source]
 ....
 (+ 10 (dbg (* 20 30) :print #(type %)))
 ; => 610
+
+;; equivalent to the above
+(+ 10 (dbg (* 20 30) :print type))
 ....
 
 [listing]
@@ -2045,6 +2048,7 @@ operations, use `:print anonymous-function` (or `:p anonymous-function`) option 
 dbg: (* 20 30) =>
 |   java.lang.Long
 ----
+
 The above example prints `java.lang.Long`, not `600`
 
 
