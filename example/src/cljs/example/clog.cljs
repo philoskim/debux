@@ -1,5 +1,5 @@
 (ns example.clog
-  (:require [debux.cs.core :as d :refer-macros [clog clogn clog clogn break]]))
+  (:require [debux.cs.core :as d :refer-macros [clog clogn clog clogn clog-last break]]))
 
 ;;;; clog examples
 
@@ -77,6 +77,11 @@
      (map str))
 ; => ("2" "3")
 
+(->> [-1 0 1 2]
+     (filter pos?)
+     (map inc)
+     (clog-last "clog-last example")
+     (map str))
 
 (clog (let [a (take 5 (range))
            {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}

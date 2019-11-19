@@ -1,5 +1,5 @@
 (ns example.dbg
-  (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
+  (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn dbg-last break]]))
 
 
 ;;;; dbg examples
@@ -78,6 +78,11 @@
      (map str))
 ; => ("2" "3")
 
+(->> [-1 0 1 2]
+     (filter pos?)
+     (map inc)
+     (dbg-last "dbg-last example")
+     (map str))
 
 (dbg (let [a (take 5 (range))
            {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}

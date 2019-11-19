@@ -43,3 +43,11 @@
 (defmacro show-macros
   ([] `(mt/show-macros))
   ([macro-type] `(mt/show-macros ~macro-type)))
+
+
+;; Only use inside thread-last macro ->>
+(defmacro dbg-last
+  [& exprs]
+  (let [form (last exprs)
+        opts (butlast exprs)]
+    `(dbg ~form ~@opts)))
