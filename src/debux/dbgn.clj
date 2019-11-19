@@ -303,7 +303,7 @@
   "DeBuG every Nested forms of a form.s"
   [form & [{:keys [condition] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(if (ut/cljs-env? &env)
-                               (dissoc opts :style :js :once)
+                               (dissoc opts :print :style :js :once)
                                opts)
          condition#         ~condition]
      (if (or (nil? condition#) condition#)

@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.5.7
+** `:print` option added to `dbg/clog`. See the detalis <<print-option, here>>.
+
 * v0.5.6
 ** link:https://github.com/philoskim/debux/issues/12[Issue #12] solved.
 

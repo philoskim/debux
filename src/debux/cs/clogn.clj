@@ -22,7 +22,7 @@
 (defmacro clogn
   "Console LOG every Nested forms of a form."
   [form & [{:keys [condition msg style] :as opts}]]
-  `(let [~'+debux-dbg-opts+ ~(dissoc opts :once)
+  `(let [~'+debux-dbg-opts+ ~(dissoc opts :print :once)
          condition#         ~condition]
      (if (or (nil? condition#) condition#)
        (let [title# (str "%cclogn: %c " (ut/truncate (pr-str '~form))

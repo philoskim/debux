@@ -49,8 +49,11 @@
 (defmacro dbg-others
   [form {:keys [n] :as opts}]
   `(dbg-base ~form ~opts
-     (let [result# ~form]
-       (ut/pprint-result-with-indent (ut/take-n-if-seq ~n result#))
+     (let [result# ~form
+           result2# (ut/take-n-if-seq ~n result#)]
+       (if-let [print# ~(:print opts)]
+         (ut/pprint-result-with-indent (print# result2#))
+         (ut/pprint-result-with-indent result2#))
        result#) ))
 
 

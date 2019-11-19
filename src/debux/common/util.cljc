@@ -244,6 +244,9 @@
         (#{:style :s} f)
         (recur (nnext opts) (assoc acc :style s))
 
+        (#{:print :p} f)
+        (recur (nnext opts) (assoc acc :print s))
+
         (= f :clog)
         (recur (next opts) (assoc acc :clog true)) ))))
 

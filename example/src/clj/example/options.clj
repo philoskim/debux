@@ -20,3 +20,20 @@
 (doseq [i (range 10)]
   (dbg i :if (even? i)))
 
+
+;; :print option
+(+ 10 (dbg (* 20 30) :print #(type %)))
+
+(def person
+  {:name "Mark Volkmann"
+   :address {:street "644 Glen Summit"
+             :city "St. Charles"
+             :state "Missouri"
+             :zip 63304}
+   :employer {:name "Object Computing, Inc."
+              :address {:street "12140 Woodcrest Dr."
+                        :city "Creve Coeur"
+                        :state "Missouri"
+                        :zip 63141}}})
+
+(dbg person :p #(get-in % [:employer :address :city]))
