@@ -338,7 +338,7 @@ dbg: (map inc (filter pos? [-1 0 1 2])) =>
 |   (2 3)
 ....
 
-See <<dbg-last, here>> for more examples.
+See more examples <<dbg-last, here>>.
 
   
 ### Debugging `let` or `comp` form
@@ -941,8 +941,8 @@ dbgn: (for [x [0 1 2 3 4 5] :let [y (* x 3)] :when (even? y)] y) =>
 
 #### `:case-type` example
 
-This type of macro has the special syntax. Refer to
-https://clojuredocs.org/clojure.core/case[here] about details.
+This type of macro has the special syntax. Refer to the details
+https://clojuredocs.org/clojure.core/case[here].
 
 [source]
 ....
@@ -2031,9 +2031,9 @@ dbg: i =>
 
 
 [#print-option]
-### `:print` (or `:p`) option
+### `:print` option
 
-IMPORTANT: The `:print` option applies only to `dbg/clog`.
+IMPORTANT: The `:print` (or `:p` in brief) option applies only to `dbg/clog`.
  
 If you don't want to see the evaluated result itself but the result applied to another
 operations, use '`:print one-arg-fn`' (or '`:p one-arg-fn`') option like this.
@@ -2146,6 +2146,8 @@ dbgn: (def my-function "my-function doc string" (fn [x] (* x x x))) =>
 You will sometimes need to print every duplicate evaluated value to see exactly what's
 going on.
 
+Compare the results of the next two examples.
+
 [source]
 ....
 (dbgn (loop [acc 1 n 3]
@@ -2158,8 +2160,6 @@ going on.
           acc
           (recur (* acc n) (dec n)))) :dup)
 ....
-
-Compare the two printed results.
 
 [listing]
 .REPL output
@@ -2391,7 +2391,7 @@ CAUTION: The function `dbg-prn` doesn't follow the usage employed in `dbg`/`clog
 
 NOTE: `dbg-prn` can be used inside the macros for Clojure.
 
-See link:doc/macro-debugging-in-clojurescript.adoc[here] for detailed explaination. 
+See the detailed explaination link:doc/macro-debugging-in-clojurescript.adoc[here]. 
 
 
 [#dbg-last]
@@ -2736,8 +2736,8 @@ root folder) to the `~/.emacs.d/init.el`.
 
 ### `debux.el`
 
-Refer to https://github.com/philoskim/debux/blob/master/debux.el[here] for the source code
-of `debux.el` .
+Refer to the source code of `debux.el`
+https://github.com/philoskim/debux/blob/master/debux.el[here].
 
 
 ### How to use

@@ -29,6 +29,14 @@
        (dbgn/dbgn ~form ~(ut/parse-opts opts))
        ~form)))
 
+;; Only use inside the thread-last macro ->>
+(defmacro dbg-last
+  [& args]
+  (let [form (last args)
+        opts (butlast args)]
+    `(dbg ~form ~@opts)))
+
+
 ;; Only use inside the macros for ClojureScript. See the below discussion for details.
 ;; https://gist.github.com/philoskim/cb5e836c1374dbe6244d6d966cfd1e77
 (defn dbg-prn [& args]
@@ -43,11 +51,3 @@
 (defmacro show-macros
   ([] `(mt/show-macros))
   ([macro-type] `(mt/show-macros ~macro-type)))
-
-
-;; Only use inside thread-last macro ->>
-(defmacro dbg-last
-  [& exprs]
-  (let [form (last exprs)
-        opts (butlast exprs)]
-    `(dbg ~form ~@opts)))
