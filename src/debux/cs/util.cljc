@@ -85,9 +85,12 @@
      [result & [js-mode]]
      (let [pprint (str/trim (with-out-str (pp/pprint result)))
            prefix (str (ut/make-bars ut/*indent-level*) "  ")]
-       (.log js/console (->> (str/split pprint #"\n")
-                             (mapv #(str prefix %))
-                             (str/join "\n") ))
+       (.log js/console (if (and (fn? devtools.formatters/installed?)
+                                 (devtools.formatters/installed?))
+                          result
+                          (->> (str/split pprint #"\n")
+                               (mapv #(str prefix %))
+                               (str/join "\n"))))
        (when js-mode
          (.log js/console "%s %c<js>%c %O" prefix (:info @style*) (:normal @style*)
                                            result) ))))
