@@ -1,7 +1,9 @@
 (ns debux.cs.util
   "Utilities for clojurescript only"
   (:require [clojure.string :as str]
+            [cljs.analyzer.api :as ana]
             #?(:cljs [cljs.pprint :as pp])
+            #?(:cljs [devtools.formatters])
             [debux.common.util :as ut] ))
 
 ;;; caching
@@ -85,15 +87,14 @@
      [result & [js-mode]]
      (let [pprint (str/trim (with-out-str (pp/pprint result)))
            prefix (str (ut/make-bars ut/*indent-level*) "  ")]
-       (.log js/console (if (and (fn? devtools.formatters/installed?)
-                                 (devtools.formatters/installed?))
-                          result
-                          (->> (str/split pprint #"\n")
+       (if (devtools.formatters/installed?)
+         (.log js/console prefix result)
+         (.log js/console (->> (str/split pprint #"\n")
                                (mapv #(str prefix %))
-                               (str/join "\n"))))
+                               (str/join "\n") )))
        (when js-mode
          (.log js/console "%s %c<js>%c %O" prefix (:info @style*) (:normal @style*)
-                                           result) ))))
+               result) ))))
 
 
 ;;; spy functions

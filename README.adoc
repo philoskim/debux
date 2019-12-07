@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.5.8"]
+[philoskim/debux "0.5.9"]
 ....
 
 and this to your production dependencies (make sure they are production only):
 
 [source]
 ....
-[philoskim/debux-stubs "0.5.8"]
+[philoskim/debux-stubs "0.5.9"]
 ....
 
 
@@ -65,11 +65,15 @@ and this to your production dependencies (make sure they are production only):
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
+* v0.5.9
+** The link:https://github.com/binaryage/cljs-devtools[cljs-devtools] support added.  See
+   the detalis <<cljs-devtools, here>>.
+
 * v0.5.8
 ** The `dbg-last` macro added. See the detalis <<dbg-last, here>>.
 
 * v0.5.7
-** `:print` option added to `dbg/clog`. See the detalis <<print-option, here>>.
+** `:print` option added to `dbg`/`clog`. See the detalis <<print-option, here>>.
 
 * v0.5.6
 ** link:https://github.com/philoskim/debux/issues/12[Issue #12] solved.
@@ -1716,7 +1720,7 @@ dbg: (d/show-macros) =>
 |      cljs.core/some->> cljs.core/->>}, 
 |    :skip-arg-1-3-type #{cljs.core/defmethod}}
 ----
-<
+
 image::register-macros.png[title="register-macros! example", width=800]
 
 
@@ -2033,7 +2037,7 @@ dbg: i =>
 [#print-option]
 ### `:print` option
 
-IMPORTANT: The `:print` (or `:p` in brief) option applies only to `dbg/clog`.
+IMPORTANT: The `:print` (or `:p` in brief) option applies only to `dbg`/`clog`.
  
 If you don't want to see the evaluated result itself but the result applied to another
 operations, use '`:print one-arg-fn`' (or '`:p one-arg-fn`') option like this.
@@ -2382,6 +2386,63 @@ objects returned by JavaScript interops in ClojureScript.
 image::clog-5.png[title=":js option example", width=750]
 
 
+[[cljs-devtools]]
+## Support of `cljs-devtools`
+
+* The `clog`/`clogn` of `debux` supports
+  link:https://github.com/binaryage/cljs-devtools[cljs-devtools] since the version
+  `0.5.9`.
++
+image::cljs-devtools.png[title="cljs-devtools' example", width=600]
+
+* The <<two-libraries, *development*>> version `debux` library already includes
+  `cljs-devtools 0.9.11` version on its dependencies.
++
+NOTE: Of course, you can include the newer version of `devtools` on the `:dependencies`
+      section of your project file.
++
+WARNING: Never use the *development* version `debux` in production. Instead, use the
+         *production* version `debux-stubs` in production. See the details
+         <<two-libraries, here>>.
++
+So if you want to use `cljs-devtools` printing, install it via `:preloads` cljs compiler
+option like this, following
+link:https://github.com/binaryage/cljs-devtools/blob/master/docs/installation.md[devtools'
+installition guide].
++
+[listing]
+.project.clj
+----
+(defproject your-project  "0.1.0"
+  ,,,,,,
+  :cljsbuild {:builds [{:compiler {:preloads [devtools.preload]
+                                   ,,,,,,}}]})
+----
++
+Or install it manually like this.
++
+[listing]
+----
+(ns your-project.devtools
+  (:require [devtools.core :as devtools]))
+
+(devtools/install!)
+----
+
+* Don't forget to to turn on the Chrome DevTools' [Settings -- Preferences -- Console --
+  Enable custom formatters], before using ``cljs-devtools``' printing.
++
+image::chrome-devtools-settings.png[title="Enable custom formatters", width=800]
+
+* You should read
+  link:https://github.com/binaryage/cljs-devtools/blob/master/docs/faq.md#why-some-custom-formatters-were-not-rendered[Why
+  some custom formatters were not rendered?], before using cljs-devtools' printing.
+
+* You can confiugre `cljs-devtools` in various ways as you like. See the details in
+  link:https://github.com/binaryage/cljs-devtools/blob/master/docs/configuration.md[cljs-devtools'
+  configuration].
+
+
 
 [[dbg-prn]]
 ## `dbg-prn`: Debugging the macros for clojurescript at the macro-expansion time.
@@ -2400,7 +2461,7 @@ See the detailed explaination link:doc/macro-debugging-in-clojurescript.adoc[her
 IMPORTANT: The `dbg-last/clog-last` macros must be used inside the thread-last macro
            pass:q[`->>`]
 
-TIP: The options of `dbg-last/clog-last` macros are the same as those of `dbg/clog`.
+TIP: The options of `dbg-last/clog-last` macros are the same as those of `dbg`/`clog`.
 
 If you want to use `dbg` macro *with its options* inside the thread-last macro
 pass:q[`->>`] like this, you will have an exception.
@@ -2650,7 +2711,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.5.8"]]
+                 [philoskim/debux "0.5.9"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]
@@ -2826,6 +2887,6 @@ When you double-click on one of the open parentheses and the following string is
 
 
 ## License
-Copyright © 2015--2019 Young Tae Kim
+Copyright © 2015--2020 Young Tae Kim
 
 Distributed under the Eclipse Public License either version 1.0 or any later version.

@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.5.9
+** The link:https://github.com/binaryage/cljs-devtools[cljs-devtools] support added.
+
 * v0.5.8
 ** The `dbg-last` macro added.
 

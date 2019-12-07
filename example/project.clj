@@ -2,7 +2,7 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
                  [org.clojure/core.async "0.3.465"]
-                 [philoskim/debux "0.5.8"]]
+                 [philoskim/debux "0.5.9"]]
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-figwheel  "0.5.18"]]
   :source-paths ["src/clj" "src/cljc"]
@@ -16,7 +16,7 @@
                         :source-paths ["src/cljs" "src/cljc"]
                         :figwheel true
                         :compiler {:main example.core
-                                   :preloads [example.preload]
+                                   :preloads [example.preload #_devtools.preload]
                                    :asset-path "js/out"
                                    :output-to "resources/public/js/app.js"
                                    :output-dir "resources/public/js/out"
