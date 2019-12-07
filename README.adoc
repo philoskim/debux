@@ -2393,12 +2393,13 @@ image::clog-5.png[title=":js option example", width=750]
   link:https://github.com/binaryage/cljs-devtools[cljs-devtools] since the version
   `0.5.9`.
 +
-image::cljs-devtools.png[title="cljs-devtools' example", width=600]
+image::cljs-devtools.png[title="cljs-devtools printing example", width=600]
 
-* The <<two-libraries, *development*>> version `debux` library already includes
-  `cljs-devtools 0.9.11` version on its dependencies.
+* The <<two-libraries, *development*>> version `debux` library already includes the
+  versioon 0.9.11 of `cljs-devtools` on its dependencies. Therefore, you don't have to
+  include `cljs-devtools` on the `:dependencies` section of your project file.
 +
-NOTE: Of course, you can include the newer version of `devtools` on the `:dependencies`
+NOTE: Of course, you can include a newer version of `devtools` on the `:dependencies`
       section of your project file.
 +
 WARNING: Never use the *development* version `debux` in production. Instead, use the
