@@ -100,25 +100,25 @@
 ;;; spy functions
 #?(:cljs
    (def spy-first
-     (fn [result quoted-form {:keys [n msg style js] :as opts}]
+     (fn [result quoted-form {:keys [msg style js] :as opts}]
        (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
-       (clog-result-with-indent (ut/take-n-if-seq n result) js)
+       (clog-result-with-indent result js)
        result) ))
 
 #?(:cljs
    (def spy-last
-     (fn [quoted-form {:keys [n msg style js] :as opts} result]
+     (fn [quoted-form {:keys [msg style js] :as opts} result]
        (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
-       (clog-result-with-indent (ut/take-n-if-seq n result) js)
+       (clog-result-with-indent result js)
        result) ))
 
 #?(:cljs
    (defn spy-comp
-     [quoted-form form {:keys [n msg style js] :as opts}]
+     [quoted-form form {:keys [msg style js] :as opts}]
      (fn [& arg]
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [result (apply form arg)]
            (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
-           (clog-result-with-indent (ut/take-n-if-seq n result) js)
+           (clog-result-with-indent result js)
            result) ))))
 

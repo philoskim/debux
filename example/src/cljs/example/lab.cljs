@@ -1,8 +1,21 @@
 (ns example.lab
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
 
-(clog (range 100) (range 101))
+;(d/set-print-length! 20)
 
-(clog [nil 42 0.1 :keyword 'symbol "string" #"regexp" [1 2 3] {:k1 1 :k2 2} #{1 2 3}])
+;; (dbgn (for [x [0 1 2 3 4 5]
+;;             :let [y (* x 3)]
+;;             :when (even? y)]
+;;         y))
 
+;; (clogn (for [x [0 1 2 3 4 5]
+;;             :let [y (* x 3)]
+;;             :when (even? y)]
+;;         y))
 
+(d/set-print-length! 10)
+
+(dbgn (for [x [0 1 2 3 4 5]
+            :let [y (* x 3)]
+            :when (even? y)]
+        y))

@@ -11,9 +11,9 @@
 (dbgn (count (range 200)) 200)
 (dbgn (take 5 (range)))
 
-(set-print-seq-length! 10)
+(set-print-length! 10)
 
-(dbgn (take 5 (range)))
+(dbgn (range))
 
 
 ;; :if option

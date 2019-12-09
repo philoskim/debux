@@ -7,21 +7,21 @@
 
 (defmacro d [form]
   `(let [opts# ~'+debux-dbg-opts+
-         n#    (or (:n opts#) (:print-seq-length @ut/config*))
+         n#    (or (:n opts#) (:print-length @ut/config*))
          js#   (:js opts#)
          form-style# (or (:style opts#) :debug)
          form#   '~(dbgn/remove-d form 'debux.cs.clogn/d)
-         result# ~form
-         result2# (ut/take-n-if-seq n# result#)]
-     (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result2#))
+         result# ~form]
+     (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result#))
        (cs.ut/clog-form-with-indent (cs.ut/form-header form# (:msg opts#))
                                     form-style#)
-       (cs.ut/clog-result-with-indent result2# js#))
+       (binding [*print-length* n#]
+         (cs.ut/clog-result-with-indent result# js#)))
      result#))
 
 (defmacro clogn
   "Console LOG every Nested forms of a form."
-  [form & [{:keys [condition msg style] :as opts}]]
+  [form & [{:keys [n msg condition style] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :print :once)
          condition#         ~condition]
      (if (or (nil? condition#) condition#)

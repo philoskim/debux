@@ -5,7 +5,7 @@
             [debux.common.util :as ut] ))
 
 ;;; config APIs
-(def set-print-seq-length! ut/set-print-seq-length!)
+(def set-print-length! ut/set-print-length!)
 
 (def set-debug-mode! ut/set-debug-mode!)
 

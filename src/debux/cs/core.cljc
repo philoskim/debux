@@ -9,7 +9,7 @@
 
 #?(:cljs (enable-console-print!))
 
-(def set-print-seq-length! ut/set-print-seq-length!)
+(def set-print-length! ut/set-print-length!)
 
 (defmacro set-debug-mode! [val]
   `(ut/set-debug-mode! ~val))

@@ -116,7 +116,7 @@
                 (* (twice y) 3))]
         (six-times 15)))
 
-
+;(set-print-length! 5)
 ;;; :for-type example
 (dbgn (for [x [0 1 2 3 4 5]
             :let [y (* x 3)]

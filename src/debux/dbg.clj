@@ -2,7 +2,7 @@
   (:require [debux.common.util :as ut]))
 
 (defmacro dbg-base
-  [form {:keys [msg condition] :as opts} body]
+  [form {:keys [msg n condition] :as opts} body]
   `(let [condition# ~condition]
      (if (or (nil? condition#) condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
@@ -11,8 +11,9 @@
                            " =>")]
            (ut/insert-blank-line)
            (ut/print-title-with-indent title#)
-           ~body))
-         ~form) ))
+           (binding [*print-length* (or ~n (:print-length @ut/config*))]
+             ~body) ))
+       ~form) ))
 
 (defmacro dbg->
   [[_ & subforms :as form] opts]
@@ -47,13 +48,12 @@
        ~@subforms) ))
 
 (defmacro dbg-others
-  [form {:keys [n] :as opts}]
+  [form opts]
   `(dbg-base ~form ~opts
-     (let [result# ~form
-           result2# (ut/take-n-if-seq ~n result#)]
+     (let [result# ~form]
        (if-let [print# ~(:print opts)]
-         (ut/pprint-result-with-indent (print# result2#))
-         (ut/pprint-result-with-indent result2#))
+         (ut/pprint-result-with-indent (print# result#))
+         (ut/pprint-result-with-indent result#))
        result#) ))
 
 

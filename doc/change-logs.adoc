@@ -3,6 +3,14 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.6.0
+** Changed: _number_ option of *debux* macros is now applied to not only `seq` data type
+   but also all the `coll` data types. (Previously, the _number_ option was applied to
+   only `seq` data type.)
+*** This change will prevent the deeply nested massive `coll` data types from printing 
+    too much contents.
+** Renamed: `set-print-seq-length!` pass:q[-->] `set-print-length!`
+
 * v0.5.9
 ** The link:https://github.com/binaryage/cljs-devtools[cljs-devtools] support added.
 

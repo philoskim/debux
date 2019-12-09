@@ -93,11 +93,13 @@
 
 ;; (my-fun3)
 
+(d/set-print-length! 10)
 
 (clog (range 200))
-
-(d/set-print-seq-length! 10)
 
 (clog (range))
 
 (clog (range) 5)
+
+(d/set-print-length! 100)
+

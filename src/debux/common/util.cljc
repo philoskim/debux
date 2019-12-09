@@ -25,10 +25,10 @@
   (atom {:debug-mode true
          :ns-blacklist nil
          :ns-whitelist nil         
-         :print-seq-length 100} ))
+         :print-length 100} ))
 
-(defn set-print-seq-length! [num]
-  (swap! config* assoc :print-seq-length num)
+(defn set-print-length! [num]
+  (swap! config* assoc :print-length num)
   nil)
 
 (defn set-debug-mode! [val]
@@ -155,11 +155,6 @@
        (swap! evals assoc form return) ))
 
 ;;; print
-(defn take-n-if-seq [n result]
-  (if (seq? result)
-    (take (or n (:print-seq-length @config*)) result)
-    result))
-
 (defn truncate [s]
   (if (> (count s) 70)
     (str (.substring s 0 70) " ...")
@@ -278,21 +273,21 @@
 
 ;;; spy functions
 (def spy-first
-  (fn [result quoted-form {:keys [n] :as opts}]
+  (fn [result quoted-form opts]
     (print-form-with-indent (form-header quoted-form))
-    (pprint-result-with-indent (take-n-if-seq n result))
+    (pprint-result-with-indent result)
     result))
 
 (def spy-last
-  (fn [quoted-form {:keys [n] :as opts} result]
+  (fn [quoted-form opts result]
     (print-form-with-indent (form-header quoted-form))
-    (pprint-result-with-indent (take-n-if-seq n result))
+    (pprint-result-with-indent result)
     result))
 
-(defn spy-comp [quoted-form form {:keys [n] :as opts}]
+(defn spy-comp [quoted-form form opts]
   (fn [& arg]
     (binding [*indent-level* (inc *indent-level*)]
       (let [result (apply form arg)]
         (print-form-with-indent (form-header quoted-form))
-        (pprint-result-with-indent (take-n-if-seq n result))
+        (pprint-result-with-indent result)
         result) )))

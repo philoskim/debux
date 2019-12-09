@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.5.9"]
+[philoskim/debux "0.6.0"]
 ....
 
 and this to your production dependencies (make sure they are production only):
 
 [source]
 ....
-[philoskim/debux-stubs "0.5.9"]
+[philoskim/debux-stubs "0.6.0"]
 ....
 
 
@@ -64,6 +64,14 @@ and this to your production dependencies (make sure they are production only):
 
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
+
+* v0.6.0
+** Changed: The <<_number_option, _number_>> option of *debux* macros is now applied to
+   not only `seq` data type but also all the `coll` data types. (Previously, the _number_
+   option was applied to only `seq` data type.)
+*** This change will prevent the deeply nested massive `coll` data types from printing 
+    too much contents.
+** Renamed: `set-print-seq-length!` pass:q[-->] `set-print-length!`
 
 * v0.5.9
 ** The link:https://github.com/binaryage/cljs-devtools[cljs-devtools] support added.  See
@@ -1908,12 +1916,8 @@ dbg: (repeat 5 "x")   <5 times repeat> =>
 
 ### Number option
 
-If you don't specify a number after the form returning the `seq` data type, *debux* macros
+If you don't specify a number after the form returning the `coll` data type, *debux* macros
 will print and return the default 100 items.
-
-IMPORTANT: The number option applies only to seqs. This option doesn't apply to vectors, maps
-           or sets. 
- 
 
 [source]
 ....
@@ -1926,7 +1930,7 @@ IMPORTANT: The number option applies only to seqs. This option doesn't apply to 
 ----
 dbgn: (count (range 200)) =>
 | (range 200) =>
-|   (0 1 2 ... 99)
+|   (0 1 2 ...... 99 ...)
 | (count (range 200)) =>
 |   200
 ----
@@ -1944,7 +1948,7 @@ explicitly like this.
 ----
 dbgn: (count (range 200)) =>
 | (range 200) =>
-|   (0 1 2 ... 199)
+|   (0 1 2 ...... 199)
 | (count (range 200)) =>
 |   200
 ----
@@ -1961,21 +1965,21 @@ in evaluating an *infinite lazy-seq*, in the same manner it will print and retur
   
 .REPL output
 ....
-dbgn: (count (range)) =>
+dbgn: (take 5 (range)) =>
 | (range) =>
-|   (0 1 2 ... 99)
+|   (0 1 2 ...... 99 ...)
 | (take 5 (range)) =>
 |   (0 1 2 3 4)
 ....
 
-[[set-print-seq-length]]
-If you want to change the default number of 100, use `set-print-seq-length!` function like
+[[set-print-length]]
+If you want to change the default number of 100, use `set-print-length!` function like
 this.
 
 [source]
 ....
 ;; in Clojure
-(set-print-seq-length! 10)
+(set-print-length! 10)
 
 (dbgn (take 5 (range)))
 ; => (0 1 2 3 4)
@@ -1987,7 +1991,7 @@ this.
 ----
 dbgn: (count (range)) =>
 | (range) =>
-|   (0 1 2 ... 9)
+|   (0 1 2 3 4 5 6 7 8 9 ...)
 | (take 5 (range)) =>
 |   (0 1 2 3 4)
 ----
@@ -1998,7 +2002,7 @@ dbgn: (count (range)) =>
 (ns example.core
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
 
-(d/set-print-seq-length! 10)
+(d/set-print-length! 10)
 
 (clogn (take 5 (range)))
 ....
@@ -2396,7 +2400,7 @@ image::clog-5.png[title=":js option example", width=750]
 image::cljs-devtools.png[title="cljs-devtools printing example", width=600]
 
 * The <<two-libraries, *development*>> version `debux` library already includes the
-  versioon 0.9.11 of `cljs-devtools` on its dependencies. Therefore, you don't have to
+  version 0.9.11 of `cljs-devtools` on its dependencies. Therefore, you don't have to
   include `cljs-devtools` on the `:dependencies` section of your project file.
 +
 NOTE: Of course, you can include a newer version of `devtools` on the `:dependencies`
@@ -2408,7 +2412,7 @@ WARNING: Never use the *development* version `debux` in production. Instead, use
 +
 So if you want to use `cljs-devtools` printing, install it via `:preloads` cljs compiler
 option like this, following
-link:https://github.com/binaryage/cljs-devtools/blob/master/docs/installation.md[devtools'
+link:https://github.com/binaryage/cljs-devtools/blob/master/docs/installation.md[cljs-devtools
 installition guide].
 +
 [listing]
@@ -2431,16 +2435,16 @@ Or install it manually like this.
 ----
 
 * Don't forget to to turn on the Chrome DevTools' [Settings -- Preferences -- Console --
-  Enable custom formatters], before using ``cljs-devtools``' printing.
+  Enable custom formatters], before using ``cljs-devtools`` printing.
 +
-image::chrome-devtools-settings.png[title="Enable custom formatters", width=800]
+image::chrome-devtools-settings.png[title="Enable custom formatters on Chrome DevTools", width=800]
 
 * You should read
   link:https://github.com/binaryage/cljs-devtools/blob/master/docs/faq.md#why-some-custom-formatters-were-not-rendered[Why
-  some custom formatters were not rendered?], before using cljs-devtools' printing.
+  some custom formatters were not rendered?], before using cljs-devtools printing.
 
 * You can confiugre `cljs-devtools` in various ways as you like. See the details in
-  link:https://github.com/binaryage/cljs-devtools/blob/master/docs/configuration.md[cljs-devtools'
+  link:https://github.com/binaryage/cljs-devtools/blob/master/docs/configuration.md[cljs-devtools
   configuration].
 
 
@@ -2712,7 +2716,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject example "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.5.9"]]
+                 [philoskim/debux "0.6.0"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

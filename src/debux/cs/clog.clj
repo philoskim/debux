@@ -4,7 +4,7 @@
             [debux.cs.util :as cs.ut] ))
 
 (defmacro clog-base
-  [form {:keys [msg condition style] :as opts} body]
+  [form {:keys [msg n condition style] :as opts} body]
   `(let [condition# ~condition]
      (if (or (nil? condition#) condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
@@ -14,7 +14,8 @@
                style# (or ~style :debug)]
            (ut/insert-blank-line)
            (cs.ut/clog-title title# style#)
-           ~body))
+           (binding [*print-length* (or ~n (:print-length @ut/config*))]
+             ~body) ))
        ~form) ))
 
 (defmacro clog->
@@ -50,13 +51,12 @@
        ~@subforms) ))
 
 (defmacro clog-others
-  [form {:keys [n js] :as opts}]
+  [form {:keys [js] :as opts}]
   `(clog-base ~form ~opts
-     (let [result# ~form
-           result2# (ut/take-n-if-seq ~n result#)]
+     (let [result# ~form]
        (if-let [print# ~(:print opts)]
-         (cs.ut/clog-result-with-indent (print# result2#) ~js)
-         (cs.ut/clog-result-with-indent result2# ~js))
+         (cs.ut/clog-result-with-indent (print# result#) ~js)
+         (cs.ut/clog-result-with-indent result# ~js))
        result#) ))
 
 (defmacro clog-once
@@ -71,7 +71,8 @@
                            " =>" (and ~once "   (:once mode)"))
                style# (or ~style :debug)]
            (cs.ut/clog-title title# style#)
-           (cs.ut/clog-result-with-indent (ut/take-n-if-seq ~n result#) ~js) )))
+           (binding [*print-length* (or ~n (:print-length @ut/config*))]
+             (cs.ut/clog-result-with-indent result# ~js) ))))
      result#))
        
 

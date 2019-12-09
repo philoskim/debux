@@ -264,13 +264,13 @@
 
 (defmacro d [form]
   `(let [opts#   ~'+debux-dbg-opts+
-         n#      (or (:n opts#) (:print-seq-length @ut/config*))
+         n#      (or (:n opts#) (:print-length @ut/config*))
          form#   '~(remove-d form 'debux.dbgn/d)
-         result# ~form
-         result2# (ut/take-n-if-seq n# result#)]
-     (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result2#))
+         result# ~form]
+     (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result#))
        (ut/print-form-with-indent (ut/form-header form# (:msg opts#)))
-       (ut/pprint-result-with-indent result2#))
+       (binding [*print-length* n#]
+         (ut/pprint-result-with-indent result#) ))
      result#))
 
 
@@ -300,8 +300,8 @@
  
 ;;; dbgn
 (defmacro dbgn
-  "DeBuG every Nested forms of a form.s"
-  [form & [{:keys [condition] :as opts}]]
+  "DeBuG every Nested forms"
+  [form & [{:keys [n condition] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(if (ut/cljs-env? &env)
                                (dissoc opts :print :style :js :once)
                                opts)
