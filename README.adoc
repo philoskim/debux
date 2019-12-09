@@ -45,14 +45,14 @@ WARNING: Never use `philoskim/debux` library in production because it will impos
 First, please be sure to read the "Two libraries" section immediately above for background.
 
 To include `debux` in your project for development, simply add the following to your
-*project.clj* development dependencies:
+`project.clj` *development* dependencies:
 
 [source]
 ....
 [philoskim/debux "0.6.0"]
 ....
 
-and this to your production dependencies (make sure they are production only):
+and this to your *production* dependencies.
 
 [source]
 ....
@@ -66,11 +66,11 @@ NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.6.0
-** Changed: The <<_number_option, _number_>> option of *debux* macros is now applied to
+** Changed: The <<number-option, _number option_>> of *debux* macros is now applied to
    not only `seq` data type but also all the `coll` data types. (Previously, the _number_
    option was applied to only `seq` data type.)
-*** This change will prevent the deeply nested massive `coll` data types from printing 
-    too much contents.
+*** This change will prevent the elements of the deeply nested massive `coll` data types
+    from being printed too much. See an example <<nested-coll, here>>
 ** Renamed: `set-print-seq-length!` pass:q[-->] `set-print-length!`
 
 * v0.5.9
@@ -1913,7 +1913,7 @@ dbg: (repeat 5 "x")   <5 times repeat> =>
 |   ("x" "x" "x" "x" "x")
 ....
 
-
+[[number-option]]
 ### Number option
 
 If you don't specify a number after the form returning the `coll` data type, *debux* macros
@@ -1972,9 +1972,30 @@ dbgn: (take 5 (range)) =>
 |   (0 1 2 3 4)
 ....
 
+[[nested-coll]]
+The elements of the nested `coll` types will be printed as much as specified numbers.  
+
+[source]
+....
+(def m {:a (range) :b (vec (take 100 (range)))})
+
+(dbgn (count m) 10)
+; => 2
+....
+
+[listing]
+.REPL output
+----
+dbgn: (count m) =>
+| m =>
+|   {:a (0 1 2 3 4 5 6 7 8 9 ...), :b [0 1 2 3 4 5 6 7 8 9 ...]}
+| (count m) =>
+|   2
+----
+
 [[set-print-length]]
-If you want to change the default number of 100, use `set-print-length!` function like
-this.
+If you want to change the default number globally, use `set-print-length!` function
+like this.
 
 [source]
 ....
@@ -2448,18 +2469,6 @@ image::chrome-devtools-settings.png[title="Enable custom formatters on Chrome De
   configuration].
 
 
-
-[[dbg-prn]]
-## `dbg-prn`: Debugging the macros for clojurescript at the macro-expansion time.
-
-CAUTION: The function `dbg-prn` doesn't follow the usage employed in `dbg`/`clog`. It is just
-         another name of `println` which can be used at the macro-expansion time.  
-
-NOTE: `dbg-prn` can be used inside the macros for Clojure.
-
-See the detailed explaination link:doc/macro-debugging-in-clojurescript.adoc[here]. 
-
-
 [#dbg-last]
 ## `dbg-last`: Debugging inside the thread-last macro pass:q[`->>`]
 
@@ -2516,6 +2525,17 @@ macro pass:q[`->`].
 dbg: (conj (range 10) 100)   <after conj> =>
 |   (100 0 1 2 3)
 ----
+
+
+[[dbg-prn]]
+## `dbg-prn`: Debugging the macros for clojurescript at the macro-expansion time.
+
+CAUTION: The function `dbg-prn` doesn't follow the usage employed in `dbg`/`clog`. It is just
+         another name of `println` which can be used at the macro-expansion time.  
+
+NOTE: `dbg-prn` can be used inside the macros for Clojure.
+
+See the detailed explaination link:doc/macro-debugging-in-clojurescript.adoc[here]. 
 
 
 ## `break` examples

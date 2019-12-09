@@ -7,6 +7,6 @@
 
 (dbg m)
 
-(set-print-length! 10)
+;(set-print-length! 10)
 
-(dbg m)
+(dbgn (count m) 10)
