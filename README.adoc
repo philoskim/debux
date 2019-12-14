@@ -1977,10 +1977,14 @@ The elements of the nested `coll` types will be printed as much as specified num
 
 [source]
 ....
-(def m {:a (range) :b (vec (take 100 (range)))})
+(def m
+  {:list (range)
+   :vector (vec (range 100))
+   :map (zipmap (range 100) (cycle [:a :b :c]))
+   :set (set (range 100))})
 
-(dbgn (count m) 10)
-; => 2
+(dbgn (count m) 5)
+; => 4
 ....
 
 [listing]
@@ -1988,10 +1992,19 @@ The elements of the nested `coll` types will be printed as much as specified num
 ----
 dbgn: (count m) =>
 | m =>
-|   {:a (0 1 2 3 4 5 6 7 8 9 ...), :b [0 1 2 3 4 5 6 7 8 9 ...]}
+|   {:list (0 1 2 3 4 ...),
+|    :vector [0 1 2 3 4 ...],
+|    :map {0 :a, 65 :c, 70 :b, 62 :c, 74 :c, ...},
+|    :set #{0 65 70 62 74 ...}}
 | (count m) =>
-|   2
+|   4
 ----
+
+NOTE: The clojure source codes are the Clojure data structures as well, which is known as
+      _homoiconcity_. When the debux macros traverse the Clojure source code tree, they
+      enter the lists or vectors within the tree but don't enter the maps or sets within
+      the tree. So the codes within the above map `m` aren't printed in the middle of the
+      evaluated results, because they are wrapped inside the map `m`.
 
 [[set-print-length]]
 If you want to change the default number globally, use `set-print-length!` function
@@ -2412,7 +2425,7 @@ image::clog-5.png[title=":js option example", width=750]
 
 
 [[cljs-devtools]]
-## Support of `cljs-devtools`
+## Support for `cljs-devtools`
 
 * The `clog`/`clogn` of `debux` supports
   link:https://github.com/binaryage/cljs-devtools[cljs-devtools] since the version
@@ -2456,13 +2469,13 @@ Or install it manually like this.
 ----
 
 * Don't forget to to turn on the Chrome DevTools' [Settings -- Preferences -- Console --
-  Enable custom formatters], before using ``cljs-devtools`` printing.
+  Enable custom formatters], before using `cljs-devtools` printing.
 +
 image::chrome-devtools-settings.png[title="Enable custom formatters on Chrome DevTools", width=800]
 
 * You should read
   link:https://github.com/binaryage/cljs-devtools/blob/master/docs/faq.md#why-some-custom-formatters-were-not-rendered[Why
-  some custom formatters were not rendered?], before using cljs-devtools printing.
+  some custom formatters were not rendered?] before using cljs-devtools printing.
 
 * You can confiugre `cljs-devtools` in various ways as you like. See the details in
   link:https://github.com/binaryage/cljs-devtools/blob/master/docs/configuration.md[cljs-devtools
@@ -2472,12 +2485,12 @@ image::chrome-devtools-settings.png[title="Enable custom formatters on Chrome De
 [#dbg-last]
 ## `dbg-last`: Debugging inside the thread-last macro pass:q[`->>`]
 
-IMPORTANT: The `dbg-last/clog-last` macros must be used inside the thread-last macro
+IMPORTANT: The `dbg-last`/`clog-last` macros must be used inside the thread-last macro
            pass:q[`->>`]
 
-TIP: The options of `dbg-last/clog-last` macros are the same as those of `dbg`/`clog`.
+NOTE: The options of `dbg-last`/`clog-last` macros are the same as those of `dbg`/`clog`.
 
-If you want to use `dbg` macro *with its options* inside the thread-last macro
+If you want to use `dbg` macro _with its options_ inside the thread-last macro
 pass:q[`->>`] like this, you will have an exception.
 
 [source]
@@ -2508,7 +2521,7 @@ dbg: (filter odd? (range 10))   <after filter> =>
 |   (1 3 5 7 9)
 ----
 
-There is no problem in case of the `dbg` macro *with its options* inside the thread-first
+There is no problem in case of the `dbg` macro _with its options_ inside the thread-first
 macro pass:q[`->`].
 
 [source]

@@ -2,11 +2,12 @@
 
 (use 'debux.core)
 
-(def m {:a (range 100)
-        :b (range)})
-
-(dbg m)
-
 ;(set-print-length! 10)
 
-(dbgn (count m) 10)
+(def m
+  {:list (range)
+   :vector (vec (range 100))
+   :map (zipmap (range 100) (cycle [:x :y :z]))
+   :set (set (range 100))})
+
+(dbgn (count m) 5)
