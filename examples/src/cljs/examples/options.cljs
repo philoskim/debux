@@ -1,4 +1,4 @@
-(ns example.options
+(ns examples.options
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
 
 (clog (repeat 5 "x") "5 times repeat")
@@ -31,7 +31,7 @@
 (clog (+ 10 20) :style "color:orange; background:blue; font-size: 14pt")
 
 
-  
+
 ;;---------------
 ;; :once option
 ;;---------------
@@ -65,7 +65,7 @@
 
 
 ;;---------------
-;; break 
+;; break
 ;;---------------
 
 ;; (break)
@@ -81,7 +81,7 @@
 
 ;; (my-fun2 (take 5 (range))
 ;;          {:c 50 :d 100}
-;;          ["a" "b" "c" "d" "e"]) 
+;;          ["a" "b" "c" "d" "e"])
 
 
 
@@ -102,4 +102,3 @@
 (clog (range) 5)
 
 (d/set-print-length! 100)
-

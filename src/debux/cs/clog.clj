@@ -1,19 +1,19 @@
 (ns debux.cs.clog
   (:require [debux.dbg :as dbg]
-            [debux.common.util :as ut]            
+            [debux.common.util :as ut]
             [debux.cs.util :as cs.ut] ))
 
 (defmacro clog-base
-  [form {:keys [msg n condition style] :as opts} body]
+  [form {:keys [msg n condition ns line style] :as opts} body]
   `(let [condition# ~condition]
      (if (or (nil? condition#) condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
-                           " %c" (and ~msg (str "   <" ~msg ">"))
-                           " =>")
+                           " %c" (and ~msg (str "   <" ~msg ">")))
+               src-info# (str "       " (ut/src-info ~ns ~line) " =>")
                style# (or ~style :debug)]
            (ut/insert-blank-line)
-           (cs.ut/clog-title title# style#)
+           (cs.ut/clog-title title# src-info# style#)
            (binding [*print-length* (or ~n (:print-length @ut/config*))]
              ~body) ))
        ~form) ))
@@ -60,21 +60,22 @@
        result#) ))
 
 (defmacro clog-once
-  [form {:keys [n msg condition style js once] :as opts}]
+  [form {:keys [msg n condition ns line style js once] :as opts}]
   `(let [condition# ~condition
          result# ~form]
      (when (and (or (nil? condition#) condition#)
                 (cs.ut/changed? (str '~form " " '~opts) (str result#)))
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
-                           " %c" (and ~msg (str "   <" ~msg ">"))
-                           " =>" (and ~once "   (:once mode)"))
+                           " %c" (and ~msg (str "   <" ~msg ">")))
+               src-info# (str "       " (ut/src-info ~ns ~line) " =>"
+                              (and ~once "   (:once mode)"))
                style# (or ~style :debug)]
-           (cs.ut/clog-title title# style#)
+           (cs.ut/clog-title title# src-info# style#)
            (binding [*print-length* (or ~n (:print-length @ut/config*))]
              (cs.ut/clog-result-with-indent result# ~js) ))))
      result#))
-       
+
 
 (defmacro clog
   [form & [{:keys [once] :as opts}]]

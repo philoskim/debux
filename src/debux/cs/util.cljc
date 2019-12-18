@@ -8,11 +8,11 @@
 
 ;;; caching
 (def ^:private prev-returns* (atom {}))
- 
+
 (defn changed?
   "Checks if prev-returns* contains <form>.
    <form str> the key of prev-returns* map
-   <return str> the value of prev-returns* map" 
+   <return str> the value of prev-returns* map"
   [form return]
   ;; init
   (when-not (contains? @prev-returns* form)
@@ -27,7 +27,7 @@
 (def style*
   (atom {:error "background-color: red; color: white"
          :warn  "background-color: green; color: white"
-         :info  "background-color: #0000cd; color: white" 
+         :info  "background-color: #0000cd; color: white"
          :debug "background-color: #ffc125; color: black"
 
          :normal "background-color: white; color: black"
@@ -71,10 +71,14 @@
 
 #?(:cljs
    (defn clog-title
-     [title form-style]
+     [title src-info form-style]
      (.log js/console
-           (ut/prepend-bars-in-title title (dec ut/*indent-level*)) (:title @style*)
-           (get-style form-style) (:normal @style*) )))
+           (ut/prepend-bars-in-line title (dec ut/*indent-level*))
+           (:title @style*)
+           (get-style form-style)
+           (:normal @style*))
+     (.log js/console
+           (ut/prepend-bars-in-line src-info (dec ut/*indent-level*)) )))
 
 #?(:cljs
    (defn clog-form-with-indent
@@ -121,4 +125,3 @@
            (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
            (clog-result-with-indent result js)
            result) ))))
-

@@ -2000,11 +2000,11 @@ dbgn: (count m) =>
 |   4
 ----
 
-NOTE: The clojure source codes are the Clojure data structures as well, which is known as
-      _homoiconcity_. When the debux macros traverse the Clojure source code tree, they
-      enter the lists or vectors within the tree but don't enter the maps or sets within
-      the tree. So the codes within the above map `m` aren't printed in the middle of the
-      evaluated results, because they are wrapped inside the map `m`.
+NOTE: The Clojure source codes are the Clojure data structures as well, which is known as
+      _homoiconcity_. When the debux macros traverse the Clojure source code trees, they
+      enter the lists or vectors within the trees but don't enter the maps or sets within
+      the trees. So the codes themselves within the above map `m` aren't printed in the
+      middle of the evaluated results, because they are wrapped inside the map `m`.
 
 [[set-print-length]]
 If you want to change the default number globally, use `set-print-length!` function

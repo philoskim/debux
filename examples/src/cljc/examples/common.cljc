@@ -1,6 +1,6 @@
-(ns example.common
+(ns examples.common
   #?(:cljs (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
-  #?(:cljs (:require-macros [example.macro2 :refer [my-add]])))
+  #?(:cljs (:require-macros [examples.macro2 :refer [my-add]])))
 
 #?(:clj (use 'debux.core))
 

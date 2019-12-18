@@ -13,7 +13,7 @@
 (defn name-unformer [name]
   `(skip ~name))
 
-(s/def ::name 
+(s/def ::name
   (s/and
     simple-symbol?
     (s/conformer identity name-unformer)))
@@ -173,6 +173,5 @@
 ; => {:bs [:arity-1 {:args {:args [p1__30164# p2__30165#]},
 ;                    :body [:body [(+ p1__30164# p2__
 (s/explain ::fn-args (next f5))
-  
-) ; end of comment
 
+) ; end of comment

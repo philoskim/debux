@@ -1,4 +1,4 @@
-(ns example.options)
+(ns examples.options)
 
 (use 'debux.core)
 

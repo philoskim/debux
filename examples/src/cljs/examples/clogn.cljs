@@ -1,9 +1,9 @@
-(ns example.clogn
+(ns examples.clogn
   (:require [cljs.core.async :refer [<! timeout]]
             [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]])
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]
-                   [example.macro :refer [my-let]] ))
-  
+                   [examples.macro :refer [my-let]] ))
+
 ;;; simple example
 (clogn (defn foo [a b & [c]]
         (if c
@@ -85,7 +85,7 @@
 
 :let-type
 (clogn (let [a (+ 1 2)
-            [b c] [(+ a 10) (* a 2)]] 
+            [b c] [(+ a 10) (* a 2)]]
          (- (+ a b) c)))
 
 (clogn (if-let [user-json nil]
@@ -154,10 +154,10 @@
 
 
 ;;; :skip-form-itself-type example
-(clogn (-> "a b c d" 
-          .toUpperCase 
-          (.replace "A" "X") 
-          (.split " ") 
+(clogn (-> "a b c d"
+          .toUpperCase
+          (.replace "A" "X")
+          (.split " ")
           first))
 
 (clogn (.. "a b c d"

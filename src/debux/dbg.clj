@@ -2,15 +2,15 @@
   (:require [debux.common.util :as ut]))
 
 (defmacro dbg-base
-  [form {:keys [msg n condition] :as opts} body]
+  [form {:keys [msg n condition ns line] :as opts} body]
   `(let [condition# ~condition]
      (if (or (nil? condition#) condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [title# (str "dbg: " (ut/truncate (pr-str '~form))
-                           (and ~msg (str "   <" ~msg ">"))
-                           " =>")]
+                           (and ~msg (str "   <" ~msg ">")))
+               src-info# (str "     " (ut/src-info ~ns ~line) " =>")]
            (ut/insert-blank-line)
-           (ut/print-title-with-indent title#)
+           (ut/print-title-with-indent title# src-info#)
            (binding [*print-length* (or ~n (:print-length @ut/config*))]
              ~body) ))
        ~form) ))
@@ -67,7 +67,7 @@
   [form & [{:as opts}]]
   (if (list? form)
     (let [ns-sym (ut/ns-symbol (first form) &env)]
-      (condp get ns-sym 
+      (condp get ns-sym
         (:-> dbg*)   `(dbg-> ~form ~opts)
         (:->> dbg*)  `(dbg->> ~form ~opts)
         (:comp dbg*) `(dbg-comp ~form ~opts)

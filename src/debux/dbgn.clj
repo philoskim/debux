@@ -119,13 +119,13 @@
             ((:if-let-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-if-let node))
                 z/next
-                recur)            
-            
+                recur)
+
             ((:letfn-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-letfn node))
                 z/next
                 recur)
-                        
+
             ((:for-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-for node))
                 z/next
@@ -135,7 +135,7 @@
             (-> (z/replace loc (sk/insert-skip-in-case node))
                 z/next
                 recur)
-            
+
 
             ((:skip-arg-1-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1 node))
@@ -146,17 +146,17 @@
             (-> (z/replace loc (sk/insert-skip-arg-2 node))
                 z/next
                 recur)
-            
+
             ((:skip-arg-1-2-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1-2 node))
                 z/next
                 recur)
-            
+
             ((:skip-arg-2-3-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-arg-2-3 node))
                 z/next
                 recur)
-            
+
             ((:skip-arg-1-3-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-arg-1-3 node))
                 z/next
@@ -176,7 +176,7 @@
             (-> (z/replace loc (sk/insert-skip-form-itself node))
                 ut/right-or-next
                 recur)
-            
+
             ((:expand-type (macro-types env)) sym)
             (-> (z/replace loc (if (ut/cljs-env? env)
                                  (analyzer/macroexpand-1 env node)
@@ -194,7 +194,7 @@
         :else (recur (z/next loc)) ))))
 
 
-;;; insert/remove d 
+;;; insert/remove d
 (defn insert-d [form d-sym env]
   (loop [loc (ut/sequential-zip form)]
     (let [node (z/node loc)]
@@ -210,15 +210,15 @@
         (and (seq? node)
              (= `ms/o-skip (first node)))
         (cond
-          ;; <ex> (o-skip [(skip a) ...]) 
+          ;; <ex> (o-skip [(skip a) ...])
           (vector? (second node))
           (recur (-> loc z/down z/next z/down))
 
           ;; <ex> (o-skip (recur ...))
-          :else 
+          :else
           (recur (-> loc z/down z/next z/down ut/right-or-next)))
 
-        ;; in case of (a-skip ...)        
+        ;; in case of (a-skip ...)
         (and (seq? node)
              (= `ms/a-skip (first node)))
         (recur (-> (z/replace loc (concat [d-sym] [node]))
@@ -238,7 +238,7 @@
         (vector? node)
         (recur (-> (z/replace loc (concat [d-sym] [node]))
                    z/down z/right z/down))
-               
+
         ;; in case of symbol, map, or set
         (or (symbol? node) (map? node) (set? node))
         (recur (-> (z/replace loc (concat [d-sym] [node]))
@@ -258,7 +258,7 @@
         (and (seq? node)
              (= d-sym (first node)))
         (recur (z/replace loc (second node)))
-      
+
         :else
         (recur (z/next loc)) ))))
 
@@ -282,7 +282,7 @@
       (cond
         (z/end? loc) (z/root loc)
 
-        ;; in case of (skip ...) or (a-skip ...) 
+        ;; in case of (skip ...) or (a-skip ...)
         (and (seq? node)
              (`#{ms/skip ms/a-skip} (first node)))
         (recur (-> (z/replace loc (second node))
@@ -297,20 +297,22 @@
         :else
         (recur (z/next loc) )))))
 
- 
+
 ;;; dbgn
 (defmacro dbgn
   "DeBuG every Nested forms"
-  [form & [{:keys [n condition] :as opts}]]
+  [form & [{:keys [msg n condition ns line] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(if (ut/cljs-env? &env)
                                (dissoc opts :print :style :js :once)
                                opts)
          condition#         ~condition]
      (if (or (nil? condition#) condition#)
-       (binding [ut/*indent-level* (inc ut/*indent-level*)] 
-         (let [title# (str "dbgn: " (ut/truncate (pr-str '~form)) " =>")]
+       (binding [ut/*indent-level* (inc ut/*indent-level*)]
+         (let [title# (str "dbgn: " (ut/truncate (pr-str '~form))
+                           (and ~msg (str "   <" ~msg ">")))
+               src-info# (str "      " (ut/src-info ~ns ~line) " =>")]
            (ut/insert-blank-line)
-           (ut/print-title-with-indent title#)
+           (ut/print-title-with-indent title# src-info#)
            ~(-> (if (ut/include-recur? form)
                   (sk/insert-o-skip-for-recur form &env)
                   form)
@@ -318,5 +320,3 @@
                 (insert-d 'debux.dbgn/d &env)
                 remove-skip) ))
        ~form) ))
-
-

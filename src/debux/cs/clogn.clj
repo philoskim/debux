@@ -2,7 +2,7 @@
   (:require [debux.dbg :as dbg]
             [debux.dbgn :as dbgn]
             [debux.common.skip :as sk]
-            [debux.common.util :as ut]            
+            [debux.common.util :as ut]
             [debux.cs.util :as cs.ut] ))
 
 (defmacro d [form]
@@ -21,17 +21,17 @@
 
 (defmacro clogn
   "Console LOG every Nested forms of a form."
-  [form & [{:keys [n msg condition style] :as opts}]]
+  [form & [{:keys [msg n condition ns line style] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :print :once)
          condition#         ~condition]
      (if (or (nil? condition#) condition#)
        (let [title# (str "%cclogn: %c " (ut/truncate (pr-str '~form))
-                         " %c" (and ~msg (str "   <" ~msg ">"))
-                         " =>")
+                         " %c" (and ~msg (str "   <" ~msg ">")))
+             src-info# (str "        " (ut/src-info ~ns ~line) " =>")
              style# (or ~style :debug)]
          (binding [ut/*indent-level* (inc ut/*indent-level*)]
            (ut/insert-blank-line)
-           (cs.ut/clog-title title# style#) 
+           (cs.ut/clog-title title# src-info# style#)
            ~(-> (if (ut/include-recur? form)
                   (sk/insert-o-skip-for-recur form &env)
                   form)
@@ -49,6 +49,5 @@
      (.log js/console (str "%c break %c"
                            (and ~msg (str "   <" ~msg ">")))
            "background: #FF1493; color: white"
-           "background: white; color: black")   
+           "background: white; color: black")
      ~'(js* "debugger;") ))
-

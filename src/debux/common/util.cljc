@@ -8,13 +8,25 @@
 
 ;;; For internal debugging
 (defmacro d
-  "The internal macro to debug dbg macro.
-   <form any> a form to be evaluated"
+  "The internal macro to debug dbg macros."
   [form]
   `(binding [*out* *err*]
      (let [return# ~form]
        (println ">> dbg_:" (pr-str '~form) "=>\n" (pr-str return#) "<<")
        return#)))
+
+(defmacro current-ns []
+  (str *ns*))
+
+(defn append-src-info [opts ns line]
+  (cond-> opts
+    ns (concat [:ns ns])
+    line (concat [:line line])))
+
+(defn src-info [ns line]
+  (cond-> {:ns (symbol ns)}
+    line (merge {:line line})))
+
 
 ;;; indent
 (def ^:dynamic *indent-level* 0)
@@ -24,7 +36,7 @@
 (def config*
   (atom {:debug-mode true
          :ns-blacklist nil
-         :ns-whitelist nil         
+         :ns-whitelist nil
          :print-length 100} ))
 
 (defn set-print-length! [num]
@@ -171,13 +183,14 @@
   [line indent-level]
   (str (make-bars indent-level) " " line))
 
-(defn prepend-bars-in-title
+(defn prepend-bars-in-line
   [line indent-level]
   (str (make-bars indent-level) line))
 
 (defn print-title-with-indent
-  [title]
-  (println (prepend-bars-in-title title (dec *indent-level*)))
+  [title src-info]
+  (doseq [line [title src-info]]
+    (println (prepend-bars-in-line line (dec *indent-level*))))
   (flush))
 
 (defn print-form-with-indent
@@ -227,7 +240,13 @@
 
         (= f :dup)
         (recur (next opts) (assoc acc :dup true))
-        
+
+        (= f :ns)
+        (recur (nnext opts) (assoc acc :ns s))
+
+        (= f :line)
+        (recur (nnext opts) (assoc acc :line s))
+
 
         ;;; for clojurescript
         (= f :js)

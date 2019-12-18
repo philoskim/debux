@@ -1,6 +1,6 @@
-(ns example.dbgn
+(ns examples.dbgn
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]])
-  (:require-macros [example.macro :refer [my-let]]))
+  (:require-macros [examples.macro :refer [my-let]]))
 
 ;;; simple example
 (dbgn (defn foo [a b & [c]]
@@ -59,7 +59,7 @@
 
 ;;; :let-type example
 (dbgn (let [a (+ 1 2)
-            [b c] [(+ a 10) (* a 2)]] 
+            [b c] [(+ a 10) (* a 2)]]
          (- (+ a b) c)))
 
 
@@ -121,10 +121,10 @@
 
 
 ;;; :skip-form-itself-type example
-(dbgn (-> "a b c d" 
-          .toUpperCase 
-          (.replace "A" "X") 
-          (.split " ") 
+(dbgn (-> "a b c d"
+          .toUpperCase
+          (.replace "A" "X")
+          (.split " ")
           first))
 
 (dbgn (.. "a b c d"

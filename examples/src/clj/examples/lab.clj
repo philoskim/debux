@@ -1,4 +1,4 @@
-(ns example.lab)
+(ns examples.lab)
 
 (use 'debux.core)
 

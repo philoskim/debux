@@ -14,7 +14,7 @@
          :if-let-type `#{cljs.core/if-let cljs.core/if-some}
          :letfn-type '#{cljs.core/letfn}
          :loop-type '#{cljs.core/loop}
-         
+
          :for-type '#{cljs.core/for cljs.core/doseq}
          :case-type '#{cljs.core/case}
 
@@ -26,7 +26,7 @@
          :skip-arg-1-2-3-type `#{}
 
          :skip-all-args-type
-         '#{cljs.core/comment cljs.core/declare cljs.core/defmacro cljs.core/defmulti 
+         '#{cljs.core/comment cljs.core/declare cljs.core/defmacro cljs.core/defmulti
             cljs.core/extend-protocol cljs.core/extend-type cljs.core/goog-define
             cljs.core/import cljs.core/import-macros cljs.core/memfn new quote
             cljs.core/refer-clojure cljs.core/reify cljs.core/require cljs.core/require-macros
@@ -35,7 +35,7 @@
 
          :skip-form-itself-type
          '#{catch cljs.core/defprotocol cljs.core/defrecord cljs.core/deftype finally
-            cljs.core/js-comment cljs.core/js-inline-comment 
+            cljs.core/js-comment cljs.core/js-inline-comment
             debux.cs.cljs.core/dbg debux.cs.cljs.core/dbgn
             debux.cs.cljs.core/clog debux.cs.cljs.core/clogn}
 
@@ -62,4 +62,3 @@
           ut/quote-vals))
   ([macro-type] (-> (select-keys @macro-types* [macro-type])
                     ut/quote-vals)))
-

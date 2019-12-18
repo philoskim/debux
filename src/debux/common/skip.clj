@@ -5,7 +5,7 @@
             [debux.cs.macro-types :as cs.mt]
             [debux.common.macro-specs :as ms]
             [debux.common.util :as ut] ))
-         
+
 (defn- macro-types [env]
   (if (ut/cljs-env? env)
     @cs.mt/macro-types*
@@ -35,7 +35,7 @@
     (cond
       (:body body') (update-in arity [:body 1]
                                #(vector (insert-indent-info %)))
-      
+
       (:prepost+body body')
       (-> arity
           (update-in [:body 1 :prepost] insert-skip-in-prepost)
@@ -94,7 +94,7 @@
 ;;; :letfn-type
 (defn- process-letfn-binding [[fn-name binding & body]]
   `((ms/skip ~fn-name) (ms/skip ~binding) ~@body))
-  
+
 (defn insert-skip-in-letfn
   [[name bindings & body]]
   (let [bindings' (-> (map process-letfn-binding bindings)
@@ -108,9 +108,9 @@
   (if (keyword? binding)
     (case binding
       :let `[~binding (ms/o-skip [(ms/skip ~(first form)) ~(second form)])]
-      [binding form]) 
+      [binding form])
     `[(ms/skip ~binding) ~form] ))
-  
+
 (defn insert-skip-in-for
   [[name bindings & body]]
   (let [bindings' (->> (partition 2 bindings)
@@ -127,7 +127,7 @@
   (if arg2
     `[(ms/skip ~arg1) ~arg2]
     [arg1] ))
-  
+
 (defn insert-skip-in-case
   [[name expr & body]]
   (let [body' (->> (partition-all 2 body)
@@ -146,7 +146,7 @@
 
 (defn insert-skip-arg-1-2
   [[name arg1 arg2 & body]]
-  (list* name `(ms/skip ~arg1) `(ms/skip ~arg2) body)) 
+  (list* name `(ms/skip ~arg1) `(ms/skip ~arg2) body))
 
 (defn insert-skip-arg-1-3
   [[name arg1 arg2 arg3 & body]]
@@ -186,7 +186,7 @@
   `(ms/o-skip ~form))
 
 (defn insert-o-skip-for-recur [form & [env]]
-  (loop [loc (ut/sequential-zip form) 
+  (loop [loc (ut/sequential-zip form)
          upwards false]
     (let [node (z/node loc)]
       ;(ut/d node)
@@ -223,5 +223,3 @@
         (recur (z/next loc) false)
 
         :else (recur (z/next loc) false) ))))
-
-

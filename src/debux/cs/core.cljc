@@ -23,27 +23,35 @@
 
 ;;; debugging APIs
 (defmacro dbg [form & opts]
-  (let [ns (str *ns*)]
+  (let [ns (str *ns*)
+        line (:line (meta &form))
+        opts' (ut/append-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
-       (debux.dbg/dbg ~form ~(ut/parse-opts opts))
+       (debux.dbg/dbg ~form ~(ut/parse-opts opts'))
        ~form)))
 
 (defmacro dbgn [form & opts]
-  (let [ns (str *ns*)]
+  (let [ns (str *ns*)
+        line (:line (meta &form))
+        opts' (ut/append-src-info opts ns line)]
    `(if (ut/debug-enabled? ~ns)
-      (debux.dbgn/dbgn ~form ~(ut/parse-opts opts))
+      (debux.dbgn/dbgn ~form ~(ut/parse-opts opts'))
       ~form)))
 
 (defmacro clog [form & opts]
-  (let [ns (str *ns*)]
+  (let [ns (str *ns*)
+        line (:line (meta &form))
+        opts' (ut/append-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
-       (debux.cs.clog/clog ~form ~(ut/parse-opts opts))
+       (debux.cs.clog/clog ~form ~(ut/parse-opts opts'))
        ~form)))
 
 (defmacro clogn [form & opts]
-  (let [ns (str *ns*)]
+  (let [ns (str *ns*)
+        line (:line (meta &form))
+        opts' (ut/append-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
-       (debux.cs.clogn/clogn ~form ~(ut/parse-opts opts))
+       (debux.cs.clogn/clogn ~form ~(ut/parse-opts opts'))
        ~form)))
 
 ;; Only use inside the thread-last macro ->>
@@ -74,7 +82,7 @@
 (defmacro show-macros
   ([] `(debux.cs.macro-types/show-macros))
   ([macro-type] `(debux.cs.macro-types/show-macros ~macro-type)))
-  
+
 
 ;;; style option API
 (def merge-styles cs.ut/merge-styles)

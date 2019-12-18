@@ -1,4 +1,4 @@
-(ns example.preload
+(ns examples.preload
   (:require [debux.cs.core :as d]))
 
 ;(d/set-debug-mode! false)

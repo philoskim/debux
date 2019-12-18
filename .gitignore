@@ -7,12 +7,12 @@
 /pom.xml.asc
 figwheel_server.log
 
-/example/target
-/example/pom.xml
-/example/resources/public/js
-/example/figwheel_server.log
-/example/.rebel_readline_history
-/example/.lein-repl-history
+/examples/target
+/examples/pom.xml
+/examples/resources/public/js
+/examples/figwheel_server.log
+/examples/.rebel_readline_history
+/examples/.lein-repl-history
 
 /resources/public/js/
 

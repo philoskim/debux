@@ -1,4 +1,4 @@
-(ns example.macro2)
+(ns examples.macro2)
 
 (use 'debux.core)
 

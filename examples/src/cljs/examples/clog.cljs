@@ -1,4 +1,4 @@
-(ns example.clog
+(ns examples.clog
   (:require [debux.cs.core :as d :refer-macros [clog clogn clog clogn clog-last break]]))
 
 ;;;; clog examples
@@ -26,7 +26,7 @@
 
 
 ; Notice that the printed value is a map, not a vector and the form
-; is prepended with colon to differenciate the form from the evaluated value.    
+; is prepended with colon to differenciate the form from the evaluated value.
 
 ; Further examples:
 (def a 10)
@@ -42,10 +42,10 @@
 ; java.lang.IllegalArgumentException
 ; Don't know how to create ISeq from: java.lang.Long
 
-(clog (-> "a b c d" 
-         .toUpperCase 
-         (.replace "A" "X") 
-         (.split " ") 
+(clog (-> "a b c d"
+         .toUpperCase
+         (.replace "A" "X")
+         (.split " ")
          first))
 
 (def five 5)

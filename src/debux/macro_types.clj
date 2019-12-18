@@ -13,7 +13,7 @@
          :if-let-type `#{if-let if-some}
          :letfn-type `#{letfn}
          :loop-type `#{loop}
-         
+
          :for-type `#{for doseq}
          :case-type `#{case}
 
@@ -23,7 +23,7 @@
          :skip-arg-1-3-type `#{defmethod}
          :skip-arg-2-3-type `#{amap areduce}
          :skip-arg-1-2-3-type `#{}
-         
+
          :skip-all-args-type
          `#{declare defmacro defmulti defstruct extend extend-protocol extend-type
             import memfn new ns proxy proxy-super quote refer-clojure reify sync var}
@@ -33,7 +33,7 @@
             gen-class gen-interface debux.core/dbg debux.core/dbgn}
 
          :expand-type
-         `#{clojure.core/.. -> ->> doto cond-> cond->> condp import 
+         `#{clojure.core/.. -> ->> doto cond-> cond->> condp import
             some-> some->>}
          :dot-type `#{.} }))
 
@@ -52,6 +52,3 @@
           ut/quote-vals))
   ([macro-type] (-> (select-keys @macro-types* [macro-type])
                    ut/quote-vals)))
-
-
-

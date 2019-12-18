@@ -1,6 +1,6 @@
-(ns example.dbg)
+(ns examples.dbg
+  (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn dbg-last break]]))
 
-(use 'debux.core)
 
 ;;;; dbg examples
 
@@ -26,6 +26,9 @@
 ; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 
 
+; Notice that the printed value is a map, not a vector and the form
+; is prepended with colon to differenciate the form from the evaluated value.
+
 ; Further examples:
 (def a 10)
 (def b 20)
@@ -40,31 +43,14 @@
 ; java.lang.IllegalArgumentException
 ; Don't know how to create ISeq from: java.lang.Long
 
-(dbg (-> "a b c d" 
-         .toUpperCase 
-         (.replace "A" "X") 
-         (.split " ") 
+(dbg (-> "a b c d"
+         .toUpperCase
+         (.replace "A" "X")
+         (.split " ")
          first))
 
-(def person 
-  {:name "Mark Volkmann"
-   :address {:street "644 Glen Summit"
-             :city "St. Charles"
-             :state "Missouri"
-             :zip 63304}
-   :employer {:name "Object Computing, Inc."
-              :address {:street "12140 Woodcrest Dr."
-                        :city "Creve Coeur"
-                        :state "Missouri"
-                        :zip 63141}}})
-
-(dbg (-> person :employer :address :city))
-; => "Creve Coeur"
-
-
-
-(def c 5)
-(dbg (->> c (+ 3) (/ 2) (- 1)))
+(def five 5)
+(dbg (->> five (+ 3) (/ 2) (- 1)))
 
 ; When debugging the threading macro `->' or `->>', don't do it like this.
 ; You will have some exception.
@@ -98,7 +84,6 @@
      (dbg-last "dbg-last example")
      (map str))
 
-
 (dbg (let [a (take 5 (range))
            {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}
            [e f g & h] ["a" "b" "c" "d" "e"]]
@@ -110,27 +95,5 @@
 (c 10 20)
 
 
-(dbg (+ 10 (* 2 (- 100 3))))
-
-
-;; dbg-last
-
-; (->> (range 10)
-;      (filter odd?)
-;      (dbg 5 "after filter")
-;      (map inc))
-; >> 1. Unhandled java.lang.IllegalArgumentException
-;       Don't know how to create ISeq from: java.lang.Long
-
-(->> (range 10)
-     (filter odd?)
-     (dbg-last 5 "after filter")
-     (map inc))
-; => (2 4 6 8 10)
-
-(-> (range 10)
-    (conj 100)
-    (dbg 5 "after conj")
-    vec)
-; => [100 0 1 2 3 4 5 6 7 8 9]
-
+(doseq [i (range 10)]
+  (dbg i :if (even? i)))

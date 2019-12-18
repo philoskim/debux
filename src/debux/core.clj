@@ -18,15 +18,19 @@
 
 ;;; debugging APIs
 (defmacro dbg [form & opts]
-  (let [ns (str *ns*)]
+  (let [ns (str *ns*)
+        line (:line (meta &form))
+        opts' (ut/append-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
-       (dbg/dbg ~form ~(ut/parse-opts opts))
+       (dbg/dbg ~form ~(ut/parse-opts opts'))
        ~form)))
 
 (defmacro dbgn [form & opts]
-  (let [ns (str *ns*)]
+  (let [ns (str *ns*)
+        line (:line (meta &form))
+        opts' (ut/append-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
-       (dbgn/dbgn ~form ~(ut/parse-opts opts))
+       (dbgn/dbgn ~form ~(ut/parse-opts opts'))
        ~form)))
 
 ;; Only use inside the thread-last macro ->>

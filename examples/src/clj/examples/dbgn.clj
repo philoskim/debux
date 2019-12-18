@@ -1,4 +1,4 @@
-(ns example.dbgn
+(ns examples.dbgn
   (:require [clojure.core.async :refer [<! go-loop timeout]]))
 
 (use 'debux.core)
@@ -15,7 +15,7 @@
 
 (foo 2 3 10)
 
-  
+
 (dbgn (defn bar [a b & [c]]
         (if c
           (* a b c)
@@ -88,7 +88,7 @@
 (add-pos2 10)
 (add-pos2 10 20)
 
-  
+
 ;;; :fn-type example
 (dbgn (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]))
 (dbgn (map #(* % 10) [1 5 9]))
@@ -97,7 +97,7 @@
 
 ;;; :let-type
 (dbgn (let [a (+ 1 2)
-            [b c] [(+ a 10) (* a 2)]] 
+            [b c] [(+ a 10) (* a 2)]]
          (- (+ a b) c)))
 
 (dbgn (if-let [user-json nil]
@@ -168,10 +168,10 @@
 
 
 ;;; :skip-form-itself-type example
-(dbgn (-> "a b c d" 
-          .toUpperCase 
-          (.replace "A" "X") 
-          (.split " ") 
+(dbgn (-> "a b c d"
+          .toUpperCase
+          (.replace "A" "X")
+          (.split " ")
           first))
 
 (dbgn (.. "fooBAR"  toLowerCase  (contains "ooba")))
@@ -260,4 +260,4 @@
 (defn mul2 [a b]
   (dbg (* a b)))
 
-(dbgn (+ n (mul2 3 4) (add2 10 20)))
+(dbgn (+ n (mul2 3 4) (add2 10 20)) "hello")
