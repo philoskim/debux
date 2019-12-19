@@ -18,8 +18,8 @@
 (defmacro current-ns []
   (str *ns*))
 
-(defn append-src-info [opts ns line]
-  (cond-> opts
+(defn prepend-src-info [opts ns line]
+  (cond->> opts
     ns (concat [:ns ns])
     line (concat [:line line])))
 
@@ -261,7 +261,13 @@
         (recur (nnext opts) (assoc acc :style snd))
 
         (= :clog fst)
-        (recur (next opts) (assoc acc :clog true)) ))))
+        (recur (next opts) (assoc acc :clog true))
+
+        :else
+        (throw (ex-info "Debux macros:"
+                        {:cause (str "the option " fst " isn't recognized.")
+                         :ns (:ns acc)
+                         :line (:line acc)} ))))))
 
 
 ;;; quote the value parts of a map

@@ -20,7 +20,7 @@
 (defmacro dbg [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
-        opts' (ut/append-src-info opts ns line)]
+        opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
        (dbg/dbg ~form ~(ut/parse-opts opts'))
        ~form)))
@@ -28,7 +28,7 @@
 (defmacro dbgn [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
-        opts' (ut/append-src-info opts ns line)]
+        opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
        (dbgn/dbgn ~form ~(ut/parse-opts opts'))
        ~form)))

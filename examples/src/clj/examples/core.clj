@@ -11,10 +11,10 @@
 
   ;; You should require dynamically the namespaces that you want to laod
   ;; if you want to use set-ns-blacklist! or set-ns-whitelist!.
-  (require 'examples.demo)
+  (require 'examples.common)
+  (require 'examples.dbg)
+  (require 'examples.options)
+  (require 'examples.dbgn)
+  ;(require 'examples.demo)
   ;(require 'examples.lab)
-  ;(require 'examples.common)
-  ;(require 'examples.dbg)
-  ;(require 'examples.options)
-  ;(require 'examples.dbgn)
 )
