@@ -1,4 +1,4 @@
-# Debux example project
+# Debux examples project
 :source-language: clojure
 :source-highlighter: coderay
 :sectnums:

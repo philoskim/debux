@@ -18,8 +18,8 @@
 (defmacro current-ns []
   (str *ns*))
 
-(defn append-src-info [opts ns line]
-  (cond-> opts
+(defn prepend-src-info [opts ns line]
+  (cond->> opts
     ns (concat [:ns ns])
     line (concat [:line line])))
 
@@ -28,7 +28,7 @@
     line (merge {:line line})))
 
 
-;;; indent
+;;; dynamic vars
 (def ^:dynamic *indent-level* 0)
 
 
@@ -222,47 +222,52 @@
 (defn parse-opts
   [opts]
   (loop [opts opts
-         acc {}]
-    (let [f (first opts)
-          s (second opts)]
+         acc {:evals '(atom {})}]
+    (let [fst (first opts)
+          snd (second opts)]
       (cond
-        (empty? opts)
-        (assoc acc :evals '(atom {}))
+        (empty? opts) acc
 
-        (number? f)
-        (recur (next opts) (assoc acc :n f))
+        (number? fst)
+        (recur (next opts) (assoc acc :n fst))
 
-        (string? f)
-        (recur (next opts) (assoc acc :msg f))
+        (string? fst)
+        (recur (next opts) (assoc acc :msg fst))
 
-        (= f :if)
-        (recur (nnext opts) (assoc acc :condition s))
+        (= :if fst)
+        (recur (nnext opts) (assoc acc :condition snd))
 
-        (= f :dup)
+        (= :dup fst)
         (recur (next opts) (assoc acc :dup true))
 
-        (= f :ns)
-        (recur (nnext opts) (assoc acc :ns s))
+        (#{:print :p} fst)
+        (recur (nnext opts) (assoc acc :print snd))
 
-        (= f :line)
-        (recur (nnext opts) (assoc acc :line s))
+        (= :ns fst)
+        (recur (nnext opts) (assoc acc :ns snd))
+
+        (= :line fst)
+        (recur (nnext opts) (assoc acc :line snd))
 
 
-        ;;; for clojurescript
-        (= f :js)
+        ;;; for clojureScript only
+        (= :js fst)
         (recur (next opts) (assoc acc :js true))
 
-        (#{:once :o} f)
+        (#{:once :o} fst)
         (recur (next opts) (assoc acc :once true))
 
-        (#{:style :s} f)
-        (recur (nnext opts) (assoc acc :style s))
+        (#{:style :s} fst)
+        (recur (nnext opts) (assoc acc :style snd))
 
-        (#{:print :p} f)
-        (recur (nnext opts) (assoc acc :print s))
+        (= :clog fst)
+        (recur (next opts) (assoc acc :clog true))
 
-        (= f :clog)
-        (recur (next opts) (assoc acc :clog true)) ))))
+        :else
+        (throw (ex-info "Debux macros:"
+                        {:cause (str "the option " fst " isn't recognized.")
+                         :ns (:ns acc)
+                         :line (:line acc)} ))))))
 
 
 ;;; quote the value parts of a map

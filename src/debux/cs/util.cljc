@@ -10,9 +10,7 @@
 (def ^:private prev-returns* (atom {}))
 
 (defn changed?
-  "Checks if prev-returns* contains <form>.
-   <form str> the key of prev-returns* map
-   <return str> the value of prev-returns* map"
+  "Checks if prev-returns* contains <form>."
   [form return]
   ;; init
   (when-not (contains? @prev-returns* form)

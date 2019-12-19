@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.6.0"]
+[philoskim/debux "0.6.1"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.6.0"]
+[philoskim/debux-stubs "0.6.1"]
 ....
 
 
@@ -64,6 +64,9 @@ and this to your *production* dependencies.
 
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
+
+* v0.6.1
+** The namespace and line number of the source code are printed as well in the debux macros.
 
 * v0.6.0
 ** Changed: The <<number-option, _number option_>> of *debux* macros is now applied to
@@ -83,16 +86,9 @@ https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 * v0.5.7
 ** `:print` option added to `dbg`/`clog`. See the detalis <<print-option, here>>.
 
-* v0.5.6
-** link:https://github.com/philoskim/debux/issues/12[Issue #12] solved.
-
-* v0.5.5
-** `:skip-form-itself-type` is split into the `:skip-all-args-type` and
-   `:skip-form-itself-type`.
-
 
 ## How to use
- 
+
 In Clojure, the following line should be included in your file.
 
 
@@ -106,9 +102,9 @@ file.
 
 
 [source]
-.example/core.cljs
+.examples/core.cljs
 ....
-(ns example.core
+(ns examples.core
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
 ....
 
@@ -122,7 +118,7 @@ file.
 |                               | dbg | dbgn | clog | clogn | break
 
 | Clojure REPL                  | O   |   O   |  X   |  X   |   X
-| ClojureScript REPL            | O   |   O   |  X   |  X   |   X 
+| ClojureScript REPL            | O   |   O   |  X   |  X   |   X
 | ClojureScript Browser console | O   |   O   |  O   |  O   |   O
 
 |===
@@ -150,7 +146,7 @@ TIP: I recommend that you should use `clog`/`clogn` instead of `dbg`/`dbgn` in t
 ## `dbg` examples
 
 NOTE: You can see every example source code of this document in
-https://github.com/philoskim/debux/tree/master/example[example] folder.
+https://github.com/philoskim/debux/tree/master/examples[examples] folder.
 
 
 ### Basic usage
@@ -169,7 +165,8 @@ window. Then it returns the value without interrupting code evaluation.
 [listing]
 .REPL output
 ----
-dbg: (+ 10 20) =>
+dbg: (+ 10 20)
+     {:ns examples.demo, :line 8} =>
 |   30
 ----
 
@@ -189,18 +186,21 @@ form can be used like this.
 [listing]
 .REPL output
 ----
-dbg: [a b c d e f g h] =>
+dbg: [a b c d e f g h]
+     {:ns examples.demo, :line 13} =>
 |   [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 ----
 
 
 ### Debugging thread macro `pass:[->]` or `pass:[->>]`
 
+#### Using outside the thread macros
+
 When debugging the thread-first macro `pass:[->]` or thread-last macro `pass:[->>]`, `dbg`
 prints every expression in the thread macros.
 
 This is an example of thread-first macro `pass:[->]`.
-  
+
 [source]
 ....
 (dbg (-> "a b c d"
@@ -214,7 +214,8 @@ This is an example of thread-first macro `pass:[->]`.
 .REPL output
 [listing]
 ----
-dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>
+dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first)
+     {:ns examples.demo, :line 18} =>
 | "a b c d" =>
 |   "a b c d"
 | .toUpperCase =>
@@ -226,12 +227,12 @@ dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>
 | first =>
 |   "X"
 ----
- 
+
 Another example.
 
 [source]
 ....
-(def person 
+(def person
   {:name "Mark Volkmann"
    :address {:street "644 Glen Summit"
              :city "St. Charles"
@@ -247,9 +248,10 @@ Another example.
 ; => "Creve Coeur"
 ....
 
-.REPL output 
+.REPL output
 ....
-dbg: (-> person :employer :address :city) =>
+dbg: (-> person :employer :address :city)
+     {:ns examples.demo, :line 37} =>
 | person =>
 |   {:name "Mark Volkmann",
 |    :address
@@ -279,9 +281,9 @@ dbg: (-> person :employer :address :city) =>
 | :city =>
 |   "Creve Coeur"
 ....
-   
+
 This is an example of thread-last macro `pass:[->>]`.
-  
+
 [source]
 ....
 (def c 5)
@@ -289,10 +291,11 @@ This is an example of thread-last macro `pass:[->>]`.
 (dbg (->> c (+ 3) (/ 2) (- 1)))
 ; => 3/4
 ....
-  
+
 .REPL output
 ....
-dbg: (->> c (+ 3) (/ 2) (- 1)) =>
+dbg: (->> c (+ 3) (/ 2) (- 1))
+     {:ns examples.demo, :line 42} =>
 | c =>
 |   5
 | (+ 3) =>
@@ -303,7 +306,9 @@ dbg: (->> c (+ 3) (/ 2) (- 1)) =>
 |   3/4
 ....
 
-If you want to debug one of the expressions in the thread macro `pass:[->]` or
+#### Using inside the thread macros
+
+If you want to debug one of the expressions within the thread macro `pass:[->]` or
 `pass:[->>]`, don't do it like this.
 
 [source]
@@ -328,12 +333,13 @@ You will have some exception. Instead, do it like this.
 
 .REPL output
 ....
-dbg: (get {:a [1 2]} :a) =>
+dbg: (get {:a [1 2]} :a)
+     {:ns examples.demo} =>
 |   [1 2]
 ....
 
 Another example.
-  
+
 [source]
 ....
 (->> [-1 0 1 2]
@@ -343,16 +349,23 @@ Another example.
      (map str))
 ; => ("2" "3")
 ....
-  
+
 .REPL output
 ....
-dbg: (map inc (filter pos? [-1 0 1 2])) =>
+dbg: (map inc (filter pos? [-1 0 1 2]))
+     {:ns examples.demo} =>
 |   (2 3)
 ....
 
+NOTE: In the above examples, `dbg` doesn't get the `:line` number information from the
+      Clojure compiler, so it is omitted. I don't know why the Clojure compiler doesn't
+      provide the line number informaton through the code of `(:line (meta &form))` inside
+      the thread macros pass:q[`->`] or pass:q[`->>`] in this situation. If anyone knows
+      about it, please let me know.
+
 See more examples <<dbg-last, here>>.
 
-  
+
 ### Debugging `let` or `comp` form
 
 When debugging `let` form,
@@ -367,10 +380,11 @@ When debugging `let` form,
 ....
 
 each binding will be printed like this.
-  
-.REPL output 
+
+.REPL output
 ....
-dbg: (let [a (take 5 (range)) {:keys [b c d], :or {d 10, b 20, c 30}} {:c 5 ... =>
+dbg: (let [a (take 5 (range)) {:keys [b c d], :or {d 10, b 20, c 30}} {:c 5 ...
+     {:ns examples.demo, :line 58} =>
 | a =>
 |   (0 1 2 3 4)
 | {:keys [b c d], :or {d 10, b 20, c 30}} =>
@@ -389,10 +403,11 @@ When debugging `comp` form,
 ; => 32
 ....
 the result of each function will be printed like this.
-  
-.REPL output 
+
+.REPL output
 ....
-dbg: (comp inc inc +) =>
+dbg: (comp inc inc +)
+     {:ns examples.demo, :line 64} =>
 | + =>
 |   30
 | inc =>
@@ -433,7 +448,8 @@ source code.
 [listing]
 .REPL output
 ----
-dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
+dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100)))
+      {:ns examples.demo, :line 72} =>
 
 | c =>
 |   nil
@@ -495,14 +511,14 @@ dbgn: (defn foo [a b & [c]] (if c (* a b c) (* a b 100))) =>
 | :case-type  | case
 | :skip-arg-1-type     | set! with-precision
 | :skip-arg-2-type     | pass:q[as->]
-| :skip-arg-1-2-type   | 
+| :skip-arg-1-2-type   |
 | :skip-arg-1-3-type   | defmethod
 | :skip-arg-2-3-type   | amap areduce
 | :skip-arg-1-2-3-type |
 | :skip-all-args-type  | declare defmacro defmulti defstruct extend extend-protocol
-                         extend-type import memfn new ns proxy proxy-super quote 
+                         extend-type import memfn new ns proxy proxy-super quote
                          refer-clojure reify sync var
-| :skip-form-itself-type | catch definline definterface defprotocol defrecord deftype finally 
+| :skip-form-itself-type | catch definline definterface defprotocol defrecord deftype finally
 | :expand-type | pass:q[.. -> ->> doto cond-> cond->> condp import some-> some->>]
 | :dot-type    | .
 
@@ -527,7 +543,8 @@ optional `doc-string` argument.
 [listing]
 .REPL output
 ----
-dbgn: (def my-function "my-function doc string" (fn [x] (* x x x))) =>
+dbgn: (def my-function "my-function doc string" (fn [x] (* x x x)))
+      {:ns examples.demo, :line 85} =>
 | (fn [x] (* x x x)) =>
 |   #function[example.core/eval24554/result--24229--auto----24555]
 | (def my-function "my-function doc string" (fn [x] (* x x x))) =>
@@ -559,7 +576,8 @@ have optional `doc-string`, `attr-map`, or `prepost-map` arguments.
 [listing]
 .REPL output
 ----
-dbgn: (defn add "add doc-string" [a b] (+ a b)) =>
+dbgn: (defn add "add doc string" [a b] (+ a b))
+      {:ns examples.demo, :line 92} =>
 
 | a =>
 |   10
@@ -584,7 +602,7 @@ You can debug multiple-arity functions as well.
         ([a b & more] (apply + a b more))))
 
 ; The function body in this case doesn't have any symbol to evaluate,
-; so no output will be printed. 
+; so no output will be printed.
 (my-add)
 ; => 0
 
@@ -592,7 +610,7 @@ You can debug multiple-arity functions as well.
 ; => 10
 
 (my-add 10 20)
-; => 30 
+; => 30
 
 (my-add 10 20 30 40)
 ; => 100
@@ -601,7 +619,8 @@ You can debug multiple-arity functions as well.
 [listing]
 .REPL output
 ----
-dbgn: (defn my-add "my-add doc string" ([] 0) ([a] a) ([a b] (+ a b)) ([a b  ... =>
+dbgn: (defn my-add "my-add doc string" ([] 0) ([a] a) ([a b] (+ a b)) ([a b  ...
+      {:ns examples.demo, :line 100} =>
 
 | a =>
 |   10
@@ -643,22 +662,25 @@ You can have multiple `dbgn`/``clogn``s.
 [listing]
 .REPL output
 ----
-dbgn: (defn calc1 [a1 a2] (+ a1 a2)) =>
+dbgn: (defn calc1 [a1 a2] (+ a1 a2))
+      {:ns examples.demo, :line 113} =>
 
-dbgn: (defn calc2 [s1 s2] (- 100 (calc1 s1 s2))) =>
+dbgn: (defn calc2 [s1 s2] (- 100 (calc1 s1 s2)))
+      {:ns examples.demo, :line 114} =>
 
-dbgn: (defn calc3 [m1 m2] (* 10 (calc2 m1 m2))) =>
+dbgn: (defn calc3 [m1 m2] (* 10 (calc2 m1 m2)))
+      {:ns examples.demo, :line 115} =>
 
 | m1 =>
 |   2
 | m2 =>
 |   5
- 
+
 || s1 =>
 ||   2
 || s2 =>
 ||   5
- 
+
 ||| a1 =>
 |||   2
 ||| a2 =>
@@ -681,7 +703,7 @@ dbgn: (defn calc3 [m1 m2] (* 10 (calc2 m1 m2))) =>
 This type of macros have the binding vector argument which must not be evaluated and can
 have optional function name. So it is a little different from `:defn-type` macros.
 
-[[enhanced-readability]] 
+[[enhanced-readability]]
 [source]
 ....
 (dbgn (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]))
@@ -691,26 +713,27 @@ have optional function name. So it is a little different from `:defn-type` macro
 [listing]
 .REPL output
 ----
-dbgn: (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]) =>
+dbgn: (reduce (fn [acc i] (+ acc i)) 0 [1 5 9])
+      {:ns examples.demo, :line 121} =>
 | (fn [acc i] (+ acc i)) =>
 |   #function[example.core/eval25034/result--24229--auto----25035]
 | [1 5 9] =>
 |   [1 5 9]
- 
+
 || acc =>
 ||   0
 || i =>
 ||   1
 || (+ acc i) =>
 ||   1
- 
+
 || acc =>
 ||   1
 || i =>
 ||   5
 || (+ acc i) =>
 ||   6
- 
+
 || acc =>
 ||   6
 || i =>
@@ -735,22 +758,23 @@ dbgn: (reduce (fn [acc i] (+ acc i)) 0 [1 5 9]) =>
 [listing]
 .REPL output
 ----
-dbgn: (map (fn* [p1__13193#] (* p1__13193# 10)) [1 5 9]) =>
+dbgn: (map (fn* [p1__2514#] (* p1__2514# 10)) [1 5 9])
+      {:ns examples.demo, :line 123} =>
 | (fn* [p1__13193#] (try (clojure.core/reset! (:evals +debux-dbg-opts+)  ... =>
 |   #object[example.dbgn$eval13194$result__4709__auto____13195 0x1b58788a "example.dbgn$eval13194$result__4709__auto____13195@1b58788a"]
 | [1 5 9] =>
 |   [1 5 9]
- 
+
 || p1__13583# =>
 ||   1
 || (* p1__13583# 10) =>
 ||   10
- 
+
 || p1__13583# =>
 ||   5
 || (* p1__13583# 10) =>
 ||   50
- 
+
 || p1__13583# =>
 ||   9
 || (* p1__13583# 10) =>
@@ -758,7 +782,7 @@ dbgn: (map (fn* [p1__13193#] (* p1__13193# 10)) [1 5 9]) =>
 | (map (fn* [p1__13583#] (clojure.core/binding [debux.common.util/*inden ... =>
 |   (10 50 90)
 ----
- 
+
 
 
 #### `:let-type` example
@@ -768,7 +792,7 @@ This type of macros have the binding vector argument which must not be evaluated
 [source]
 ....
 (dbgn (let [a (+ 1 2)
-            [b c] [(+ a 10) (* a 2)]] 
+            [b c] [(+ a 10) (* a 2)]]
          (- (+ a b) c)))
 ; => 10
 ....
@@ -777,7 +801,8 @@ This type of macros have the binding vector argument which must not be evaluated
 [listing]
 .REPL output
 ----
-dbgn: (let [a (+ 1 2) [b c] [(+ a 10) (* a 2)]] (- (+ a b) c)) =>
+dbgn: (let [a (+ 1 2) [b c] [(+ a 10) (* a 2)]] (- (+ a b) c))
+      {:ns examples.demo, :line 127} =>
 | (+ 1 2) =>
 |   3
 | a =>
@@ -820,7 +845,8 @@ one or two forms in their bodies.
 [listing]
 .REPL output
 ----
-dbgn: (if-let [s a*] (+ s 100) false) =>
+dbgn: (if-let [s a*] (+ s 100) false)
+      {:ns examples.demo, :line 135} =>
 | a* =>
 |   10
 | s =>
@@ -851,7 +877,8 @@ This type of macro has the special binding vector syntax which is a bit differen
 [listing]
 .REPL output
 ----
-dbgn: (letfn [(twice [x] (* x 2)) (six-times [y] (* (twice y) 3))] (six-time ... =>
+dbgn: (letfn [(twice [x] (* x 2)) (six-times [y] (* (twice y) 3))] (six-time ...
+      {:ns examples.demo, :line 141} =>
 | y =>
 |   15
 | x =>
@@ -890,7 +917,8 @@ can have `:let`, `:when`, or `:while` clause.
 [listing]
 .REPL output
 ----
-dbgn: (for [x [0 1 2 3 4 5] :let [y (* x 3)] :when (even? y)] y) =>
+dbgn: (for [x [0 1 2 3 4 5] :let [y (* x 3)] :when (even? y)] y)
+      {:ns examples.demo, :line 149} =>
 | [0 1 2 3 4 5] =>
 |   [0 1 2 3 4 5]
 | x =>
@@ -901,7 +929,7 @@ dbgn: (for [x [0 1 2 3 4 5] :let [y (* x 3)] :when (even? y)] y) =>
 |   0
 | (even? y) =>
 |   true
- 
+
 | x =>
 |   1
 | (* x 3) =>
@@ -937,7 +965,7 @@ dbgn: (for [x [0 1 2 3 4 5] :let [y (* x 3)] :when (even? y)] y) =>
 |   12
 | (even? y) =>
 |   true
- 
+
 | x =>
 |   5
 | (* x 3) =>
@@ -969,7 +997,8 @@ https://clojuredocs.org/clojure.core/case[here].
 [listing]
 .REPL output
 ----
-dbgn: (let [mystr "hello"] (case mystr  0 hello (count mystr))) =>
+dbgn: (let [mystr "hello"] (case mystr "" 0 "hello" (count mystr)))
+      {:ns examples.demo, :line 156} =>
 | mystr =>
 |   "hello"
 | (count mystr) =>
@@ -995,7 +1024,8 @@ dbgn: (let [mystr "hello"] (case mystr  0 hello (count mystr))) =>
 [listing]
 .REPL output
 ----
-dbgn: (case (quote a) (x y z) "x, y, or z" "default") =>
+dbgn: (case (quote a) (x y z) "x, y, or z" "default")
+      {:ns examples.demo, :line 161} =>
 | (case (quote a) (x y z) "x, y, or z" "default") =>
 |   "default"
 ----
@@ -1016,7 +1046,8 @@ internally skips the evaluation of this argument.
 [listing]
 .REPL output
 ----
-dbgn: (with-precision 10 (/ 1M 6)) =>
+dbgn: (with-precision 10 (/ 1M 6))
+      {:ns examples.demo, :line 167} =>
 | (/ 1M 6) =>
 |   0.1666666667M
 | (with-precision 10 (/ 1M 6)) =>
@@ -1040,7 +1071,8 @@ internally skips the evaluation of this argument.
 [listing]
 .REPL output
 ----
-dbgn: (as-> 0 n (inc n) (inc n)) =>
+dbgn: (as-> 0 n (inc n) (inc n))
+      {:ns examples.demo, :line 171} =>
 | n =>
 |   0
 | (inc n) =>
@@ -1089,13 +1121,15 @@ This type of macros have the first and third arguments which must not be evaluat
 [listing]
 .REPL output
 ----
-dbgn: (defmethod greeting :english [map] (str "English greeting: " (:greetin ... =>
-| (defmethod greeting :english [map] (str "English greeting: " (:greeting map))) =>
-|   #multifn[greeting 0x1c28c1cc]
+dbgn: (defmethod greeting :english [map] (str "English greeting: " (:greetin ...
+      {:ns examples.demo, :line 180} =>
+| (defmethod greeting :english [map] (str "English greeting: " (:greetin ... =>
+|   #object[clojure.lang.MultiFn 0x193bb809 "clojure.lang.MultiFn@193bb809"]
 
-dbgn: (defmethod greeting :french [map] (str "French greeting: " (:greeting  ... =>
-| (defmethod greeting :french [map] (str "English greeting: " (:greeting map))) =>
-|   #multifn[greeting 0x1c28c1cc]
+dbgn: (defmethod greeting :french [map] (str "French greeting: " (:greeting  ...
+      {:ns examples.demo, :line 183} =>
+| (defmethod greeting :french [map] (str "French greeting: " (:greeting  ... =>
+|   #object[clojure.lang.MultiFn 0x193bb809 "clojure.lang.MultiFn@193bb809"]
 
 | map =>
 |   {:language :english, :greeting "Hello!"}
@@ -1131,7 +1165,8 @@ This type of macros have the second and third arguments which must not be evalua
 [listing]
 .REPL output
 ----
-dbgn: (areduce xs i ret (float 0) (+ ret (aget xs i))) =>
+dbgn: (areduce xs i ret (float 0) (+ ret (aget xs i)))
+      {:ns examples.demo, :line 195} =>
 | xs =>
 |   [1.0, 2.0, 3.0]
 | (float 0) =>
@@ -1185,7 +1220,8 @@ result.
 [listing]
 .REPL output
 ----
-dbgn: (defmacro unless [pred a b] (clojure.core/seq (clojure.core/concat (cl ... =>
+dbgn: (defmacro unless [pred a b] (clojure.core/seq (clojure.core/concat (cl ...
+      {:ns examples.demo, :line 200} =>
 | (defmacro unless [pred a b] (clojure.core/seq (clojure.core/concat (cl ... =>
 |   #'user/unless
 ----
@@ -1204,7 +1240,8 @@ This type of macros ignores the form itself and prints nothing.
 [listing]
 .REPL output
 ----
-dbgn: (try (/ 1 0) (catch ArithmeticException e (str "caught exception: " (. ... =>
+dbgn: (try (/ 1 0) (catch ArithmeticException e (str "caught exception: " (. ...
+      {:ns examples.demo, :line 205} =>
 | (try (/ 1 0) (catch ArithmeticException e (str "caught exception: " (. ... =>
 |   "caught exception: Divide by zero"
 ----
@@ -1217,10 +1254,10 @@ This type of macros will be expanded and then the output will be printed.
 
 [source]
 ....
-(dbgn (-> "a b c d" 
-          .toUpperCase 
-          (.replace "A" "X") 
-          (.split " ") 
+(dbgn (-> "a b c d"
+          .toUpperCase
+          (.replace "A" "X")
+          (.split " ")
           first))
 ; => "X"
 ....
@@ -1228,7 +1265,8 @@ This type of macros will be expanded and then the output will be printed.
 [listing]
 .REPL output
 ----
-dbgn: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>
+dbgn: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first)
+      {:ns examples.demo, :line 211} =>
 | (.toUpperCase "a b c d") =>
 |   "A B C D"
 | (.replace (.toUpperCase "a b c d") "A" "X") =>
@@ -1254,7 +1292,8 @@ dbgn: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>
 [listing]
 .REPL output
 ----
-dbgn: (.. "fooBAR" toLowerCase (contains "ooba")) =>
+dbgn: (.. "fooBAR" toLowerCase (contains "ooba"))
+      {:ns examples.demo, :line 217} =>
 | (. "fooBAR" toLowerCase) =>
 |   "foobar"
 | (. (. "fooBAR" toLowerCase) (contains "ooba")) =>
@@ -1277,7 +1316,8 @@ dbgn: (.. "fooBAR" toLowerCase (contains "ooba")) =>
 [listing]
 .REPL output
 ----
-dbgn: (cond-> [] (odd? x) (conj "x is odd") (zero? (rem y 3)) (conj "y is di ... =>
+dbgn: (cond-> [] (odd? x) (conj "x is odd") (zero? (rem y 3)) (conj "y is di ...
+      {:ns examples.demo, :line 220} =>
 | [] =>
 |   []
 | x =>
@@ -1300,7 +1340,7 @@ dbgn: (cond-> [] (odd? x) (conj "x is odd") (zero? (rem y 3)) (conj "y is di ...
 |   ["x is odd"]
 | (if (zero? (rem y 3)) (conj G__14051 "y is divisible by 3") G__14051) =>
 |   ["x is odd"]
- 
+
 | (even? y) =>
 |   true
 | (conj G__14051 "y is even") =>
@@ -1324,7 +1364,8 @@ dbgn: (cond-> [] (odd? x) (conj "x is odd") (zero? (rem y 3)) (conj "y is di ...
 [listing]
 .REPL output
 ----
-dbgn: (. (java.util.Date.) getMonth) =>
+dbgn: (. (java.util.Date.) getMonth)
+      {:ns examples.demo, :line 227} =>
 | (java.util.Date.) =>
 |   #inst "2017-06-27T08:04:46.480-00:00"
 | (. (java.util.Date.) getMonth) =>
@@ -1340,8 +1381,8 @@ dbgn: (. (java.util.Date.) getMonth) =>
 |===
 
 |                        | dbgn  | clogn
-| loop ~ recur           |   O   |   O   
-| defn/defn-/fn ~ recur  |  △   |  △          
+| loop ~ recur           |   O   |   O
+| defn/defn-/fn ~ recur  |  △   |  △
 
 |===
 
@@ -1364,8 +1405,9 @@ You can see the evaluated results of the form which incldues `loop` ~ `recur` by
 .REPL output
 [listing]
 ----
-dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
- 
+dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n))))
+      {:ns examples.demo, :line 233} =>
+
 | n =>
 |   3
 | (zero? n) =>
@@ -1376,7 +1418,7 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 |   3
 | (dec n) =>
 |   2
- 
+
 | n =>
 |   2
 | acc =>
@@ -1385,14 +1427,14 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 |   6
 | (dec n) =>
 |   1
- 
+
 | n =>
 |   1
 | acc =>
 |   6
 | (dec n) =>
 |   0
- 
+
 | n =>
 |   0
 | (zero? n) =>
@@ -1419,11 +1461,12 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 [listing]
 .REPL output
 ----
-dbgn: (defn fact [num] (loop [acc 1 n num] (if (zero? n) acc (recur (* acc n ... =>
- 
+dbgn: (defn fact [num] (loop [acc 1 n num] (if (zero? n) acc (recur (* acc n ...
+      {:ns examples.demo, :line 239} =>
+
 | num =>
 |   3
- 
+
 | n =>
 |   3
 | (zero? n) =>
@@ -1434,7 +1477,7 @@ dbgn: (defn fact [num] (loop [acc 1 n num] (if (zero? n) acc (recur (* acc n ...
 |   3
 | (dec n) =>
 |   2
- 
+
 | n =>
 |   2
 | acc =>
@@ -1443,14 +1486,14 @@ dbgn: (defn fact [num] (loop [acc 1 n num] (if (zero? n) acc (recur (* acc n ...
 |   6
 | (dec n) =>
 |   1
- 
+
 | n =>
 |   1
 | acc =>
 |   6
 | (dec n) =>
 |   0
- 
+
 | n =>
 |   0
 | (zero? n) =>
@@ -1502,8 +1545,9 @@ debug the form as follows. *Be careful* not to forget to recover `function name`
 .REPL output
 [listing]
 ----
-dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ... =>
- 
+dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ...
+      {:ns examples.demo, :line 248} =>
+
 | n =>
 |   3
 | (zero? n) =>
@@ -1514,7 +1558,7 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ...
 |   3
 | (dec n) =>
 |   2
- 
+
 || n =>
 ||   2
 || (zero? n) =>
@@ -1525,7 +1569,7 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ...
 ||   6
 || (dec n) =>
 ||   1
- 
+
 ||| n =>
 |||   1
 ||| (zero? n) =>
@@ -1536,7 +1580,7 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ...
 |||   6
 ||| (dec n) =>
 |||   0
- 
+
 |||| n =>
 ||||   0
 |||| (zero? n) =>
@@ -1574,10 +1618,6 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ...
 [source]
 .example/core.clj
 ....
-(ns example.core)
-
-(use 'debux.core)
-
 (defmacro my-let [bindings & body]
   `(let ~bindings ~@body))
 
@@ -1594,19 +1634,21 @@ dbgn: (defn factorial [acc n] (if (zero? n) acc (factorial (* acc n) (dec n) ...
 [listing]
 .REPL output
 ----
-dbg: (show-macros :let-type) =>
+dbg: (show-macros :let-type)
+     {:ns examples.demo, :line 261} =>
 |   {:let-type
 |    #{clojure.core/when-let example.dbgn/my-let clojure.core/let
 |      clojure.core/with-local-vars clojure.core/when-some clojure.core/dotimes
 |      clojure.core/with-open clojure.core/with-redefs clojure.core/binding
 |      clojure.core/with-in-str clojure.core/with-out-str clojure.core/when-first}}
 
-dbg: (show-macros) =>
+dbg: (show-macros)
+     {:ns examples.demo, :line 262} =>
 |   {:fn-type #{clojure.core/fn fn*},
 |    :skip-arg-1-2-3-type #{},
 |    :skip-form-itself-type
 |    #{clojure.core/definterface clojure.core/defrecord clojure.core/deftype
-|      finally clojure.core/gen-class clojure.core/definline catch 
+|      finally clojure.core/gen-class clojure.core/definline catch
 |      clojure.core/gen-interface clojure.core/defprotocol},
 |    :case-type #{clojure.core/case},
 |    :skip-arg-2-3-type #{clojure.core/areduce clojure.core/amap},
@@ -1640,12 +1682,13 @@ dbg: (show-macros) =>
 |      clojure.core/cond->>},
 |    :skip-arg-1-3-type #{clojure.core/defmethod}}
 
-dbgn: (my-let [a 10 b (+ a 10)] (+ a b)) =>
+dbgn: (my-let [a 10 b (+ a 10)] (+ a b))
+      {:ns examples.demo, :line 264} =>
 | a =>
 |   10
 | (+ a 10) =>
 |   20
- 
+
 | b =>
 |   20
 | (+ a b) =>
@@ -1670,9 +1713,9 @@ dbgn: (my-let [a 10 b (+ a 10)] (+ a b)) =>
 [source]
 .example/core.cljs
 ....
-(ns example.core
+(ns examples.demo
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]])
-  (:require-macros [example.macro :refer [my-let]]))
+  (:require-macros [examples.macro :refer [my-let]]))
 
 ;; Registering your own macro
 (d/register-macros! :let-type [my-let])
@@ -1725,11 +1768,11 @@ dbg: (d/show-macros) =>
 |    :expand-type
 |    #{cljs.core/.. cljs.core/some-> cljs.core/-> cljs.core/cond->>
 |      cljs.core/import cljs.core/doto cljs.core/condp cljs.core/cond->
-|      cljs.core/some->> cljs.core/->>}, 
+|      cljs.core/some->> cljs.core/->>},
 |    :skip-arg-1-3-type #{cljs.core/defmethod}}
 ----
 
-image::register-macros.png[title="register-macros! example", width=800]
+image::register-macros.png[title="register-macros! example", width=750]
 
 
 [#multiple-use]
@@ -1759,14 +1802,15 @@ like this.
 [listing]
 .REPL output:
 ----
-dbgn: (+ a b c (dbg (->> (range (- b a)) (map (fn* [p1__41#] (* p1__41# p1__ ... =>
+dbgn: (+ a b c (dbg (->> (range (- b a)) (map (fn* [p1__3949#] (* p1__3949#  ...
+      {:ns examples.demo, :line 271} =>
 | a =>
 |   10
 | b =>
 |   20
 | c =>
 |   100
- 
+
 |dbg: (->> (range (- b a)) (map (fn* [p1__41#] (* p1__41# p1__41#))) (filter ... =>
 || (range (- b a)) =>
 ||   (0 1 2 3 4 5 6 7 8 9)
@@ -1805,11 +1849,13 @@ Multiple `dbgn` and `dbg` can be used together.
 [listing]
 .REPL output:
 ----
-dbgn: (+ n (mul 3 4) (add 10 20)) =>
+dbgn: (+ n (mul 3 4) (add 10 20))
+      {:ns examples.demo, :line 290} =>
 | n =>
 |   10
- 
-|dbgn: (* a b) =>
+
+|dbgn: (* a b)
+|      {:ns examples.demo, :line 288} =>
 || a =>
 ||   3
 || b =>
@@ -1818,8 +1864,9 @@ dbgn: (+ n (mul 3 4) (add 10 20)) =>
 ||   12
 | (mul 3 4) =>
 |   12
- 
-|dbgn: (+ a b) =>
+
+|dbgn: (+ a b)
+|      {:ns examples.demo, :line 285} =>
 || a =>
 ||   10
 || b =>
@@ -1852,16 +1899,19 @@ dbgn: (+ n (mul 3 4) (add 10 20)) =>
 [listing]
 .REPL output:
 ----
-dbgn: (+ n (mul2 3 4) (add2 10 20)) =>
+dbgn: (+ n (mul2 3 4) (add2 10 20))
+      {:ns examples.demo, :line 299} =>
 | n =>
 |   10
- 
-|dbg: (* a b) =>
+
+|dbg: (* a b)
+|     {:ns examples.demo, :line 297} =>
 ||   12
 | (mul2 3 4) =>
 |   12
- 
-|dbg: (+ a b) =>
+
+|dbg: (+ a b)
+|     {:ns examples.demo, :line 294} =>
 ||   30
 | (add2 10 20) =>
 |   30
@@ -1882,7 +1932,7 @@ dbgn: (+ n (mul2 3 4) (add2 10 20)) =>
 | Options | dbg | dbgn | clog | clogn | break
 
 | string  | O   |   O   |  O   |  O   |   O
-| number  | O   |   O   |  O   |  O   |   X 
+| number  | O   |   O   |  O   |  O   |   X
 | :if     | O   |   O   |  O   |  O   |   O
 | :print  | O   |   X   |  O   |  X   |   X
 | :dup    | X   |   0   |  X   |  0   |   X
@@ -1906,10 +1956,11 @@ more-than signs like this.
 (dbg (repeat 5 "x") "5 times repeat"))
 ; => ("x" "x" "x" "x" "x")
 ....
-  
+
 .REPL output
 ....
-dbg: (repeat 5 "x")   <5 times repeat> =>
+dbg: (repeat 5 "x")   <5 times repeat>
+     {:ns examples.demo, :line 305} =>
 |   ("x" "x" "x" "x" "x")
 ....
 
@@ -1928,7 +1979,8 @@ will print and return the default 100 items.
 .REPL output
 [listing]
 ----
-dbgn: (count (range 200)) =>
+dbgn: (count (range 200))
+      {:ns examples.demo, :line 309} =>
 | (range 200) =>
 |   (0 1 2 ...... 99 ...)
 | (count (range 200)) =>
@@ -1946,7 +1998,8 @@ explicitly like this.
 .REPL output
 [listing]
 ----
-dbgn: (count (range 200)) =>
+dbgn: (count (range 200))
+      {:ns examples.demo, :line 311} =>
 | (range 200) =>
 |   (0 1 2 ...... 199)
 | (count (range 200)) =>
@@ -1962,10 +2015,11 @@ in evaluating an *infinite lazy-seq*, in the same manner it will print and retur
 (dbgn (take 5 (range)))
 ; => (0 1 2 3 4)
 ....
-  
+
 .REPL output
 ....
-dbgn: (take 5 (range)) =>
+dbgn: (take 5 (range))
+      {:ns examples.demo, :line 313} =>
 | (range) =>
 |   (0 1 2 ...... 99 ...)
 | (take 5 (range)) =>
@@ -1973,7 +2027,7 @@ dbgn: (take 5 (range)) =>
 ....
 
 [[nested-coll]]
-The elements of the nested `coll` types will be printed as much as specified numbers.  
+The elements of the nested `coll` types will be printed as much as specified numbers.
 
 [source]
 ....
@@ -1990,7 +2044,8 @@ The elements of the nested `coll` types will be printed as much as specified num
 [listing]
 .REPL output
 ----
-dbgn: (count m) =>
+dbgn: (count m)
+      {:ns examples.demo, :line 328} =>
 | m =>
 |   {:list (0 1 2 3 4 ...),
 |    :vector [0 1 2 3 4 ...],
@@ -2023,7 +2078,8 @@ like this.
 [listing]
 .REPL output
 ----
-dbgn: (count (range)) =>
+dbgn: (take 5 (range))
+      {:ns examples.demo, :line 318} =>
 | (range) =>
 |   (0 1 2 3 4 5 6 7 8 9 ...)
 | (take 5 (range)) =>
@@ -2055,19 +2111,24 @@ You can set `:if` option like this.
 
 .REPL output
 ....
-dbg: i =>
+dbg: i
+     {:ns examples.demo, :line 333} =>
 |   0
 
-dbg: i =>
+dbg: i
+     {:ns examples.demo, :line 333} =>
 |   2
 
-dbg: i =>
+dbg: i
+     {:ns examples.demo, :line 333} =>
 |   4
 
-dbg: i =>
+dbg: i
+     {:ns examples.demo, :line 333} =>
 |   6
 
-dbg: i =>
+dbg: i
+     {:ns examples.demo, :line 333} =>
 |   8
 ....
 
@@ -2076,7 +2137,7 @@ dbg: i =>
 ### `:print` option
 
 IMPORTANT: The `:print` (or `:p` in brief) option applies only to `dbg`/`clog`.
- 
+
 If you don't want to see the evaluated result itself but the result applied to another
 operations, use '`:print one-arg-fn`' (or '`:p one-arg-fn`') option like this.
 
@@ -2092,7 +2153,8 @@ operations, use '`:print one-arg-fn`' (or '`:p one-arg-fn`') option like this.
 [listing]
 .REPL output
 ----
-dbg: (* 20 30) =>
+dbg: (* 20 30)
+     {:ns examples.demo, :line 337} =>
 |   java.lang.Long
 ----
 
@@ -2119,7 +2181,8 @@ The above example prints `java.lang.Long`, not `600`
 [listing]
 .REPL output
 ----
-dbg: person =>
+dbg: person
+     {:ns examples.demo, :line 339} =>
 |   "Creve Coeur"
 ----
 
@@ -2143,7 +2206,8 @@ The same duplicate evaluated results are not printed by default as follows.
 [listing]
 .REPL output
 ----
-dbgn: (def my-function "my-function doc string" (fn [x] (* x x x))) =>
+dbgn: (def my-function "my-function doc string" (fn [x] (* x x x)))
+      {:ns examples.demo, :line 343} =>
 | (fn [x] (* x x x)) =>
 |   #function[example.core/eval24554/result--24229--auto----24555]
 | (def my-function "my-function doc string" (fn [x] (* x x x))) =>
@@ -2155,7 +2219,7 @@ dbgn: (def my-function "my-function doc string" (fn [x] (* x x x))) =>
 |   1000
 ----
 
-However, you can print the same duplicate evaluated values by `:dup` option. 
+However, you can print the same duplicate evaluated values by `:dup` option.
 
 [source]
 ....
@@ -2169,7 +2233,8 @@ However, you can print the same duplicate evaluated values by `:dup` option.
 [listing]
 .REPL output
 ----
-dbgn: (def my-function "my-function doc string" (fn [x] (* x x x))) =>
+dbgn: (def my-function "my-function doc string" (fn [x] (* x x x)))
+      {:ns examples.demo, :line 349} =>
 | (fn [x] (* x x x)) =>
 |   #function[example.core/eval24554/result--24229--auto----24555]
 | (def my-function "my-function doc string" (fn [x] (* x x x))) =>
@@ -2206,8 +2271,9 @@ Compare the results of the next two examples.
 [listing]
 .REPL output
 ----
-dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
- 
+dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n))))
+      {:ns examples.demo, :line 355} =>
+
 | n =>
 |   3
 | (zero? n) =>
@@ -2218,7 +2284,7 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 |   3
 | (dec n) =>
 |   2
- 
+
 | n =>
 |   2
 | acc =>
@@ -2227,14 +2293,14 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 |   6
 | (dec n) =>
 |   1
- 
+
 | n =>
 |   1
 | acc =>
 |   6
 | (dec n) =>
 |   0
- 
+
 | n =>
 |   0
 | (zero? n) =>
@@ -2242,8 +2308,9 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 | (loop [acc 1 n 3] (debux.common.util/insert-blank-line) (if (zero? n)  ... =>
 |   6
 
-dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
- 
+dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n))))
+      {:ns examples.demo, :line 360} =>
+
 | n =>
 |   3
 | (zero? n) =>
@@ -2258,7 +2325,7 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 |   3
 | (dec n) =>
 |   2
- 
+
 | n =>
 |   2
 | (zero? n) =>
@@ -2273,7 +2340,7 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 |   2
 | (dec n) =>
 |   1
- 
+
 | n =>
 |   1
 | (zero? n) =>
@@ -2288,7 +2355,7 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 |   1
 | (dec n) =>
 |   0
- 
+
 | n =>
 |   0
 | (zero? n) =>
@@ -2303,7 +2370,7 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 ### `:style` option (CSS Styling)
 
 The following is the example of using `clog` and `clogn` in Chrome browser.
- 
+
 [source]
 .example/core.cljs
 ....
@@ -2314,7 +2381,7 @@ The following is the example of using `clog` and `clogn` in Chrome browser.
 (clogn (repeat 5 (repeat 5 "x")) "25 times repeat")
 ....
 
-image::clog-1.png[title="clog and clogn example", width=550]
+image::clog-1.png[title="clog and clogn example", width=650]
 
 
 #### Predefined style keywords
@@ -2340,10 +2407,10 @@ You can style the form, using the following predefined keywords.
 (clog (+ 10 20) :style :debug "debug style")
 (clog (+ 10 20) "debug style is default")
 ....
-  
+
 Or in brief
 
-....  
+....
 (clog (+ 10 20) :s :e "error style")
 (clog (+ 10 20) :s :w "warn style")
 (clog (+ 10 20) :s :i "info style")
@@ -2351,7 +2418,7 @@ Or in brief
 (clog (+ 10 20) "debug style is default")
 ....
 
-image::clog-2.png[title="Predefined style example", width=550]
+image::clog-2.png[title="Predefined style example", width=700]
 
 
 #### User-defined style
@@ -2372,7 +2439,7 @@ You can redefine the predefined styles or define your own new style by using
 (clog (+ 10 20) :style "color:orange; background:blue; font-size: 14pt")
 ....
 
-image::clog-3.png[title="User-defined style example", width=550]
+image::clog-3.png[title="User-defined style example", width=650]
 
 
 ### `:once` option
@@ -2386,31 +2453,31 @@ where successive multiple frames usually have the same evaluated value.
 ....
 (def a (atom 10))
 
-;; This will be printed.
+; This will be printed.
 (clog @a :once)
 
-;; This will not be printed,
-;; because the evaluated value is the same as before.
+; This will not be printed,
+; because the evaluated value is the same as before.
 (clog @a :once)
 
 
 (reset! a 20)
 
-;; This will be printed,
-;; because the evaluated value is not the same as before.
+; This will be printed,
+; because the evaluated value is not the same as before.
 (clog @a :once)
 
-;; This will not be printed,
-;; because the evaluated value is the same as before.
+; This will not be printed,
+; because the evaluated value is the same as before.
 (clog @a :once)
 ....
 
-image::clog-4.png[title=":once option example", width=550]
+image::clog-4.png[title=":once option example", width=700]
 
 NOTE: `(:once mode)` string is appended after the form header to remind you of `:once`
   mode.
 
-   
+
 ### `:js` option
 
 If `:js` option is added after the form, the JavaScript object will be printed as well, so
@@ -2421,7 +2488,7 @@ objects returned by JavaScript interops in ClojureScript.
 (clog {:a 10 :b 20} :js)
 ....
 
-image::clog-5.png[title=":js option example", width=750]
+image::clog-5.png[title=":js option example", width=800]
 
 
 [[cljs-devtools]]
@@ -2431,7 +2498,7 @@ image::clog-5.png[title=":js option example", width=750]
   link:https://github.com/binaryage/cljs-devtools[cljs-devtools] since the version
   `0.5.9`.
 +
-image::cljs-devtools.png[title="cljs-devtools printing example", width=600]
+image::cljs-devtools.png[title="cljs-devtools printing example", width=700]
 
 * The <<two-libraries, *development*>> version `debux` library already includes the
   version 0.9.11 of `cljs-devtools` on its dependencies. Therefore, you don't have to
@@ -2471,7 +2538,7 @@ Or install it manually like this.
 * Don't forget to to turn on the Chrome DevTools' [Settings -- Preferences -- Console --
   Enable custom formatters], before using `cljs-devtools` printing.
 +
-image::chrome-devtools-settings.png[title="Enable custom formatters on Chrome DevTools", width=800]
+image::chrome-devtools-settings.png[title="Enable custom formatters on Chrome DevTools", width=850]
 
 * You should read
   link:https://github.com/binaryage/cljs-devtools/blob/master/docs/faq.md#why-some-custom-formatters-were-not-rendered[Why
@@ -2503,7 +2570,7 @@ pass:q[`->>`] like this, you will have an exception.
 ;       Don't know how to create ISeq from: java.lang.Long
 ....
 
-The `dbg-last` macro is to the rescue of this case. 
+The `dbg-last` macro is to the rescue of this case.
 
 [source]
 ....
@@ -2517,7 +2584,8 @@ The `dbg-last` macro is to the rescue of this case.
 [listing]
 .REPL output
 ----
-dbg: (filter odd? (range 10))   <after filter> =>
+dbg: (filter odd? (range 20))   <after filter>
+     {:ns examples.demo} =>
 |   (1 3 5 7 9)
 ----
 
@@ -2535,20 +2603,21 @@ macro pass:q[`->`].
 
 [listing]
 ----
-dbg: (conj (range 10) 100)   <after conj> =>
+dbg: (conj (range 10) 100)   <after conj>
+     {:ns examples.demo, :line 374} =>
 |   (100 0 1 2 3)
 ----
 
 
 [[dbg-prn]]
-## `dbg-prn`: Debugging the macros for clojurescript at the macro-expansion time.
+## `dbg-prn`: Debugging the macros for ClojureScript at the macro-expansion time.
 
 CAUTION: The function `dbg-prn` doesn't follow the usage employed in `dbg`/`clog`. It is just
-         another name of `println` which can be used at the macro-expansion time.  
+         another name of `println` which can be used at the macro-expansion time.
 
 NOTE: `dbg-prn` can be used inside the macros for Clojure.
 
-See the detailed explaination link:doc/macro-debugging-in-clojurescript.adoc[here]. 
+See the detailed explaination link:doc/macro-debugging-in-clojurescript.adoc[here].
 
 
 ## `break` examples
@@ -2568,7 +2637,7 @@ option for message, or `:if` option for conditional break.
 
 You can see the message in DevTools' console window.
 
-image:break-1.png[title="break examples", width=550]
+image:break-1.png[title="break examples", width=650]
 
 
 ### Callstack, locals, etc
@@ -2580,21 +2649,19 @@ DevTools window.
 ....
 (defn my-fun2
   [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
-  (break)
+  (break "in my-fun2")
   (clog [a b c d e f g h]))
 
-(my-fun2 (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"]) 
+(my-fun2 (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"])
 ....
-
-image:break-2.png[]
 
 You can see the message in DevTools' console window.
 
-image:break-3.png[width=550]
-  
+image:break-2.png[width=650]
+
 
 ### `:if` option example
-  
+
 When using `break`, you can use `:if` like this.
 
 [source]
@@ -2621,9 +2688,9 @@ image:break-4.png[]
 ....
 (set-debug-mode! false)
 
-;; The folowings take no effect at all. 
+;; The folowings take no effect at all.
 (set-ns-whitelist! ["my-app.*" ])
-(set-ns-blacklist! ["my-app.foo" "my-app.bar.*"])  
+(set-ns-blacklist! ["my-app.foo" "my-app.bar.*"])
 ....
 
 * When `set-ns-whitelist!` and `set-ns-blaklist!` are both run like this, all `my-app.*`
@@ -2632,28 +2699,28 @@ image:break-4.png[]
 [source]
 ....
 (set-ns-whitelist! ["my-app.*" ])
-(set-ns-blacklist! ["my-app.foo" "my-app.bar.*"])  
+(set-ns-blacklist! ["my-app.foo" "my-app.bar.*"])
 ....
 
-The following (in https://github.com/philoskim/debux/tree/master/example[example] folder)
+The following (in https://github.com/philoskim/debux/tree/master/examples[examples] folder)
 is an example.
 
 
 ### in Clojure
 
 [listing]
-.example/project.clj
+.examples/project.clj
 ----
-(defproject example
+(defproject examples
   ,,,,,,
-  :main example.core
+  :main examples.core
   ,,,,,,)
 ----
 
 [source]
-.example/src/clj/example/core.clj
+.examples/src/clj/examples/core.clj
 ....
-(ns example.core
+(ns examples.core
   (:require [debux.core :as d])
   (:gen-class))
 
@@ -2661,38 +2728,38 @@ is an example.
   (println "\nRunning debux examples...\n")
 
   ;(d/set-debug-mode! false)
-  (d/set-ns-whitelist! ["example.dbg*"])
-  (d/set-ns-blacklist! ["example.dbgn"])  
+  (d/set-ns-whitelist! ["examples.dbg*"])
+  (d/set-ns-blacklist! ["examples.dbgn"])
 
-  ;; You should require dynamically the namespaces that you want to load. 
-  (require 'example.dbg)
-  (require 'example.options)
-  (require 'example.dbgn))
+  ;; You should require dynamically the namespaces that you want to load.
+  (require 'examples.dbg)
+  (require 'examples.options)
+  (require 'examples.dbgn))
 ....
 
 
 ### in ClojureScript
 
 [listing]
-.example/project.clj
+.examples/project.clj
 ----
-(defproject example
+(defproject examples
   ,,,,,,
   :cljsbuild {:builds [{,,,,,,
                         :compiler {,,,,,,
-                                   :preloads [example.preload]
+                                   :preloads [examples.preload]
                                    ,,,,,,}}]})
 ----
 
 [source]
-.example/src/cljs/example/preload.cljs
+.examples/src/cljs/examples/preload.cljs
 ....
-(ns example.preload
+(ns examples.preload
   (:require [debux.cs.core :as d]))
 
 ;(d/set-debug-mode! false)
-(d/set-ns-whitelist! ["example.clog*"])
-(d/set-ns-blacklist! ["example.clogn"])
+(d/set-ns-whitelist! ["examples.clog*"])
+(d/set-ns-blacklist! ["examples.clogn"])
 ....
 
 
@@ -2705,7 +2772,7 @@ following shows the example.
 [source]
 .example.node
 ....
-(ns example.node
+(ns examples.node
   (:require [cljs.nodejs :as nodejs]
             [debux.cs.core :refer-macros [clog clogn dbg dbgn]] ))
 
@@ -2719,13 +2786,15 @@ following shows the example.
 [listing]
 .JavaScript console output on Node.js
 ----
-dbgn: (+ 2 (* 3 4)) =>
+dbgn: (+ 2 (* 3 4))
+      {:ns examples.node :line 6}  =>
 | (* 3 4) =>
 |   12
 | (+ 2 (* 3 4)) =>
 |   14
 
 %cclogn: %c (+ 2 (* 3 4)) %c => color: #8b008b background: #ffc125; color: black color: black
+         {:ns examples.node :line 7} =>
 | %c (* 3 4) %c => background: #ffc125; color: black color: black
 |   12
 | %c (+ 2 (* 3 4)) %c => background: #ffc125; color: black color: black
@@ -2746,10 +2815,10 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 [source]
 .project.clj
 ....
-(defproject example "0.1.0-SNAPSHOT"
+(defproject examples "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.6.0"]]
+                 [philoskim/debux "0.6.1"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]
@@ -2759,7 +2828,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
   :cljsbuild {:builds [{:id "dev"
                         :source-paths ["src/cljs"]
                         :figwheel true
-                        :compiler {:main example.core
+                        :compiler {:main examples.core
                                    :asset-path "js/out"
                                    :output-to "resources/public/js/app.js"
                                    :output-dir "resources/public/js/out"
@@ -2807,16 +2876,17 @@ After that, connect to `http://localhost:3449` on your browser.
 [listing]
 ----
 To quit, type: :cljs/quit
-cljs.user=> (require '[debux.cs.core :refer-macros [clog clogn dbg dbgn break]])        
+cljs.user=> (require '[debux.cs.core :refer-macros [clog clogn dbg dbgn break]])
 nil
-  
+
 cljs.user=> (dbg (+ 1 2))
 
-dbg: (+ 1 2) =>
+dbg: (+ 1 2)
+     {:ns cljs.user :line 4} =>
 |   3
 3
-  
-cljs.user=> 
+
+cljs.user=>
 ----
 
 Now you can do anything in this browser REPL as in the Clojure REPL. When you evaluate
@@ -2849,7 +2919,7 @@ be inserted or deleted.
 
 
 
-#### Inserting pass:q[`dbg`/`clog`] or pass:q[`dbgn`/`clogn`] 
+#### Inserting pass:q[`dbg`/`clog`] or pass:q[`dbgn`/`clogn`]
 
 When you double-click the left mouse button on one of the open parentheses and the
 following string is not `dbg` or `clog`, it will be inserted.
@@ -2860,11 +2930,11 @@ following string is not `dbg` or `clog`, it will be inserted.
 ....
 ;; before
 ;; v
-   (let [a 1 b 2] 
+   (let [a 1 b 2]
      (+ a b))
 
 ;; after
-   (dbg (let [a 1 b 2] 
+   (dbg (let [a 1 b 2]
           (+ a b)))
 ....
 
@@ -2905,11 +2975,11 @@ When you double-click on one of the open parentheses and the following string is
 ....
 ;; before
 ;; v
-   (dbg (let [a 1 b 2] 
+   (dbg (let [a 1 b 2]
           (+ a b)))
 
 ;; after
-   (let [a 1 b 2] 
+   (let [a 1 b 2]
      (+ a b))
 
 

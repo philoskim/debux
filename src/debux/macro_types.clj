@@ -48,7 +48,6 @@
       ut/quote-vals))
 
 (defmacro show-macros
-  ([] (-> @macro-types*
-          ut/quote-vals))
+  ([] (ut/quote-vals @macro-types*))
   ([macro-type] (-> (select-keys @macro-types* [macro-type])
-                   ut/quote-vals)))
+                    ut/quote-vals)))

@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.6.1
+** The namespace and line number of the source code are printed as well in the debux macros.   
+
 * v0.6.0
 ** Changed: _number_ option of *debux* macros is now applied to not only `seq` data type
    but also all the `coll` data types. (Previously, the _number_ option was applied to

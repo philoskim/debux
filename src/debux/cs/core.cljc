@@ -25,7 +25,7 @@
 (defmacro dbg [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
-        opts' (ut/append-src-info opts ns line)]
+        opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
        (debux.dbg/dbg ~form ~(ut/parse-opts opts'))
        ~form)))
@@ -33,7 +33,7 @@
 (defmacro dbgn [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
-        opts' (ut/append-src-info opts ns line)]
+        opts' (ut/prepend-src-info opts ns line)]
    `(if (ut/debug-enabled? ~ns)
       (debux.dbgn/dbgn ~form ~(ut/parse-opts opts'))
       ~form)))
@@ -41,7 +41,7 @@
 (defmacro clog [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
-        opts' (ut/append-src-info opts ns line)]
+        opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
        (debux.cs.clog/clog ~form ~(ut/parse-opts opts'))
        ~form)))
@@ -49,7 +49,7 @@
 (defmacro clogn [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
-        opts' (ut/append-src-info opts ns line)]
+        opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
        (debux.cs.clogn/clogn ~form ~(ut/parse-opts opts'))
        ~form)))
