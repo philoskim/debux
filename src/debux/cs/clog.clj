@@ -64,7 +64,8 @@
   `(let [condition# ~condition
          result# ~form]
      (when (and (or (nil? condition#) condition#)
-                (cs.ut/changed? (str '~form " " '~opts) (str result#)))
+                (cs.ut/changed? (str '~form " " '~(dissoc opts :ns :line))
+                                (str result#) ))
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
                            " %c" (and ~msg (str "   <" ~msg ">")))
