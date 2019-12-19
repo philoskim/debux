@@ -2,6 +2,8 @@
   #?(:cljs (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
   #?(:cljs (:require-macros [examples.macro2 :refer [my-add]])))
 
+(comment
+  
 #?(:clj (use 'debux.core))
 
 (* 2 (dbg (+ 10 20)))
@@ -23,7 +25,7 @@
 ;; cljs macros
 #?(:cljs (my-add 1 2))
 
-
+)
 
 
 

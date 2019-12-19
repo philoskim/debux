@@ -11,3 +11,6 @@
    :set (set (range 100))})
 
 (dbgn (count m) 5)
+
+(doseq [n (range 10)]
+  (dbg n))
