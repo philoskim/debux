@@ -69,14 +69,14 @@
 
 #?(:cljs
    (defn clog-title
-     [title src-info form-style]
+     [src-info title form-style]
+     (.log js/console
+           (ut/prepend-bars-in-line src-info (dec ut/*indent-level*)))
      (.log js/console
            (ut/prepend-bars-in-line title (dec ut/*indent-level*))
            (:title @style*)
            (get-style form-style)
-           (:normal @style*))
-     (.log js/console
-           (ut/prepend-bars-in-line src-info (dec ut/*indent-level*)) )))
+           (:normal @style*) )))
 
 #?(:cljs
    (defn clog-form-with-indent

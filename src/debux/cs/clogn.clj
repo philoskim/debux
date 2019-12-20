@@ -25,13 +25,13 @@
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :print :once)
          condition#         ~condition]
      (if (or (nil? condition#) condition#)
-       (let [title# (str "%cclogn: %c " (ut/truncate (pr-str '~form))
-                         " %c" (and ~msg (str "   <" ~msg ">")))
-             src-info# (str "        " (ut/src-info ~ns ~line) " =>")
+       (let [src-info# (str (ut/src-info ~ns ~line))
+             title# (str "%cclogn: %c " (ut/truncate (pr-str '~form))
+                         " %c" (and ~msg (str "   <" ~msg ">"))  " =>")
              style# (or ~style :debug)]
          (binding [ut/*indent-level* (inc ut/*indent-level*)]
            (ut/insert-blank-line)
-           (cs.ut/clog-title title# src-info# style#)
+           (cs.ut/clog-title src-info# title# style#)
            ~(-> (if (ut/include-recur? form)
                   (sk/insert-o-skip-for-recur form &env)
                   form)

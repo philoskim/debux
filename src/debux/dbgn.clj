@@ -308,11 +308,11 @@
          condition#         ~condition]
      (if (or (nil? condition#) condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
-         (let [title# (str "dbgn: " (ut/truncate (pr-str '~form))
-                           (and ~msg (str "   <" ~msg ">")))
-               src-info# (str "      " (ut/src-info ~ns ~line) " =>")]
+         (let [src-info# (str (ut/src-info ~ns ~line))
+               title# (str "dbgn: " (ut/truncate (pr-str '~form))
+                           (and ~msg (str "   <" ~msg ">"))  " =>")]
            (ut/insert-blank-line)
-           (ut/print-title-with-indent title# src-info#)
+           (ut/print-title-with-indent src-info# title#)
            ~(-> (if (ut/include-recur? form)
                   (sk/insert-o-skip-for-recur form &env)
                   form)

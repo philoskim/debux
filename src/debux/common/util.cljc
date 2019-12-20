@@ -188,8 +188,8 @@
   (str (make-bars indent-level) line))
 
 (defn print-title-with-indent
-  [title src-info]
-  (doseq [line [title src-info]]
+  [src-info title]
+  (doseq [line [src-info title]]
     (println (prepend-bars-in-line line (dec *indent-level*))))
   (flush))
 

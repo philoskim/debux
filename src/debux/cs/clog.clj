@@ -8,12 +8,12 @@
   `(let [condition# ~condition]
      (if (or (nil? condition#) condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
-         (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
-                           " %c" (and ~msg (str "   <" ~msg ">")))
-               src-info# (str "       " (ut/src-info ~ns ~line) " =>")
+         (let [src-info# (str (ut/src-info ~ns ~line))
+               title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
+                           " %c" (and ~msg (str "   <" ~msg ">"))  " =>")
                style# (or ~style :debug)]
            (ut/insert-blank-line)
-           (cs.ut/clog-title title# src-info# style#)
+           (cs.ut/clog-title src-info# title# style#)
            (binding [*print-length* (or ~n (:print-length @ut/config*))]
              ~body) ))
        ~form) ))
@@ -67,12 +67,12 @@
                 (cs.ut/changed? (str '~form " " '~(dissoc opts :ns :line))
                                 (str result#) ))
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
-         (let [title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
-                           " %c" (and ~msg (str "   <" ~msg ">")))
-               src-info# (str "       " (ut/src-info ~ns ~line) " =>"
-                              (and ~once "   (:once mode)"))
+         (let [src-info# (str (ut/src-info ~ns ~line))
+               title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
+                           " %c" (and ~msg (str "   <" ~msg ">")) " =>"
+                           (and ~once "   (:once mode)"))
                style# (or ~style :debug)]
-           (cs.ut/clog-title title# src-info# style#)
+           (cs.ut/clog-title src-info# title# style#)
            (binding [*print-length* (or ~n (:print-length @ut/config*))]
              (cs.ut/clog-result-with-indent result# ~js) ))))
      result#))
