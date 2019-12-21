@@ -2388,7 +2388,7 @@ The following is the example of using `clog` and `clogn` in Chrome browser.
 (clogn (repeat 5 (repeat 5 "x")) "25 times repeat")
 ....
 
-image::clog-1.png[title="clog and clogn example", width=650]
+image::clog.png[title="clog and clogn example", width=650]
 
 
 #### Predefined style keywords
@@ -2425,7 +2425,7 @@ Or in brief
 (clog (+ 10 20) "debug style is default")
 ....
 
-image::clog-2.png[title="Predefined style example", width=700]
+image::clog-style.png[title="Predefined style example", width=700]
 
 
 #### User-defined style
@@ -2446,7 +2446,7 @@ You can redefine the predefined styles or define your own new style by using
 (clog (+ 10 20) :style "color:orange; background:blue; font-size: 14pt")
 ....
 
-image::clog-3.png[title="User-defined style example", width=650]
+image::clog-style-user.png[title="User-defined style example", width=650]
 
 
 ### `:once` option
@@ -2479,7 +2479,7 @@ where successive multiple frames usually have the same evaluated value.
 (clog @a :once)
 ....
 
-image::clog-4.png[title=":once option example", width=700]
+image::clog-once.png[title=":once option example", width=700]
 
 NOTE: `(:once mode)` string is appended after the form header to remind you of `:once`
   mode.
@@ -2495,7 +2495,7 @@ objects returned by JavaScript interops in ClojureScript.
 (clog {:a 10 :b 20} :js)
 ....
 
-image::clog-5.png[title=":js option example", width=800]
+image::clog-js.png[title=":js option example", width=800]
 
 
 [[cljs-devtools]]
@@ -2664,7 +2664,7 @@ DevTools window.
 
 You can see the message in DevTools' console window.
 
-image:break-2.png[width=650]
+image:break-2.png[width=750]
 
 
 ### `:if` option example

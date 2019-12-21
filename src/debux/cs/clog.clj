@@ -72,6 +72,7 @@
                            " %c" (and ~msg (str "   <" ~msg ">")) " =>"
                            (and ~once "   (:once mode)"))
                style# (or ~style :debug)]
+           (ut/insert-blank-line)
            (cs.ut/clog-title src-info# title# style#)
            (binding [*print-length* (or ~n (:print-length @ut/config*))]
              (cs.ut/clog-result-with-indent result# ~js) ))))
