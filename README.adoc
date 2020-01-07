@@ -2677,7 +2677,7 @@ When using `break`, you can use `:if` like this.
   (let [a 10
         b 20]
     (dotimes [i 1000]
-      (break :if (= i 999)))))
+      (break :if (= i 999) "in my-fun3"))))
 
 (my-fun3)
 ....
