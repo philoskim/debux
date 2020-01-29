@@ -2,7 +2,7 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
                  [org.clojure/core.async "0.3.465"]
-                 [philoskim/debux "0.6.2"]]
+                 [philoskim/debux "0.6.3"]]
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-figwheel  "0.5.18"]]
   :source-paths ["src/clj" "src/cljc"]

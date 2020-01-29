@@ -91,6 +91,17 @@
 (defn vec->map [v]
   (apply hash-map v))
 
+(defn vec->kw-map
+  "Transforms a vector into an array-map with key/value pairs.
+  (def a 10)
+  (def b 20)
+  (vec-map [a b :c [30 40]])
+  => {:a 10 :b 20 ::c :c :[30 40] [30 40]}"
+  [v]
+  (apply array-map
+         (mapcat (fn [elem]
+                   `[~(keyword (str elem)) ~elem])
+                 v) ))
 
 ;;; zipper
 (defn sequential-zip [root]
