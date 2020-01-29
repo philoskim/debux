@@ -3,6 +3,10 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.6.3
+** The printed format of evaluating the multiple forms in `dbg`/`clog` is chanaged for
+   readability.
+
 * v0.6.2
 ** The namespace and line number of the source code are relocated to the top line for
    readability.

@@ -14,7 +14,7 @@
 ; => 60
 
 
-                                        ; Sometimes you need to see several forms evaluated. To do so, a literal vector
+; Sometimes you need to see several forms evaluated. To do so, a literal vector
 ; form can be used like this.
 
 (defn my-fun
@@ -22,9 +22,6 @@
   (clog [a b c d e f g h]))
 
 (my-fun (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"])
-; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
-
-
 ; Notice that the printed value is a map, not a vector and the form
 ; is prepended with colon to differenciate the form from the evaluated value.
 
@@ -33,7 +30,6 @@
 (def b 20)
 
 (clog [a b [a b] :c])
-; => [10 20 [10 20] :c]
 
 
 ; (-> {:a [1 2]}
