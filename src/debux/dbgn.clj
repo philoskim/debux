@@ -89,7 +89,7 @@
 
         ;; in case of (skip ...)
         (and (seq? node) (= `ms/skip (first node)))
-        (recur (ut/right-or-next loc))
+        (recur (ut/right-or-exit loc))
 
         (and (seq? node) (symbol? (first node)))
         (let [sym (ut/ns-symbol (first node) env)]
@@ -169,12 +169,12 @@
 
             ((:skip-all-args-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-all-args node))
-                ut/right-or-next
+                ut/right-or-exit
                 recur)
 
             ((:skip-form-itself-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-form-itself node))
-                ut/right-or-next
+                ut/right-or-exit
                 recur)
 
             ((:expand-type (macro-types env)) sym)
@@ -204,7 +204,7 @@
 
         ;; in case of (skip ...)
         (and (seq? node) (= `ms/skip (first node)))
-        (recur (ut/right-or-next loc))
+        (recur (ut/right-or-exit loc))
 
         ;; in case of (o-skip ...)
         (and (seq? node)
@@ -216,13 +216,13 @@
 
           ;; <ex> (o-skip (recur ...))
           :else
-          (recur (-> loc z/down z/next z/down ut/right-or-next)))
+          (recur (-> loc z/down z/next z/down ut/right-or-exit)))
 
         ;; in case of (a-skip ...)
         (and (seq? node)
              (= `ms/a-skip (first node)))
         (recur (-> (z/replace loc (concat [d-sym] [node]))
-                   ut/right-or-next))
+                   ut/right-or-exit))
 
         ;; in case that the first symbol is defn/defn-
         (and (seq? node)
@@ -233,7 +233,7 @@
         ;; in case of the first symbol except defn/defn-/def
         (and (seq? node) (ifn? (first node)))
         (recur (-> (z/replace loc (concat [d-sym] [node]))
-                   z/down z/right z/down ut/right-or-next))
+                   z/down z/right z/down ut/right-or-exit))
 
         (vector? node)
         (recur (-> (z/replace loc (concat [d-sym] [node]))
@@ -242,7 +242,7 @@
         ;; in case of symbol, map, or set
         (or (symbol? node) (map? node) (set? node))
         (recur (-> (z/replace loc (concat [d-sym] [node]))
-                   ut/right-or-next))
+                   ut/right-or-exit))
 
         :else
         (recur (z/next loc) )))))
@@ -286,7 +286,7 @@
         (and (seq? node)
              (`#{ms/skip ms/a-skip} (first node)))
         (recur (-> (z/replace loc (second node))
-                   ut/right-or-next))
+                   ut/right-or-exit))
 
         ;; in case of (o-skip ...)
         (and (seq? node)

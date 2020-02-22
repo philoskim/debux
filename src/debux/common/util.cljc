@@ -111,20 +111,23 @@
               (if (vector? x) (vec children) children))
             root))
 
-(defn right-or-next [loc]
+;;; notation: v => current node
+(defn right-or-exit [loc]
+  ;;              v                  v
+  ;; <e.g>   (... (+ a b) c) or (... a b)
   (if-let [right (z/right loc)]
-    ;; in case of (... (+ a b) c) or (... a b)
     right
+    ;;              v
+    ;; <e.g>   (... (+ a (* b c)))
     (if (sequential? (z/node loc))
       (let [rightmost (-> loc z/down z/rightmost)]
         (if (sequential? (z/node rightmost))
-          ;; in case of (... (+ a (* b c)))
           (recur rightmost)
-
-          ;; in case of (... (+ a b))
+          ;;                  v
+          ;;   (... (+ a (* b c)))
           (-> rightmost z/next) ))
-
-      ;; in case of (... a)
+      ;;                      v            v
+      ;; <e.g>   (... (+ a b) c) or (... a b)
       (-> loc z/next) )))
 
 
