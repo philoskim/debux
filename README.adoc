@@ -66,7 +66,9 @@ NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.6.4
-** Bug fixed: issue #16
+
+** The `:if` option bug fixed related to the issue
+   link:https://github.com/philoskim/debux/issues/16[#16].
 ** Bumps `clojure-future-spec 1.9.0` and `cljs-devtools 1.0.0`
 
 * v0.6.3
@@ -1828,11 +1830,11 @@ image::register-macros.png[title="register-macros! example", width=750]
 
 NOTE: This feature applies to the multiple use of `clog` and `clogn` as well.
 
-### `dbg` inside `dbgn` or vice versa
+### `dbg` inside `dbgn`
 
-`dbg` can be used inside `dbgn` or vice versa. For example, if you want to see the printed
-results of pass:q[`->`], pass:q[`->>`], `let` or `comp` in `dbg` when using `dbgn`, do it
-like this.
+`dbg` can be used inside `dbgn`. For example, if you want to see the printed results of
+pass:q[`->`], pass:q[`->>`], `let` or `comp` in `dbg` in more compact way when using
+`dbgn`, do it like this.
 
 [source]
 ....
@@ -1875,10 +1877,100 @@ dbgn: (+ a b c (dbg (->> (range (- b a)) (map (fn* [p1__3949#] (* p1__3949#  ...
 |   250
 ----
 
+In other words, `dbg` can be used selectively inside `dbgn` like this, if you want to
+avoid printing a deeply nested structure inside `dbgn`.
+
+[source]
+....
+(let [a 10 b 9 c 8 d 7 e 6 f 5 g 4 h 3]
+  (dbgn (* a b (dbg (+ c d (- e f (* g h)))))))
+; => 360
+....
+
+The above `dbg` will prevent `dbgn` from printing `(+ c d (- e f (* g h))))` recursively.
+
+[listing]
+.REPL output
+----
+{:ns example.demo, :line 15}
+dbgn: (* a b (dbg (+ c d (- e f (* g h))))) =>
+| a =>
+|   10
+| b =>
+|   9
+ 
+|{:ns example.demo, :line 15}
+|dbg: (+ c d (- e f (* g h))) =>
+||   4
+| (* a b (dbg (+ c d (- e f (* g h))))) =>
+|   360
+----
+
+You should not use `dbgn` inside the same form that uses `dbg`. The `dbgn` inside `dbg`
+will be printed redundantly multiple times like this.
+
+[source]
+....
+(let [a 10 b 9 c 8 d 7 e 6 f 5 g 4 h 3]
+  (dbg (* a b (dbgn (+ c d (- e f (* g h)))))))
+; => 360
+....
+
+[listing]
+----
+{:ns examples.demo, :line 23}
+dbg: (* a b (dbgn (+ c d (- e f (* g h))))) =>
+ 
+|{:ns examples.demo, :line 23}
+|dbgn: (+ c d (- e f (* g h))) =>
+|| c =>
+||   8
+|| d =>
+||   7
+|| e =>
+||   6
+|| f =>
+||   5
+|| g =>
+||   4
+|| h =>
+||   3
+|| (* g h) =>
+||   12
+|| (- e f (* g h)) =>
+||   -11
+|| (+ c d (- e f (* g h))) =>
+||   4
+ 
+|{:ns examples.demo, :line 23}
+|dbgn: (+ c d (- e f (* g h))) =>
+|| c =>
+||   8
+|| d =>
+||   7
+|| e =>
+||   6
+|| f =>
+||   5
+|| g =>
+||   4
+|| h =>
+||   3
+|| (* g h) =>
+||   12
+|| (- e f (* g h)) =>
+||   -11
+|| (+ c d (- e f (* g h))) =>
+||   4
+|   360
+----
+
+`dbg` doesn't handle this redundant printing properly yet.
+
 
 ### Multiple `dbgn` and `dbg`
 
-Multiple `dbgn` and `dbg` can be used together.
+You can use multiple `dbgn` or `dbg` freely outside the forms using `dbg` or `dbgn`.
 
 [source]
 .Example 1
@@ -1896,7 +1988,7 @@ Multiple `dbgn` and `dbg` can be used together.
 
 
 [listing]
-.REPL output:
+.REPL output
 ----
 {:ns examples.demo, :line 290}
 dbgn: (+ n (mul 3 4) (add 10 20)) =>
@@ -1946,7 +2038,7 @@ dbgn: (+ n (mul 3 4) (add 10 20)) =>
 
 
 [listing]
-.REPL output:
+.REPL output
 ----
 {:ns examples.demo, :line 299}
 dbgn: (+ n (mul2 3 4) (add2 10 20)) =>
