@@ -24,7 +24,8 @@
   [form & [{:keys [msg n condition ns line style] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :print :once)
          condition#         ~condition]
-     (if (or (nil? condition#) condition#)
+     (if (or ~(not (contains? opts :condition))
+             condition#)
        (let [src-info# (str (ut/src-info ~ns ~line))
              title# (str "%cclogn: %c " (ut/truncate (pr-str '~form))
                          " %c" (and ~msg (str "   <" ~msg ">"))  " =>")
@@ -45,7 +46,8 @@
 (defmacro break
   "Sets a break point."
   [{:keys [msg condition] :as opts}]
-  `(when (or (nil? ~condition) ~condition)
+  `(when (or ~(not (contains? opts :condition))
+             ~condition)
      (.log js/console (str "%c break %c"
                            (and ~msg (str "   <" ~msg ">")))
            "background: #FF1493; color: white"

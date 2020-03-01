@@ -3,6 +3,10 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.6.4
+** Bug fixed: issue #16
+** Bumps `clojure-future-spec 1.9.0` and `cljs-devtools 1.0.0`
+
 * v0.6.3
 ** The printed format of evaluating the multiple forms in `dbg`/`clog` is changed for
    readability.

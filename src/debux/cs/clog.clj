@@ -6,7 +6,8 @@
 (defmacro clog-base
   [form {:keys [msg n condition ns line style] :as opts} body]
   `(let [condition# ~condition]
-     (if (or (nil? condition#) condition#)
+     (if (or ~(not (contains? opts :condition))
+             condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [src-info# (str (ut/src-info ~ns ~line))
                title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
@@ -64,7 +65,8 @@
   [form {:keys [msg n condition ns line style js once] :as opts}]
   `(let [condition# ~condition
          result# ~form]
-     (when (and (or (nil? condition#) condition#)
+     (when (and (or ~(not (contains? opts :condition))
+                    condition#)
                 (cs.ut/changed? (str '~form " " '~(dissoc opts :ns :line))
                                 (str result#) ))
        (binding [ut/*indent-level* (inc ut/*indent-level*)]

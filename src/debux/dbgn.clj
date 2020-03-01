@@ -306,7 +306,8 @@
                                (dissoc opts :print :style :js :once)
                                opts)
          condition#         ~condition]
-     (if (or (nil? condition#) condition#)
+     (if (or ~(not (contains? opts :condition))
+             condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [src-info# (str (ut/src-info ~ns ~line))
                title# (str "dbgn: " (ut/truncate (pr-str '~form))
