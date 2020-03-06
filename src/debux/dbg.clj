@@ -51,11 +51,10 @@
 (defmacro dbg-others
   [form opts]
   `(dbg-base ~form ~opts
-     (let [result# ~form
-           form2# ~(if (vector? form) (ut/vec->kw-map form) form)]
+     (let [result# ~form]
        (if-let [print# ~(:print opts)]
          (ut/pprint-result-with-indent (print# result#))
-         (ut/pprint-result-with-indent form2#))
+         (ut/pprint-result-with-indent result#))
        result#) ))
 
 
@@ -76,3 +75,4 @@
         (:let dbg*)  `(dbg-let ~form ~opts)
         `(dbg-others ~form ~opts) ))
     `(dbg-others ~form ~opts) ))
+

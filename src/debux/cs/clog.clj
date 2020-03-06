@@ -54,11 +54,10 @@
 (defmacro clog-others
   [form {:keys [js] :as opts}]
   `(clog-base ~form ~opts
-     (let [result# ~form
-           form2# ~(if (vector? form) (ut/vec->kw-map form) form)]
+     (let [result# ~form]
        (if-let [print# ~(:print opts)]
          (cs.ut/clog-result-with-indent (print# result#) ~js)
-         (cs.ut/clog-result-with-indent form2# ~js))
+         (cs.ut/clog-result-with-indent result# ~js))
        result#) ))
 
 (defmacro clog-once
