@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.6.4"]
+[philoskim/debux "0.6.5"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.6.4"]
+[philoskim/debux-stubs "0.6.5"]
 ....
 
 
@@ -65,8 +65,10 @@ and this to your *production* dependencies.
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
-* v0.6.4
+* v0.6.5
+** The redundant printing bug related to `dbg` inside `dbgn` fixed.
 
+* v0.6.4
 ** The `:if` option bug fixed related to the issue
    link:https://github.com/philoskim/debux/issues/16[#16].
 ** Bumps `clojure-future-spec 1.9.0` and `cljs-devtools 1.0.0`
@@ -203,28 +205,20 @@ form can be used like this.
 ----
 {:ns examples.demo, :line 11}
 dbg: [a b c d e f g h] =>
-|   {:a (0 1 2 3 4),
-|    :b 20,
-|    :c 50,
-|    :d 100,
-|    :e "a",
-|    :f "b",
-|    :g "c",
-|    :h ("d" "e")}
+| [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 ----
 
-NOTE: Notice that the printed value is a map, not an original vector and the form is
-      prepended with a colon to distinguish the form from the evaluated value.
-
-Further examples:
+You can use `dbgn` for better results as well. See the detalis for `dbgn` <<dbgn-examples,
+here>>.
 
 [source]
 ....
-(def a 10)
-(def b 20)
+(defn my-fun2
+  [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
+  (dbgn [a b c d e f g h]))
 
-(dbg [a b [a b] :c])
-; => [10 20 [10 20] :c]
+(my-fun2 (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"])
+; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 ....
 
 
@@ -232,11 +226,28 @@ Further examples:
 .REPL output
 ----
 {:ns examples.demo, :line 15}
-dbg: [a b [a b] :c] =>
-|   {:a 10, :b 20, :[a b] [10 20], ::c :c}
+dbgn: [a b c d e f g h] =>
+| a =>
+|   (0 1 2 3 4)
+| b =>
+|   20
+| c =>
+|   50
+| d =>
+|   100
+| e =>
+|   "a"
+| f =>
+|   "b"
+| g =>
+|   "c"
+| h =>
+|   ("d" "e")
+| [a b c d e f g h] =>
+|   [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 ----
 
-In general, `dbg` prints the evaluated result of the outermost form except for the
+Generally, `dbg` prints the evaluated result of the outermost form except for the
 following four special cases(`pass:[->]`, `pass:[->>]`, `let`, `comp`).
 
 
@@ -465,7 +476,7 @@ dbg: (comp inc inc +) =>
 ....
 
 
-
+[[dbgn-examples]]
 ## `dbgn` examples
 
 NOTE: The features of `clogn` are almost the same as those of `dbgn`.
@@ -1162,7 +1173,10 @@ This type of macros have the first and third arguments which must not be evaluat
 (def french-map {:language :french :greeting "Bonjour!"})
 
 (greeting english-map)
+; => "English greeting: Hello!"
+
 (greeting french-map)
+; => "French greeting: Bonjour!"
 ....
 
 
@@ -1503,6 +1517,7 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
             (recur (* acc n) (dec n))))))
 
 (fact 3)
+; => 6
 ....
 
 
@@ -1588,6 +1603,7 @@ debug the form as follows. *Be careful* not to forget to recover `function name`
           (factorial (* acc n) (dec n)))))
 
 (factorial 1 3)
+; => 6
 ....
 
 .REPL output
@@ -1830,11 +1846,11 @@ image::register-macros.png[title="register-macros! example", width=750]
 
 NOTE: This feature applies to the multiple use of `clog` and `clogn` as well.
 
-### `dbg` inside `dbgn`
+### `dbg` inside `dbgn` or vice versa
 
-`dbg` can be used inside `dbgn`. For example, if you want to see the printed results of
-pass:q[`->`], pass:q[`->>`], `let` or `comp` in `dbg` in more compact way when using
-`dbgn`, do it like this.
+`dbg` can be used inside `dbgn` or vice versa. For example, if you want to see the printed
+results of pass:q[`->`], pass:q[`->>`], `let` or `comp` in `dbg` in more compact way than
+using `dbgn`, do it like this.
 
 [source]
 ....
@@ -1847,6 +1863,7 @@ pass:q[`->`], pass:q[`->>`], `let` or `comp` in `dbg` in more compact way when u
                      (reduce +))))))
 
 (my-fun 10 20 100)
+; => 250
 ....
 
 [listing]
@@ -1906,71 +1923,10 @@ dbgn: (* a b (dbg (+ c d (- e f (* g h))))) =>
 |   360
 ----
 
-You should not use `dbgn` inside the same form that uses `dbg`. The `dbgn` inside `dbg`
-will be printed redundantly multiple times like this.
-
-[source]
-....
-(let [a 10 b 9 c 8 d 7 e 6 f 5 g 4 h 3]
-  (dbg (* a b (dbgn (+ c d (- e f (* g h)))))))
-; => 360
-....
-
-[listing]
-----
-{:ns examples.demo, :line 23}
-dbg: (* a b (dbgn (+ c d (- e f (* g h))))) =>
- 
-|{:ns examples.demo, :line 23}
-|dbgn: (+ c d (- e f (* g h))) =>
-|| c =>
-||   8
-|| d =>
-||   7
-|| e =>
-||   6
-|| f =>
-||   5
-|| g =>
-||   4
-|| h =>
-||   3
-|| (* g h) =>
-||   12
-|| (- e f (* g h)) =>
-||   -11
-|| (+ c d (- e f (* g h))) =>
-||   4
- 
-|{:ns examples.demo, :line 23}
-|dbgn: (+ c d (- e f (* g h))) =>
-|| c =>
-||   8
-|| d =>
-||   7
-|| e =>
-||   6
-|| f =>
-||   5
-|| g =>
-||   4
-|| h =>
-||   3
-|| (* g h) =>
-||   12
-|| (- e f (* g h)) =>
-||   -11
-|| (+ c d (- e f (* g h))) =>
-||   4
-|   360
-----
-
-`dbg` doesn't handle this redundant printing properly yet.
-
 
 ### Multiple `dbgn` and `dbg`
 
-You can use multiple `dbgn` or `dbg` freely outside the forms using `dbg` or `dbgn`.
+You can use multiple `dbgn` or `dbg`.
 
 [source]
 .Example 1
@@ -1984,6 +1940,7 @@ You can use multiple `dbgn` or `dbg` freely outside the forms using `dbg` or `db
   (dbgn (* a b)))
 
 (dbgn (+ n (mul 3 4) (add 10 20)))
+; => 52
 ....
 
 
@@ -2034,6 +1991,7 @@ dbgn: (+ n (mul 3 4) (add 10 20)) =>
   (dbg (* a b)))
 
 (dbgn (+ n (mul2 3 4) (add2 10 20)))
+; => 52
 ....
 
 
@@ -2059,7 +2017,6 @@ dbgn: (+ n (mul2 3 4) (add2 10 20)) =>
 | (+ n (mul2 3 4) (add2 10 20)) =>
 |   52
 ----
-
 
 
 ## Various options
@@ -2289,6 +2246,7 @@ operations, use '`:print one-arg-fn`' (or '`:p one-arg-fn`') option like this.
 
 ;; equivalent to the above
 (+ 10 (dbg (* 20 30) :print type))
+; => 610
 ....
 
 [listing]
@@ -2402,11 +2360,13 @@ Compare the results of the next two examples.
         (if (zero? n)
           acc
           (recur (* acc n) (dec n)))))
+; => 6
 
 (dbgn (loop [acc 1 n 3]
         (if (zero? n)
           acc
           (recur (* acc n) (dec n)))) :dup)
+; => 6
 ....
 
 [listing]
@@ -2959,7 +2919,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject examples "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.6.4"]]
+                 [philoskim/debux "0.6.5"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

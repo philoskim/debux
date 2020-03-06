@@ -26,17 +26,6 @@
 ; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 
 
-; Notice that the printed value is a map, not a vector and the form
-; is prepended with colon to differenciate the form from the evaluated value.
-
-; Further examples:
-(def a 10)
-(def b 20)
-
-(dbg [a b [a b] :c])
-; => [10 20 [10 20] :c]
-
-
 ; (-> {:a [1 2]}
 ;     (dbg (get :a))
 ;     (conj 3))

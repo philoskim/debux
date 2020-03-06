@@ -25,13 +25,11 @@
 (my-fun (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"])
 ; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 
+(defn my-fun2
+  [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
+  (dbg [a b c d e f g h]))
 
-; Further examples:
-(def a 10)
-(def b 20)
-
-(dbg [a b [a b] :c])
-; => [10 20 [10 20] :c]
+(my-fun2 (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"])
 
 
 ; (-> {:a [1 2]}

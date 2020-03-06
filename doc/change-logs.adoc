@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.6.5
+** The redundant printing bug related to `dbg` inside `dbgn` fixed.
+
 * v0.6.4
 ** Bug fixed: issue #16
 ** Bumps `clojure-future-spec 1.9.0` and `cljs-devtools 1.0.0`

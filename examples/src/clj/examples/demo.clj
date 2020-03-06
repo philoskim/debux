@@ -14,6 +14,13 @@
 
 (my-fun (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"])
 
+(defn my-fun2
+  [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
+  (dbgn [a b c d e f g h]))
+
+(my-fun2 (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"])
+
+
 ;; Debugging thread macro -> or ->>
 (dbg (-> "a b c d"
          .toUpperCase
