@@ -159,7 +159,7 @@ Successfully compiled ["resources/public/js/core.js"] in 0.496 seconds.
 
 ### Using `debux.core/dbg-prn`
 
-* Examples are link:../example/src/cljc/example/common.cljc[here].
+* Examples are link:../examples/src/cljc/examples/common.cljc[here].
 
 If you use my link:https://github.com/philoskim/debux[*debux*] library, use `dbg-prn` function like this.
 

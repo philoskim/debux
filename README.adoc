@@ -67,15 +67,13 @@ https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.6.5
 ** The redundant printing bug related to `dbg` inside `dbgn` fixed.
+** Documented: a trick on debugging multiple forms with `dbgn`. See
+   <<eval-multiple-forms-with-dbgn, here>> for the details.
 
 * v0.6.4
 ** The `:if` option bug fixed related to the issue
    link:https://github.com/philoskim/debux/issues/16[#16].
 ** Bumps `clojure-future-spec 1.9.0` and `cljs-devtools 1.0.0`
-
-* v0.6.3
-** The printed format of evaluating the multiple forms in `dbg`/`clog` is changed for
-   readability. See the detalis <<eval-multiple-forms, here>>.
 
 * v0.6.2
 ** The namespace and line number of the source code are relocated to the top line for
@@ -91,16 +89,6 @@ https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 *** This change will prevent the elements of the deeply nested massive `coll` data types
     from being printed too much. See an example <<nested-coll, here>>
 ** Renamed: `set-print-seq-length!` pass:q[-->] `set-print-length!`
-
-* v0.5.9
-** The link:https://github.com/binaryage/cljs-devtools[cljs-devtools] support added.  See
-   the detalis <<cljs-devtools, here>>.
-
-* v0.5.8
-** The `dbg-last` macro added. See the detalis <<dbg-last, here>>.
-
-* v0.5.7
-** `:print` option added to `dbg`/`clog`. See the detalis <<print-option, here>>.
 
 
 ## How to use
@@ -208,6 +196,7 @@ dbg: [a b c d e f g h] =>
 | [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 ----
 
+[#eval-multiple-forms-with-dbgn]
 You can use `dbgn` for better results as well. See the detalis for `dbgn` <<dbgn-examples,
 here>>.
 
@@ -2468,7 +2457,7 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 ----
 
 [[style-option]]
-### `:style` option (CSS Styling)
+### `:style` option (CSS Styling: CLJS only)
 
 The following is the example of using `clog` and `clogn` in Chrome browser.
 
@@ -2543,7 +2532,7 @@ You can redefine the predefined styles or define your own new style by using
 image::clog-style-user.png[title="User-defined style example", width=650]
 
 
-### `:once` option
+### `:once` option (CLJS only)
 
 If you add `:once` (or `:o` in brief) option after the form, the same evaluated value will
 not be printed. This is a very useful feature, when you are debugging a game programming,
@@ -2579,7 +2568,7 @@ NOTE: `(:once mode)` string is appended after the form header to remind you of `
   mode.
 
 
-### `:js` option
+### `:js` option (CLJS only)
 
 If `:js` option is added after the form, the JavaScript object will be printed as well, so
 you can inspect the internal structures of ClojureScript data types or the JavaScript
@@ -2721,7 +2710,7 @@ NOTE: `dbg-prn` can be used inside the macros for Clojure.
 See the detailed explaination link:doc/macro-debugging-in-clojurescript.adoc[here].
 
 
-## `break` examples
+## `break` examples (CLJS only)
 
 ### `break` options
 
