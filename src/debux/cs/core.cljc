@@ -54,7 +54,6 @@
        (debux.cs.clogn/clogn ~form ~(ut/parse-opts opts'))
        ~form)))
 
-;; Only use inside the thread-last macro ->>
 (defmacro dbg-last
   [& args]
   (let [form (last args)
@@ -72,7 +71,6 @@
   (let [ns (str *ns*)]
     `(when (ut/debug-enabled? ~ns)
        (debux.cs.clogn/break  ~(ut/parse-opts opts)))))
-
 
 
 ;;; macro registering APIs

@@ -33,16 +33,12 @@
        (dbgn/dbgn ~form ~(ut/parse-opts opts'))
        ~form)))
 
-;; Only use inside the thread-last macro ->>
 (defmacro dbg-last
   [& args]
   (let [form (last args)
         opts (butlast args)]
     `(dbg ~form ~@opts)))
 
-
-;; Only use inside the macros for ClojureScript. See the below discussion for details.
-;; https://gist.github.com/philoskim/cb5e836c1374dbe6244d6d966cfd1e77
 (defn dbg-prn [& args]
   (binding [*out* *err*]
     (apply println "\ndbg-prn:" args)))
