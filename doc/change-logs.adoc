@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.6.7
+** Bug fixed and code cleaned up
+
 * v0.6.6
 ** `pass:[some->]` and `pass:[some->>]` support in `dbg` and `clog` added for the
    debugging convenience.
