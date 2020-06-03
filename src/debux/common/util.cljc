@@ -207,6 +207,16 @@
        " =>"))
 
 
+(defn pprint-locals-with-indent
+  [result]
+  (let [pprint (str/trim (with-out-str (pp/pprint result)))
+        prefix (str (make-bars *indent-level*) "   ")]
+    (println (prepend-bars ":locals =>" *indent-level*))
+    (println (->> (str/split pprint #"\n")
+                  (mapv #(str prefix %))
+                  (str/join "\n")))
+    (flush) ))
+
 (defn pprint-result-with-indent
   [result]
   (let [pprint (str/trim (with-out-str (pp/pprint result)))
@@ -236,6 +246,9 @@
 
         (string? fst)
         (recur (next opts) (assoc acc :msg fst))
+
+        (#{:locals :l} fst)
+        (recur (next opts) (assoc acc :locals true))
 
         (= :if fst)
         (recur (nnext opts) (assoc acc :condition snd))

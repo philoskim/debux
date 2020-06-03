@@ -98,6 +98,13 @@
          (.log js/console "%s %c<js>%c %O" prefix (:info @style*) (:normal @style*)
                result) ))))
 
+#?(:cljs
+   (defn clog-locals-with-indent
+     [result style & [js-mode]]
+     (.log js/console (ut/prepend-bars "%c :locals %c =>" ut/*indent-level*)
+                      (get-style style) (:normal @style*))
+     (clog-result-with-indent result js-mode)))
+
 
 ;;; spy functions
 #?(:cljs

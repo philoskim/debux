@@ -21,7 +21,7 @@
 
 (defmacro clogn
   "Console LOG every Nested forms of a form."
-  [form & [{:keys [msg n condition ns line style] :as opts}]]
+  [form locals & [{:keys [msg n condition ns line style] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :print :once)
          condition#         ~condition]
      (if (or ~(not (contains? opts :condition))
@@ -29,10 +29,16 @@
        (let [src-info# (str (ut/src-info ~ns ~line))
              title# (str "%cclogn: %c " (ut/truncate (pr-str '~form))
                          " %c" (and ~msg (str "   <" ~msg ">"))  " =>")
-             style# (or ~style :debug)]
+             style# (or ~style :debug)
+             locals# ~locals]
          (binding [ut/*indent-level* (inc ut/*indent-level*)]
            (ut/insert-blank-line)
            (cs.ut/clog-title src-info# title# style#)
+
+           (when ~(:locals opts)
+             (cs.ut/clog-locals-with-indent locals# style#)
+             (ut/insert-blank-line))
+
            ~(-> (if (ut/include-recur? form)
                   (sk/insert-o-skip-for-recur form &env)
                   form)

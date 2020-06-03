@@ -22,36 +22,63 @@
 
 
 ;;; debugging APIs
+(defmacro dbg0 [form & opts]
+  (let [ns (str *ns*)
+        line (:line (meta &form))
+        local-ks (keys (:locals &env))
+        opts' (ut/prepend-src-info opts ns line)]
+    `(if (ut/debug-enabled? ~ns)
+       (debux.dbg/dbg ~form
+                      (zipmap '~local-ks [~@local-ks])
+                      ~(ut/parse-opts opts'))
+       ~form)))
+
 (defmacro dbg [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
+        local-ks (if (ut/cljs-env? &env)
+                   (keys (:locals &env))
+                   (keys &env))
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
-       (debux.dbg/dbg ~form ~(ut/parse-opts opts'))
+       (debux.dbg/dbg ~form
+                      (zipmap '~local-ks [~@local-ks])
+                      ~(ut/parse-opts opts'))
        ~form)))
 
 (defmacro dbgn [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
+        local-ks (if (ut/cljs-env? &env)
+                   (keys (:locals &env))
+                   (keys &env))
         opts' (ut/prepend-src-info opts ns line)]
    `(if (ut/debug-enabled? ~ns)
-      (debux.dbgn/dbgn ~form ~(ut/parse-opts opts'))
+      (debux.dbgn/dbgn ~form
+                       (zipmap '~local-ks [~@local-ks])
+                       ~(ut/parse-opts opts'))
       ~form)))
 
 (defmacro clog [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
+        local-ks (keys (:locals &env))
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
-       (debux.cs.clog/clog ~form ~(ut/parse-opts opts'))
+       (debux.cs.clog/clog ~form
+                           (zipmap '~local-ks [~@local-ks])
+                           ~(ut/parse-opts opts'))
        ~form)))
 
 (defmacro clogn [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
+        local-ks (keys (:locals &env))
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
-       (debux.cs.clogn/clogn ~form ~(ut/parse-opts opts'))
+       (debux.cs.clogn/clogn ~form
+                             (zipmap '~local-ks [~@local-ks])
+                             ~(ut/parse-opts opts'))
        ~form)))
 
 (defmacro dbg-last

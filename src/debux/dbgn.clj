@@ -301,7 +301,7 @@
 ;;; dbgn
 (defmacro dbgn
   "DeBuG every Nested forms"
-  [form & [{:keys [msg n condition ns line] :as opts}]]
+  [form locals & [{:keys [msg n condition ns line] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(if (ut/cljs-env? &env)
                                (dissoc opts :print :style :js :once)
                                opts)
@@ -311,9 +311,15 @@
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [src-info# (str (ut/src-info ~ns ~line))
                title# (str "dbgn: " (ut/truncate (pr-str '~form))
-                           (and ~msg (str "   <" ~msg ">"))  " =>")]
+                           (and ~msg (str "   <" ~msg ">"))  " =>")
+               locals# ~locals]
            (ut/insert-blank-line)
            (ut/print-title-with-indent src-info# title#)
+
+           (when ~(:locals opts)
+             (ut/pprint-locals-with-indent locals#)
+             (ut/insert-blank-line))
+
            ~(-> (if (ut/include-recur? form)
                   (sk/insert-o-skip-for-recur form &env)
                   form)
