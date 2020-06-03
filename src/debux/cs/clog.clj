@@ -80,6 +80,12 @@
              (cs.ut/clog-result-with-indent result# ~js) ))))
      result#))
 
+(def ^:private clog*
+  {:->   '#{cljs.core/->  cljs.core/some->}
+   :->>  '#{cljs.core/->> cljs.core/some->>}
+   :comp '#{clojure.core/comp cljs.core/comp}
+   :let  '#{clojure.core/let cljs.core/let}})
+
 
 (defmacro clog
   [form & [{:keys [once] :as opts}]]
@@ -87,10 +93,10 @@
     (if once
       `(clog-once ~form ~opts)
       (let [ns-sym (ut/ns-symbol (first form) &env)]
-        (condp = ns-sym
-          'cljs.core/-> `(clog-> ~form ~opts)
-          'cljs.core/->> `(clog->> ~form ~opts)
-          'cljs.core/comp  `(clog-comp ~form ~opts)
-          'cljs.core/let  `(clog-let ~form ~opts)
+        (condp get ns-sym
+          (:-> clog*)   `(clog-> ~form ~opts)
+          (:->> clog*)  `(clog->> ~form ~opts)
+          (:comp clog*) `(clog-comp ~form ~opts)
+          (:let clog*)  `(clog-let ~form ~opts)
           `(clog-others ~form ~opts) )))
     `(clog-others ~form ~opts) ))

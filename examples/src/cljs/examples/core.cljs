@@ -5,7 +5,7 @@
             examples.dbgn
             examples.dbg
             examples.options
-            ;examples.demo
+            examples.demo
             ;examples.lab
 ))
 

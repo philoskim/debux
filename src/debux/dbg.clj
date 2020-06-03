@@ -59,8 +59,10 @@
 
 
 (def ^:private dbg*
-  {:->   '#{clojure.core/-> cljs.core/->}
-   :->>  '#{clojure.core/->> cljs.core/->>}
+  {:->   '#{clojure.core/-> clojure.core/some->
+            cljs.core/->    cljs.core/some->}
+   :->>  '#{clojure.core/->> clojure.core/some->>
+            cljs.core/->>    cljs.core/some->>}
    :comp '#{clojure.core/comp cljs.core/comp}
    :let  '#{clojure.core/let cljs.core/let}})
 
