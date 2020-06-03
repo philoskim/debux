@@ -17,14 +17,6 @@
 
 
 ;;; debugging APIs
-(defmacro dbg0 [form & opts]
-  (let [ns (str *ns*)
-        line (:line (meta &form))
-        opts' (ut/prepend-src-info opts ns line)]
-    `(if (ut/debug-enabled? ~ns)
-       (dbg/dbg ~form ~(ut/parse-opts opts'))
-       ~form)))
-
 (defmacro dbg [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
@@ -61,7 +53,3 @@
 (defmacro show-macros
   ([] `(mt/show-macros))
   ([macro-type] `(mt/show-macros ~macro-type)))
-
-(let [x 1 y 2]
-  (dbgn (->> 10 inc) :l)
-  (+ x y))

@@ -3,7 +3,7 @@
 :source-highlighter: coderay
 :sectnums:
 
-* v0.6.7
+* v0.6.8
 ** Bug fixed and code cleaned up
 
 * v0.6.6
