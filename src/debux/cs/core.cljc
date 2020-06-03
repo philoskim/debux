@@ -22,17 +22,6 @@
 
 
 ;;; debugging APIs
-(defmacro dbg0 [form & opts]
-  (let [ns (str *ns*)
-        line (:line (meta &form))
-        local-ks (keys (:locals &env))
-        opts' (ut/prepend-src-info opts ns line)]
-    `(if (ut/debug-enabled? ~ns)
-       (debux.dbg/dbg ~form
-                      (zipmap '~local-ks [~@local-ks])
-                      ~(ut/parse-opts opts'))
-       ~form)))
-
 (defmacro dbg [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
