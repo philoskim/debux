@@ -1,7 +1,7 @@
 (ns examples.lab
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
 
-(clog (some-> {:a 1} :b inc))
+;(clog (some-> {:a 1} :b inc))
 
 (clogn (some-> {:a 1} :b inc))
 
@@ -23,7 +23,5 @@
   (clog (let [a 10 b 20] (+ a b)) :l)
 
   (clogn (-> 10 inc inc) :l)
-  (clogn (->> 10 inc inc) :l)
-
-  )
+  (clogn (->> 10 inc inc) :l))
 

@@ -3,6 +3,12 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.6.6
+** `pass:[some->]` and `pass:[some->>]` support in `dbg` and `clog` added for the
+   debugging convenience.
+** `:locals` option added. See link:https://github.com/philoskim/debux/issues/19[#issue
+   19] for the details.
+
 * v0.6.5
 ** The redundant printing bug related to `dbg` inside `dbgn` fixed.
 ** Documented: a trick on debugging multiple forms with `dbgn`.
