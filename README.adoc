@@ -497,8 +497,8 @@ Exception in thread "main" java.lang.NullPointerException, compiling:(examples/l
 When `dbg` and `clog` encounter the `pass:[some->]` or `pass:[some->>]` macro, they
 replace `pass:[some->]` or `pass:[some->>]` with `pass:[->]` or `pass:[->>]` internally,
 so the above exception occured. In a nutshell, the `pass:[some->]` and `pass:[some->>]`
-within `dbg` and `clog` internally behave exactly in the same way as in the thread macro
-`pass:[->]` and `pass:[->>]`
+within `dbg` and `clog` behave exactly in the same way as in the thread macro `pass:[->]`
+and `pass:[->>]`.
 
 
 ### Debugging `let` or `comp` form
