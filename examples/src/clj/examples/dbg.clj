@@ -97,6 +97,9 @@
      (map str))
 
 
+; (dbg (some-> {:a 1} :b inc))
+
+
 (dbg (let [a (take 5 (range))
            {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}
            [e f g & h] ["a" "b" "c" "d" "e"]]

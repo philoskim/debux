@@ -20,6 +20,13 @@
 (doseq [i (range 10)]
   (dbg i :if (even? i)))
 
+;; :locals option
+(let [x 10 y 20]
+  (dbg (+ 1 2) :locals)
+  (dbg (-> 10 inc inc) :l)
+
+  (dbgn (-> 10 inc inc) :l))
+
 
 ;; :print option
 (+ 10 (dbg (* 20 30) :print #(type %)))

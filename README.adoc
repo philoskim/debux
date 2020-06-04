@@ -70,7 +70,7 @@ https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.6.6
 ** `pass:[some->]` and `pass:[some->>]` support in `dbg` and `clog` added for the
-   debugging convenience. See <<some-threading-macros, here>> for details.
+   debugging convenience. See <<some-threading-macros, here>> for the details.
 ** `:locals` option added. See <<local-option, here>> and
    link:https://github.com/philoskim/debux/issues/19[#issue 19] for the details.
 
@@ -250,7 +250,7 @@ following six special cases(`pass:[->]`, `pass:[->>]`, `pass:[some->]`,
 `pass:[some->>]`, `let`, `comp`).
 
 
-### Debugging thread macro `pass:[->]` or `pass:[->>]`
+### Debugging the thread macro `pass:[->]` or `pass:[->>]`
 
 #### Using outside the thread macros
 
@@ -425,11 +425,10 @@ See more examples <<dbg-last, here>>.
 
 
 [[some-threading-macros]]
-### Debugging thread macro `pass:[some->]` or `pass:[some->>]`
+### Debugging the thread macro `pass:[some->]` or `pass:[some->>]`
 
 When I encountered the following code and wanted to debug it sequentially one by one, I
-used to transform it temporarily like this. The following example code is very short, but
-sometimes can be very long.
+used to transform it temporarily like this.
 
 [source]
 ....
@@ -443,36 +442,8 @@ sometimes can be very long.
 (some-> {:a 1} :b inc)
 ....
 
-However, it is very annoying. Of course, the same form can be debugged by using `dbgn`,
-but the printing result is not very intuitive as you can see.
-
-[source]
-....
-{:ns examples.lab, :line 5}
-dbgn: (some-> {:a 1} :b inc) =>
-| {:a 1} =>
-|   {:a 1}
-| G__1947 =>
-|   {:a 1}
-| (clojure.core/nil? G__1947) =>
-|   false
-| (:b G__1947) =>
-|   nil
-| (if (clojure.core/nil? G__1947) nil (:b G__1947)) =>
-|   nil
- 
-| G__1947 =>
-|   nil
-| (clojure.core/nil? G__1947) =>
-|   true
-| (if (clojure.core/nil? G__1947) nil (inc G__1947)) =>
-|   nil
-| (clojure.core/let [G__1947 {:a 1} G__1947 (if (clojure.core/nil? G__19 ... =>
-|   nil
-....
-
-So `pass:[some->]` or `pass:[some->>]` macro support is added to `dbg` and `clog` for the
-debugging convenience.
+However, it is very annoying. So `pass:[some->]` or `pass:[some->>]` macro support is
+added to `dbg` and `clog` for the debugging convenience.
 
 [source]
 ....
@@ -489,11 +460,11 @@ dbg: (some-> {:a 1} :b inc) =>
 | :b =>
 |   nil
 Exception in thread "main" java.lang.NullPointerException, compiling:(examples/lab.clj:7:1)
-	at clojure.lang.Compiler.load(Compiler.java:7391)
-	at clojure.lang.RT.loadResourceScript(RT.java:372)
-	at clojure.lang.RT.loadResourceScript(RT.java:363)
-	at clojure.lang.RT.load(RT.java:453)
-	at clojure.lang.RT.load(RT.java:419)
+  at clojure.lang.Compiler.load(Compiler.java:7391)
+  at clojure.lang.RT.loadResourceScript(RT.java:372)
+  at clojure.lang.RT.loadResourceScript(RT.java:363)
+  at clojure.lang.RT.load(RT.java:453)
+  at clojure.lang.RT.load(RT.java:419)
   ......
 ....
 
@@ -2115,7 +2086,7 @@ dbgn: (+ n (mul2 3 4) (add2 10 20)) =>
 | :print  or :p | O   |   X   |  O   |  X   |   X
 | :dup          | X   |   0   |  X   |  0   |   X
 | :style  or :s | X   |   X   |  O   |  O   |   X
-| :once         | X   |   X   |  O   |  X   |   X
+| :once   or :o | X   |   X   |  O   |  X   |   X
 | :js           | X   |   X   |  O   |  O   |   X
 
 |===
@@ -2320,43 +2291,43 @@ link:https://github.com/philoskim/debux/issues/19[#issue 19].
 [source]
 ....
 (let [x 10 y 20]
-  (dbg (+ 1 2) :locals)
-  (dbg (-> 10 inc inc) :l)
+  (dbg (+ x y) :locals)
+  (dbg (-> 100 inc inc) :l)
 
-  (dbgn (-> 10 inc inc) :l))
+  (dbgn (-> 200 inc inc) :l))
 ....
 
 [source]
 .REPL output
 ....
 {:ns examples.lab, :line 11}
-dbg: (+ 1 2) =>
+dbg: (+ x y) =>
 | :locals =>
 |   {x 10, y 20}
  
-|   3
+|   30
 
 {:ns examples.lab, :line 12}
-dbg: (-> 10 inc inc) =>
+dbg: (-> 100 inc inc) =>
 | :locals =>
 |   {x 10, y 20}
  
-| 10 =>
-|   10
+| 100 =>
+|   100
 | inc =>
-|   11
+|   101
 | inc =>
-|   12
+|   102
  
 {:ns examples.lab, :line 14}
-dbgn: (-> 10 inc inc) =>
+dbgn: (-> 200 inc inc) =>
 | :locals =>
 |   {x 10, y 20}
  
-| (inc 10) =>
-|   11
-| (inc (inc 10)) =>
-|   12
+| (inc 200) =>
+|   201
+| (inc (inc 200)) =>
+|   202
 ....
 
 
@@ -2673,7 +2644,7 @@ You can redefine the predefined styles or define your own new style by using
 image::clog-style-user.png[title="User-defined style example", width=650]
 
 
-### `:once` option (CLJS only)
+### `:once` (or `:o`) option (CLJS only)
 
 If you add `:once` (or `:o` in brief) option after the form, the same evaluated value will
 not be printed. This is a very useful feature, when you are debugging a game programming,

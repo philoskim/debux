@@ -31,6 +31,18 @@
 (clog (+ 10 20) :style "color:orange; background:blue; font-size: 14pt")
 
 
+;; :locals option
+(let [x 10 y 20]
+  (clog (+ 1 2) :locals)
+  (clog (-> 10 inc inc) :l)
+
+  (clogn (-> 10 inc inc) :l))
+
+
+;; :print option
+(+ 10 (clog (* 20 30) :print #(type %)))
+(+ 10 (clog (* 20 30) :p type))
+
 
 ;;---------------
 ;; :once option
