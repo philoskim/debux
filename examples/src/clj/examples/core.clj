@@ -16,5 +16,5 @@
   (require 'examples.options)
   (require 'examples.dbgn)
   ;(require 'examples.demo)
-  (require 'examples.lab)
+  ;(require 'examples.lab)
 )

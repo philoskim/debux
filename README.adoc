@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.6.8"]
+[philoskim/debux "0.7.0"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.6.8"]
+[philoskim/debux-stubs "0.7.0"]
 ....
 
 
@@ -64,6 +64,12 @@ and this to your *production* dependencies.
 
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
+
+* v0.7.0
+
+** Tagged literals (`#d/dbg`, `#d/dbgn`, `#d/clog`, `#d/clogn`) added. So you don't have
+   to wrap the form by the parentheses any more, if you want. See <<tagged-literals,
+   here>> for the details.
 
 * v0.6.8
 ** Bug fixed and code cleaned up
@@ -1920,7 +1926,7 @@ only using `dbgn`, do it like this.
 .REPL output:
 ----
 {:ns examples.demo, :line 271}
-dbgn: (+ a b c (dbg (->> (range (- b a)) (map (fn* [p1__3949#] (* p1__3949#  ... =>
+dbgn: (+ a b c (->> (range (- b a)) (map (fn* [p1__3949#] (* p1__3949#  ... =>
 | a =>
 |   10
 | b =>
@@ -1940,7 +1946,7 @@ dbgn: (+ a b c (dbg (->> (range (- b a)) (map (fn* [p1__3949#] (* p1__3949#  ...
 ||   (0 4 16 36 64)
 || (reduce +) =>
 ||   120
-| (+ a b c (dbg (->> (range (- b a)) (map (fn* [p1__41#] (* p1__41# p1__ ... =>
+| (+ a b c (->> (range (- b a)) (map (fn* [p1__41#] (* p1__41# p1__ ... =>
 |   250
 ----
 
@@ -1960,7 +1966,7 @@ The above `dbg` will prevent `dbgn` from printing `(+ c d (- e f (* g h))))` rec
 .REPL output
 ----
 {:ns example.demo, :line 15}
-dbgn: (* a b (dbg (+ c d (- e f (* g h))))) =>
+dbgn: (* a b (+ c d (- e f (* g h)))) =>
 | a =>
 |   10
 | b =>
@@ -2693,6 +2699,80 @@ objects returned by JavaScript interops in ClojureScript.
 image::clog-js.png[title=":js option example", width=800]
 
 
+[[tagged-literals]]
+## Tagged literals
+
+If you don't use the above options at all, you can use the tagged literals: `#d/dbg`,
+`#d/dbgn`, `#d/clog`, `#d/clogn`. They behave exactly in the same way as in their
+counterparts `dbg`, `dbgn`, `clog`, `clogn`. So in the _no options_ case, you don't have
+to wrap the form by the parentheses any more, if you want.
+
+
+[source]
+.Example 1
+....
+#d/dbg (+ 1 2 #d/dbg (* 3 4))
+....
+
+[source]
+.REPL output
+....
+{:ns examples.lab, :line 5}
+dbg: (+ 1 2 (* 3 4)) =>
+ 
+|{:ns examples.lab, :line 5}
+|dbg: (* 3 4) =>
+||   12
+|   15
+....
+
+---
+
+[source]
+.Example 2
+....
+#d/dbgn (+ (* 2 5) #d/dbg (+ 10 (* 3 4)))
+....
+
+[source]
+.REPL output
+....
+{:ns examples.lab, :line 7}
+dbgn: (+ (* 2 5) (+ 10 (* 3 4))) =>
+| (* 2 5) =>
+|   10
+ 
+|{:ns examples.lab, :line 7}
+|dbg: (+ 10 (* 3 4)) =>
+||   22
+| (+ (* 2 5) (+ 10 (* 3 4))) =>
+|   32
+....
+
+---
+
+[source]
+.Example 3
+....
+#d/dbg (+ (* 2 5) #d/dbgn (+ 10 (* 3 4)))
+....
+
+[source]
+.REPL output
+....
+{:ns examples.lab, :line 9}
+dbg: (+ (* 2 5) (+ 10 (* 3 4))) =>
+ 
+|{:ns examples.lab, :line 9}
+|dbgn: (+ 10 (* 3 4)) =>
+|| (* 3 4) =>
+||   12
+|| (+ 10 (* 3 4)) =>
+||   22
+|   32
+....
+
+
 [[cljs-devtools]]
 ## Support for `cljs-devtools`
 
@@ -3020,7 +3100,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject examples "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.6.8"]]
+                 [philoskim/debux "0.7.0"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

@@ -3,6 +3,10 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.7.0
+** Tagged literals (`#d/dbg`, `#d/dbgn`, `#d/clog`, `#d/clogn`) added. So in _no options_
+   case, you don't have to wrap the form by the parentheses any more, if you want.
+
 * v0.6.8
 ** Bug fixed and code cleaned up
 
