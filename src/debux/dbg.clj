@@ -8,7 +8,7 @@
              condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [src-info# (str (ut/src-info ~ns ~line))
-               title# (str "dbg: " (ut/truncate (pr-str '~form))
+               title# (str "dbg: " (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
                            (and ~msg (str "   <" ~msg ">")) " =>")
                locals# ~locals]
            (ut/insert-blank-line)

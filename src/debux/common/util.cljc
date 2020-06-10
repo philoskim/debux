@@ -170,6 +170,24 @@
        (swap! evals assoc form return) ))
 
 ;;; print
+(def dbg-symbols*
+  '#{debux.core/dbg debux.core/dbgn debux.core/dbg* dbg})
+
+(defn remove-dbg-symbols [form]
+  (loop [loc (sequential-zip form)]
+    (let [node (z/node loc)]
+      ;(ut/d node)
+      (cond
+        (z/end? loc) (z/root loc)
+
+        ;; in case of (d ...)
+        (and (seq? node)
+             (get dbg-symbols* (first node)))
+        (recur (z/replace loc (second node)))
+
+        :else
+        (recur (z/next loc)) ))))
+
 (defn truncate [s]
   (if (> (count s) 70)
     (str (.substring s 0 70) " ...")

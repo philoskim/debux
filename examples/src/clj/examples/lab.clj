@@ -2,13 +2,11 @@
 
 (use 'debux.core)
 
-(dbgn (some-> {:a 1} :b inc))
+(dbg (+ 1 2 (dbg (* 3 4))))
 
-;(dbg (some-> {:a 1} :b inc))
 
-(let [x 10 y 20]
-  (dbg (+ 1 2) :locals)
-  (dbg (-> 10 inc inc) :l)
 
-  (dbgn (-> 10 inc inc) :l))
+#d/d (+ 1 2 #d/d (* 3 4))
 
+;; (dbgn (+ 1 2 (dbg (* 3 4))))
+;; #d/dn (+ 1 2 #d/d (* 3 4))

@@ -1,5 +1,6 @@
 (ns debux.core
-  (:require [debux.dbg :as dbg]
+  (:require [net.cgrand.macrovich :as macrovich]
+            [debux.dbg :as dbg]
             [debux.dbgn :as dbgn]
             [debux.macro-types :as mt]
             [debux.common.util :as ut] ))
@@ -22,6 +23,7 @@
         line (:line (meta &form))
         local-ks (keys &env)
         opts' (ut/prepend-src-info opts ns line)]
+    ;(ut/d (meta &form))
     `(if (ut/debug-enabled? ~ns)
        (dbg/dbg ~form (zipmap '~local-ks [~@local-ks]) ~(ut/parse-opts opts'))
        ~form)))
@@ -34,6 +36,20 @@
     `(if (ut/debug-enabled? ~ns)
        (dbgn/dbgn ~form (zipmap '~local-ks [~@local-ks]) ~(ut/parse-opts opts'))
        ~form)))
+
+(defmacro dbg* [form meta]
+  (let [ns (str *ns*)
+        line (:line meta)]
+    `(if (ut/debug-enabled? ~ns)
+       (dbg/dbg ~form {} {:ns ~ns :line ~line})
+       ~form)))
+
+(defn d* [form]
+  `(dbg* ~form ~(meta form)))
+
+(defn dn* [form]
+  `(dbgn ~form))
+
 
 (defmacro dbg-last
   [& args]
