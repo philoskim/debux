@@ -1,7 +1,7 @@
 (ns debux.core
-  (:require [net.cgrand.macrovich :as macrovich]
-            [debux.dbg :as dbg]
+  (:require [debux.dbg :as dbg]
             [debux.dbgn :as dbgn]
+            [debux.cs.core :as cs]
             [debux.macro-types :as mt]
             [debux.common.util :as ut] ))
 
@@ -37,20 +37,6 @@
        (dbgn/dbgn ~form (zipmap '~local-ks [~@local-ks]) ~(ut/parse-opts opts'))
        ~form)))
 
-(defmacro dbg* [form meta]
-  (let [ns (str *ns*)
-        line (:line meta)]
-    `(if (ut/debug-enabled? ~ns)
-       (dbg/dbg ~form {} {:ns ~ns :line ~line})
-       ~form)))
-
-(defn d* [form]
-  `(dbg* ~form ~(meta form)))
-
-(defn dn* [form]
-  `(dbgn ~form))
-
-
 (defmacro dbg-last
   [& args]
   (let [form (last args)
@@ -60,6 +46,34 @@
 (defn dbg-prn [& args]
   (binding [*out* *err*]
     (apply println "\ndbg-prn:" args)))
+
+
+;;; tag literals #d/dbg and #d/dbgn
+(defmacro dbg* [form meta]
+  (let [ns (str *ns*)
+        line (:line meta)
+        opts [:ns ns :line line]]
+    (if (ut/cljs-env? &env)
+      `(cs/dbg* ~form ~meta)
+      `(if (ut/debug-enabled? ~ns)
+         (dbg/dbg ~form {} ~(ut/parse-opts opts))
+         ~form) )))
+
+(defmacro dbgn* [form meta]
+  (let [ns (str *ns*)
+        line (:line meta)
+        opts [:ns ns :line line]]
+    (if (ut/cljs-env? &env)
+      `(cs/dbgn* ~form ~meta)
+      `(if (ut/debug-enabled? ~ns)
+         (dbgn/dbgn ~form {} ~(ut/parse-opts opts))
+         ~form) )))
+
+(defn dbg-tag [form]
+  `(dbg* ~form ~(meta form)))
+
+(defn dbgn-tag [form]
+  `(dbgn* ~form ~(meta form)))
 
 
 ;;; macro registering APIs

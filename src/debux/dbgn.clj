@@ -247,25 +247,10 @@
         :else
         (recur (z/next loc) )))))
 
-(defn remove-d [form d-sym]
-  (loop [loc (ut/sequential-zip form)]
-    (let [node (z/node loc)]
-      ;(ut/d node)
-      (cond
-        (z/end? loc) (z/root loc)
-
-        ;; in case of (d ...)
-        (and (seq? node)
-             (= d-sym (first node)))
-        (recur (z/replace loc (second node)))
-
-        :else
-        (recur (z/next loc)) ))))
-
 (defmacro d [form]
   `(let [opts#   ~'+debux-dbg-opts+
          n#      (or (:n opts#) (:print-length @ut/config*))
-         form#   '~(remove-d form 'debux.dbgn/d)
+         form#   '~(ut/remove-dbg-symbols form)
          result# ~form]
      (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result#))
        (ut/print-form-with-indent (ut/form-header form# (:msg opts#)))
@@ -310,7 +295,7 @@
              condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [src-info# (str (ut/src-info ~ns ~line))
-               title# (str "dbgn: " (ut/truncate (pr-str '~form))
+               title# (str "dbgn: " (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
                            (and ~msg (str "   <" ~msg ">"))  " =>")
                locals# ~locals]
            (ut/insert-blank-line)

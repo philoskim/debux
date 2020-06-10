@@ -29,8 +29,12 @@
             import memfn new ns proxy proxy-super quote refer-clojure reify sync var}
 
          :skip-form-itself-type
-         `#{catch definline definterface defprotocol defrecord deftype finally
-            gen-class gen-interface debux.core/dbg debux.core/dbgn}
+         `#{catch definline definterface defprotocol defrecord
+            deftype finally gen-class gen-interface
+            debux.core/dbg debux.core/dbgn
+            debux.core/dbg* debux.core/dbgn*
+            debux.cs.core/clog debux.cs.core/clogn
+            debux.cs.core/clog* debux.cs.core/clogn*}
 
          :expand-type
          `#{clojure.core/.. -> ->> doto cond-> cond->> condp import

@@ -6,6 +6,6 @@
             examples.dbg
             examples.options
             ;examples.demo
-            ;examples.lab
+            examples.lab
 ))
 

@@ -1,27 +1,20 @@
 (ns examples.lab
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
 
-;(clog (some-> {:a 1} :b inc))
+#d/dbg (+ 1 2 #d/dbg (* 3 4))
 
-(clogn (some-> {:a 1} :b inc))
+#d/dbgn (+ 10 20 #d/dbg (* 30 40))
 
-(let [x 10
-      y 20]
-  (dbg (+ 1 2) :l)
-  (dbg (+ 3 4) :locals)
-  (dbg (-> 10 inc inc) :l)
-  (dbg (->> 10 inc inc) :l)
-  (dbg (let [a 10 b 20] (+ a b)) :l)
+#d/dbg (+ 10 20 #d/dbgn (* 30 40))
 
-  (dbgn (-> 10 inc inc) :l)
-  (dbgn (->> 10 inc inc) :l)
+#d/dbgn (+ 10 20 #d/dbgn (+ 100 (* 30 40)))
 
-  (clog (+ 1 2) :l)
-  (clog (+ 3 4) :locals)
-  (clog (-> 10 inc inc) :l)
-  (clog (->> 10 inc inc) :l)
-  (clog (let [a 10 b 20] (+ a b)) :l)
 
-  (clogn (-> 10 inc inc) :l)
-  (clogn (->> 10 inc inc) :l))
+#d/clog (+ 1 2 #d/clog (* 3 4))
+
+#d/clogn (+ 10 20 #d/clog (* 30 40))
+
+#d/clog (+ 10 20 #d/clogn (* 30 40))
+
+#d/clogn (+ 10 20 #d/clogn (+ 100 (* 30 40)))
 

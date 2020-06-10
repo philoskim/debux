@@ -10,7 +10,7 @@
              condition#)
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [src-info# (str (ut/src-info ~ns ~line))
-               title# (str "%cclog: %c " (ut/truncate (pr-str '~form))
+               title# (str "%cclog: %c " (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
                            " %c" (and ~msg (str "   <" ~msg ">"))  " =>")
                style# (or ~style :debug)
                locals# ~locals]

@@ -171,7 +171,10 @@
 
 ;;; print
 (def dbg-symbols*
-  '#{debux.core/dbg debux.core/dbgn debux.core/dbg* dbg})
+  '#{dbg dbgn debux.dbgn/d
+     debux.core/dbg* debux.core/dbgn*
+     clog clogn debux.cs.clogn/d
+     debux.cs.core/clog* debux.cs.core/clogn*})
 
 (defn remove-dbg-symbols [form]
   (loop [loc (sequential-zip form)]
@@ -180,7 +183,6 @@
       (cond
         (z/end? loc) (z/root loc)
 
-        ;; in case of (d ...)
         (and (seq? node)
              (get dbg-symbols* (first node)))
         (recur (z/replace loc (second node)))

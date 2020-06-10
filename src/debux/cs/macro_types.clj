@@ -36,8 +36,12 @@
          :skip-form-itself-type
          '#{catch cljs.core/defprotocol cljs.core/defrecord cljs.core/deftype finally
             cljs.core/js-comment cljs.core/js-inline-comment
-            debux.cs.cljs.core/dbg debux.cs.cljs.core/dbgn
-            debux.cs.cljs.core/clog debux.cs.cljs.core/clogn}
+            debux.core/dbg debux.core/dbgn
+            debux.core/dbg* debux.core/dbgn*
+            debux.cs.core/dbg debux.cs.core/dbgn
+            debux.cs.core/dbg* debux.cs.core/dbgn*
+            debux.cs.core/clog debux.cs.core/clogn
+            debux.cs.core/clog* debux.cs.core/clogn*}
 
          :expand-type
          '#{cljs.core/.. cljs.core/-> cljs.core/->> cljs.core/doto

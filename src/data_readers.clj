@@ -1,4 +1,4 @@
-{d/d  debux.core/d*
- d/dn debux.core/dn*
- d/c  debux.cs.core/c*
- d/cn debux.cs.core/cn*}
+{d/dbg   debux.core/dbg-tag
+ d/dbgn  debux.core/dbgn-tag
+ d/clog  debux.cs.core/clog-tag
+ d/clogn debux.cs.core/clogn-tag}

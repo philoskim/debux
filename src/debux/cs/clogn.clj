@@ -10,7 +10,7 @@
          n#    (or (:n opts#) (:print-length @ut/config*))
          js#   (:js opts#)
          form-style# (or (:style opts#) :debug)
-         form#   '~(dbgn/remove-d form 'debux.cs.clogn/d)
+         form#   '~(ut/remove-dbg-symbols form); 'debux.cs.clogn/d)
          result# ~form]
      (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result#))
        (cs.ut/clog-form-with-indent (cs.ut/form-header form# (:msg opts#))
@@ -27,7 +27,7 @@
      (if (or ~(not (contains? opts :condition))
              condition#)
        (let [src-info# (str (ut/src-info ~ns ~line))
-             title# (str "%cclogn: %c " (ut/truncate (pr-str '~form))
+             title# (str "%cclogn: %c " (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
                          " %c" (and ~msg (str "   <" ~msg ">"))  " =>")
              style# (or ~style :debug)
              locals# ~locals]
