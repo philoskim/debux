@@ -66,7 +66,6 @@ NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.7.0
-
 ** Tagged literals (`#d/dbg`, `#d/dbgn`, `#d/clog`, `#d/clogn`) added. So you don't have
    to wrap the form by the parentheses any more, if you want. See <<tagged-literals,
    here>> for the details.
@@ -477,7 +476,7 @@ Exception in thread "main" java.lang.NullPointerException, compiling:(examples/l
 When `dbg` and `clog` encounter the `pass:[some->]` or `pass:[some->>]` macro, they
 replace `pass:[some->]` or `pass:[some->>]` with `pass:[->]` or `pass:[->>]` internally,
 so the above exception occured. In a nutshell, the `pass:[some->]` and `pass:[some->>]`
-within `dbg` and `clog` behave exactly in the same way as in the thread macro `pass:[->]`
+within `dbg` and `clog` behave exactly in the same way as the thread macro `pass:[->]`
 and `pass:[->>]`.
 
 
@@ -2700,13 +2699,12 @@ image::clog-js.png[title=":js option example", width=800]
 
 
 [[tagged-literals]]
-## Tagged literals
+## Tagged literals: `#d/dbg`, `#d/dbgn`, `#d/clog`, `#d/clogn`
 
 If you don't use the above options at all, you can use the tagged literals: `#d/dbg`,
-`#d/dbgn`, `#d/clog`, `#d/clogn`. They behave exactly in the same way as in their
+`#d/dbgn`, `#d/clog`, `#d/clogn`. They behave exactly in the same way as their
 counterparts `dbg`, `dbgn`, `clog`, `clogn`. So in the _no options_ case, you don't have
 to wrap the form by the parentheses any more, if you want.
-
 
 [source]
 .Example 1
@@ -2771,6 +2769,26 @@ dbg: (+ (* 2 5) (+ 10 (* 3 4))) =>
 ||   22
 |   32
 ....
+
+
+[TIP]
+--
+You can comment out the tagged literals temporarily, by appending `_` after `#` like this.
+
+[source]
+....
+#d/dbg (+ 1 2 #_d/dbg (* 3 4))
+....
+
+[source]
+.REPL output
+....
+{:ns examples.lab, :line 5}
+dbg: (+ 1 2 (* 3 4)) =>
+|   15
+....
+--
+
 
 
 [[cljs-devtools]]
