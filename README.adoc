@@ -2132,7 +2132,8 @@ dbg: (repeat 5 "x")   <5 times repeat> =>
 ### `:msg (or :m)` option
 
 Sometimes you need to create the message dynamically. This option can be useful in the
-multi-threads programming like this.
+multi-threads programming like this, because Debux supprots the safe debugging in
+multi-threads since the version 0.7.1.
 
 [source]
 ....
