@@ -96,7 +96,6 @@
 ;;          ["a" "b" "c" "d" "e"])
 
 
-
 (defn my-fun3 []
   (let [a 10
         b 20]

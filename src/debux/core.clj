@@ -18,6 +18,8 @@
 
 
 ;;; debugging APIs
+(def locking* (Object.))
+
 (defmacro dbg [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
@@ -25,7 +27,8 @@
         opts' (ut/prepend-src-info opts ns line)]
     ;(ut/d (meta &form))
     `(if (ut/debug-enabled? ~ns)
-       (dbg/dbg ~form (zipmap '~local-ks [~@local-ks]) ~(ut/parse-opts opts'))
+       (locking locking*
+         (dbg/dbg ~form (zipmap '~local-ks [~@local-ks]) ~(ut/parse-opts opts')))
        ~form)))
 
 (defmacro dbgn [form & opts]
@@ -34,14 +37,16 @@
         local-ks (keys &env)
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
-       (dbgn/dbgn ~form (zipmap '~local-ks [~@local-ks]) ~(ut/parse-opts opts'))
+       (locking locking*
+         (dbgn/dbgn ~form (zipmap '~local-ks [~@local-ks]) ~(ut/parse-opts opts')))
        ~form)))
 
 (defmacro dbg-last
   [& args]
   (let [form (last args)
         opts (butlast args)]
-    `(dbg ~form ~@opts)))
+    `(locking locking*
+       (dbg ~form ~@opts))))
 
 (defn dbg-prn [& args]
   (binding [*out* *err*]
@@ -56,7 +61,8 @@
     (if (ut/cljs-env? &env)
       `(cs/dbg* ~form ~meta)
       `(if (ut/debug-enabled? ~ns)
-         (dbg/dbg ~form {} ~(ut/parse-opts opts))
+         (locking locking*
+           (dbg/dbg ~form {} ~(ut/parse-opts opts)))
          ~form) )))
 
 (defmacro dbgn* [form meta]
@@ -66,7 +72,8 @@
     (if (ut/cljs-env? &env)
       `(cs/dbgn* ~form ~meta)
       `(if (ut/debug-enabled? ~ns)
-         (dbgn/dbgn ~form {} ~(ut/parse-opts opts))
+         (locking locking*
+           (dbgn/dbgn ~form {} ~(ut/parse-opts opts)))
          ~form) )))
 
 (defn dbg-tag [form]
@@ -74,6 +81,13 @@
 
 (defn dbgn-tag [form]
   `(dbgn* ~form ~(meta form)))
+
+
+;;; turn-off versions
+(defmacro dbg_ [form & opts] form)
+(defmacro dbgn_ [form & opts] form)
+(defn dbg-prn_ [& args])
+(defmacro dbg-last_ [& args] (last args))
 
 
 ;;; macro registering APIs

@@ -1,20 +1,45 @@
 (ns examples.lab
-  (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
+  (:require [debux.cs.core :as d :refer-macros [clog clogn clog-last
+                                                dbg dbgn break dbg-last
+                                                clog_ clogn_ clog-last_
+                                                dbg_ dbgn_ dbg-last_
+                                                break_]]))
 
-#d/dbg (+ 1 2 #d/dbg (* 3 4))
+(dbg (+ 2 3))
+(dbg_ (+ 2 3))
 
-#d/dbgn (+ 10 20 #d/dbg (* 30 40))
+(dbgn (* 2 (+ 3 4)))
+(dbgn_ (* 2 (+ 3 4)))
 
-#d/dbg (+ 10 20 #d/dbgn (* 30 40))
+(->> (range 20)
+     (filter odd?)
+     (dbg-last 5 "after filter")
+     (map inc))
 
-#d/dbgn (+ 10 20 #d/dbgn (+ 100 (* 30 40)))
+(->> (range 20)
+     (filter odd?)
+     (dbg-last_ 5 "after filter")
+     (map inc))
 
 
-#d/clog (+ 1 2 #d/clog (* 3 4))
+(clog (+ 2 3))
+(clog_ (+ 2 3))
 
-#d/clogn (+ 10 20 #d/clog (* 30 40))
+(clogn (* 2 (+ 3 4)))
+(clogn_ (* 2 (+ 3 4)))
 
-#d/clog (+ 10 20 #d/clogn (* 30 40))
+(->> (range 20)
+     (filter odd?)
+     (clog-last 5 "after filter")
+     (map inc))
 
-#d/clogn (+ 10 20 #d/clogn (+ 100 (* 30 40)))
+(->> (range 20)
+     (filter odd?)
+     (clog-last_ 5 "after filter")
+     (map inc))
 
+;(break)
+
+(break_)
+
+(clog "hello")

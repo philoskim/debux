@@ -2801,7 +2801,7 @@ dbg: (+ 1 2 (* 3 4)) =>
 image::cljs-devtools.png[title="cljs-devtools printing example", width=700]
 
 * The <<two-libraries, *development*>> version `debux` library already includes the
-  version 0.9.11 of `cljs-devtools` on its dependencies. Therefore, you don't have to
+  version 1.0.0 of `cljs-devtools` on its dependencies. Therefore, you don't have to
   include `cljs-devtools` on the `:dependencies` section of your project file.
 +
 NOTE: Of course, you can include a newer version of `devtools` on the `:dependencies`

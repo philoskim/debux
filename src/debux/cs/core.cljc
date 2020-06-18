@@ -129,6 +129,17 @@
     `(when (ut/debug-enabled? ~ns)
        (debux.cs.clogn/break  ~(ut/parse-opts opts)))))
 
+;;; turn-off versions
+(defmacro dbg_ [form & opts] form)
+(defmacro dbgn_ [form & opts] form)
+(defmacro dbg-last_ [& args] (last args))
+
+(defmacro clog_ [form & opts] form)
+(defmacro clogn_ [form & opts] form)
+(defmacro clog-last_ [& args] (last args))
+
+(defmacro break_ [& opts])
+
 
 ;;; macro registering APIs
 (defmacro register-macros! [macro-type symbols]
