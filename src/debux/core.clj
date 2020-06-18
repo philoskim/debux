@@ -45,8 +45,7 @@
   [& args]
   (let [form (last args)
         opts (butlast args)]
-    `(locking locking*
-       (dbg ~form ~@opts))))
+    `(dbg ~form ~@opts) ))
 
 (defn dbg-prn [& args]
   (binding [*out* *err*]

@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.7.1"]
+[philoskim/debux "0.7.2"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.7.1"]
+[philoskim/debux-stubs "0.7.2"]
 ....
 
 
@@ -65,11 +65,16 @@ and this to your *production* dependencies.
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
+* v0.7.2
+** Bug fixed.
+
 * v0.7.1
 ** The temporal _turn-off_ version of Debux macros added. See <<temporal-turn-off, here>>
    for the details.
-** The safe debugging in multi-threads now supported. See <<msg-option, here>> for the
-   example.
+
+** The safe debugging in multi-threads now supported. See
+<<safe-debugging-in-multi-threads , here>> for the example.
+
 ** The `:msg` (or `:m`) option added for dynamic message creation. See <<msg-option,
    here>> for the details.
 
@@ -2081,6 +2086,91 @@ dbgn: (+ n (mul2 3 4) (add2 10 20)) =>
 |   52
 ----
 
+[[safe-debugging-in-multi-threads]]
+### Safe debugging in multi-threads programming.
+
+The Debux macros `dbg`, `dbgn`, `dbg-last` in Clojure support the safe debugging in
+multi-threads since the version 0.7.1.
+
+The following example shows that the messages produced by the `dbg` are printed in their
+own separate units, not mixed by one another.
+
+[source]
+....
+(defn my-fn [thread-no]
+  (dbg (-> "a b c d"
+           .toUpperCase
+           (.replace "A" "X")
+           (.split " ")
+           first)
+       :msg (str "thread-no: " thread-no)))
+
+(future
+  (Thread/sleep 1000)
+  (my-fn 1))
+
+(future
+  (Thread/sleep 1000)
+  (my-fn 2))
+
+(future
+  (Thread/sleep 1000)
+  (my-fn 3))
+
+
+(dbg (* 2 5))
+
+(shutdown-agents)
+....
+
+
+[listing]
+.REPL output
+----
+{:ns examples.lab, :line 45}
+dbg: (* 2 5) =>
+|   10
+ 
+{:ns examples.lab, :line 26}
+dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first)   <thread-no: 1> =>
+| "a b c d" =>
+|   "a b c d"
+| .toUpperCase =>
+|   "A B C D"
+| (.replace "A" "X") =>
+|   "X B C D"
+| (.split " ") =>
+|   ["X", "B", "C", "D"]
+| first =>
+|   "X"
+ 
+{:ns examples.lab, :line 26}
+dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first)   <thread-no: 3> =>
+| "a b c d" =>
+|   "a b c d"
+| .toUpperCase =>
+|   "A B C D"
+| (.replace "A" "X") =>
+|   "X B C D"
+| (.split " ") =>
+|   ["X", "B", "C", "D"]
+| first =>
+|   "X"
+ 
+{:ns examples.lab, :line 26}
+dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first)   <thread-no: 2> =>
+| "a b c d" =>
+|   "a b c d"
+| .toUpperCase =>
+|   "A B C D"
+| (.replace "A" "X") =>
+|   "X B C D"
+| (.split " ") =>
+|   ["X", "B", "C", "D"]
+| first =>
+|   "X"
+----
+
 
 ## Various options
 
@@ -2132,28 +2222,27 @@ dbg: (repeat 5 "x")   <5 times repeat> =>
 ### `:msg (or :m)` option
 
 Sometimes you need to create the message dynamically. This option can be useful in the
-multi-threads programming like this, because Debux supprots the safe debugging in
-multi-threads since the version 0.7.1.
+multi-threads programming like this.
 
 [source]
 ....
 
-(defn my-fn [thread-no]
+(defn my-fn2 [thread-no]
   (dbg (* thread-no (+ 10 20)) :msg (str "thread-no: " thread-no)))
 
 (future
   (Thread/sleep 3000)
-  (my-fn 1))
+  (my-fn2 1))
 
 (future
   (Thread/sleep 1000)
-  (my-fn 2))
+  (my-fn2 2))
 
 (future
   (Thread/sleep 2000)
-  (my-fn 3))
+  (my-fn2 3))
 
-(dbg (* 2 5))
+(dbg (* 10 5))
 
 (shutdown-agents)
 ....
@@ -2163,8 +2252,8 @@ multi-threads since the version 0.7.1.
 .REPL output
 ----
 {:ns examples.lab, :line 20}
-dbg: (* 2 5) =>
-|   10
+dbg: (* 10 5) =>
+|   50
  
 {:ns examples.lab, :line 6}
 dbg: (* thread-no (+ 10 20))   <thread-no: 2> =>
@@ -2179,8 +2268,8 @@ dbg: (* thread-no (+ 10 20))   <thread-no: 1> =>
 |   30
 ----
 
-If the above `String` option and this `:msg` option both exist, `:msg` option has higher
-precedence.
+If the above `String` option and this `:msg` option both exist, the `:msg` option has the
+higher precedence.
 
 
 [[number-option]]
@@ -3214,7 +3303,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject examples "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.7.1"]]
+                 [philoskim/debux "0.7.2"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

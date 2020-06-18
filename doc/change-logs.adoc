@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.7.2
+** Bug fixed.
+
 * v0.7.1
 ** The temporal _turn-off_ version of Debux macros added.
 ** The safe debugging in multi-threads now supported.
