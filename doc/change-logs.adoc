@@ -3,6 +3,11 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.7.1
+** The temporal _turn-off_ version of Debux macros added.
+** The safe debugging in multi-threads now supported.
+** The `:msg` (or `:m`) option added for dynamic message creation.
+
 * v0.7.0
 ** Tagged literals (`#d/dbg`, `#d/dbgn`, `#d/clog`, `#d/clogn`) added. So in _no options_
    case, you don't have to wrap the form by the parentheses any more, if you want.

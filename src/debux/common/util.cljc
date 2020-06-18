@@ -265,7 +265,11 @@
         (recur (next opts) (assoc acc :n fst))
 
         (string? fst)
-        (recur (next opts) (assoc acc :msg fst))
+        (recur (next opts) (or (:msg acc)
+                               (assoc acc :msg fst)))
+
+        (#{:msg :m} fst)
+        (recur (nnext opts) (assoc acc :msg snd))
 
         (#{:locals :l} fst)
         (recur (next opts) (assoc acc :locals true))

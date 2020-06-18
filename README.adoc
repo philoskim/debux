@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.7.0"]
+[philoskim/debux "0.7.1"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.7.0"]
+[philoskim/debux-stubs "0.7.1"]
 ....
 
 
@@ -64,6 +64,14 @@ and this to your *production* dependencies.
 
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
+
+* v0.7.1
+** The temporal _turn-off_ version of Debux macros added. See <<temporal-turn-off, here>>
+   for the details.
+** The safe debugging in multi-threads now supported. See <<msg-option, here>> for the
+   example.
+** The `:msg` (or `:m`) option added for dynamic message creation. See <<msg-option,
+   here>> for the details.
 
 * v0.7.0
 ** Tagged literals (`#d/dbg`, `#d/dbgn`, `#d/clog`, `#d/clogn`) added. So you don't have
@@ -2082,9 +2090,10 @@ dbgn: (+ n (mul2 3 4) (add2 10 20)) =>
 .*debux* macro options
 |===
 
-| Options | dbg | dbgn | clog | clogn | break
+| Optio      ns | dbg | dbgn | clog | clogn | break
 
 | string        | O   |   O   |  O   |  O   |   O
+| :msg or :m    | O   |   O   |  O   |  O   |   X
 | number        | O   |   O   |  O   |  O   |   X
 | :if           | O   |   O   |  O   |  O   |   O
 | :locals or :l | O   |   O   |  O   |  O   |   X
@@ -2117,6 +2126,61 @@ more-than signs like this.
 dbg: (repeat 5 "x")   <5 times repeat> =>
 |   ("x" "x" "x" "x" "x")
 ....
+
+
+[[msg-option]]
+### `:msg (or :m)` option
+
+Sometimes you need to create the message dynamically. This option can be useful in the
+multi-threads programming like this.
+
+[source]
+....
+
+(defn my-fn [thread-no]
+  (dbg (* thread-no (+ 10 20)) :msg (str "thread-no: " thread-no)))
+
+(future
+  (Thread/sleep 3000)
+  (my-fn 1))
+
+(future
+  (Thread/sleep 1000)
+  (my-fn 2))
+
+(future
+  (Thread/sleep 2000)
+  (my-fn 3))
+
+(dbg (* 2 5))
+
+(shutdown-agents)
+....
+
+
+[listing]
+.REPL output
+----
+{:ns examples.lab, :line 20}
+dbg: (* 2 5) =>
+|   10
+ 
+{:ns examples.lab, :line 6}
+dbg: (* thread-no (+ 10 20))   <thread-no: 2> =>
+|   60
+ 
+{:ns examples.lab, :line 6}
+dbg: (* thread-no (+ 10 20))   <thread-no: 3> =>
+|   90
+ 
+{:ns examples.lab, :line 6}
+dbg: (* thread-no (+ 10 20))   <thread-no: 1> =>
+|   30
+----
+
+If the above `String` option and this `:msg` option both exist, `:msg` option has higher
+precedence.
+
 
 [[number-option]]
 ### Number option
@@ -2978,6 +3042,37 @@ When using `break`, you can use `:if` like this.
 image:break-4.png[]
 
 
+[[temporal-turn-off]]
+## How to turn off the debux macros temporarily
+
+Now you can temporarily turn off the debux macros by appending `pass:q[_]` after the
+existing debux macro names or turn off the tagged literals by appending `pass:q[_]` after
+`#`.
+
+TIP: Actually, you can use `pass:q[-]`(hyphen) instead of `pass:q[_]`(underline) after the
+     existing debux macro names, because Clojure replace `pass:q[-]` with `pass:q[_]` at
+     compile time.
+
+ 
+[cols="m,m,m,m", options="header", width=75%]
+|===
+
+^| Macros  ^| turning-off          ^| Tagged literals ^| turning-off
+
+| dbg       | dbg_                  | #d/dbg          | #_d/dbg
+| dbgn      | dbgn_                 | #d/dbgn         | #_d/dbgn
+| dbg-prn   | dbg-prn_              |                 |
+| dbg-last  | dbg-last_             |                 |
+
+| clog      | clog_                 | #d/clog         | #_d/clog
+| clogn     | clogn_                | #d/clogn        | #_d/clogn
+| clog-last | clog-last_            |                 |
+
+| break     | break_                |                 |
+ 
+|===
+
+
 [[debux-config]]
 ## How to configure *debux*
 
@@ -3118,7 +3213,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject examples "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.7.0"]]
+                 [philoskim/debux "0.7.1"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

@@ -2,21 +2,21 @@
 
 (use 'debux.core)
 
-(dbg (+ 2 3))
-(dbg_ (+ 2 3))
+(defn my-fn [thread-no]
+  (dbg (* thread-no (+ 10 20)) :msg (str "thread-no: " thread-no)))
 
-(dbgn (* 2 (+ 3 4)))
-(dbgn_ (* 2 (+ 3 4)))
+(future
+  (Thread/sleep 3000)
+  (my-fn 1))
 
-(dbg-prn "hello")
-(dbg-prn_ "hello")
+(future
+  (Thread/sleep 1000)
+  (my-fn 2))
 
-(->> (range 20)
-     (filter odd?)
-     (dbg-last 5 "after filter")
-     (map inc))
+(future
+  (Thread/sleep 2000)
+  (my-fn 3))
 
-(->> (range 20)
-     (filter odd?)
-     (dbg-last_ 5 "after filter")
-     (map inc))
+(dbg (* 2 5))
+
+(shutdown-agents)
