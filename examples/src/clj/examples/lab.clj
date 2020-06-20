@@ -56,3 +56,15 @@
 (dbg (some->> {:y 3 :x 5}
               (:y)
               (- 2)))
+
+(dbg (cond-> 1
+       true inc
+       false (* 42)
+       (= 2 2) (* 3)))
+
+(dbg (cond->> 1
+       true inc
+       false (- 42)
+       (= 2 2) (- 3)))
+
+

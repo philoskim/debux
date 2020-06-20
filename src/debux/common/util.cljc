@@ -336,17 +336,17 @@
 
 
 ;;; spy functions
-(def spy-first
-  (fn [result quoted-form opts]
-    (print-form-with-indent (form-header quoted-form))
-    (pprint-result-with-indent result)
-    result))
+(defn spy-first
+  [result quoted-form]
+  (print-form-with-indent (form-header quoted-form))
+  (pprint-result-with-indent result)
+  result)
 
-(def spy-last
-  (fn [quoted-form opts result]
-    (print-form-with-indent (form-header quoted-form))
-    (pprint-result-with-indent result)
-    result))
+(defn spy-last
+  [quoted-form result]
+  (print-form-with-indent (form-header quoted-form))
+  (pprint-result-with-indent result)
+  result)
 
 (defn spy-comp [quoted-form form opts]
   (fn [& arg]
@@ -355,3 +355,27 @@
         (print-form-with-indent (form-header quoted-form))
         (pprint-result-with-indent result)
         result) )))
+
+
+;;; spy macros
+(defmacro spy
+  [form]
+  `(let [result# ~form]
+    (print-form-with-indent (form-header '~form))
+    (pprint-result-with-indent result#)
+    result#))
+
+(defmacro spy-first2
+  [pre-result form]
+  `(let [result# (-> ~pre-result ~form)]
+     (print-form-with-indent (form-header '~form))
+     (pprint-result-with-indent result#)
+     result#))
+
+(defmacro spy-last2
+  [form pre-result]
+  `(let [result#  (->> ~pre-result ~form)]
+     (print-form-with-indent (form-header '~form))
+     (pprint-result-with-indent result#)
+     result#))
+

@@ -23,16 +23,46 @@
        ~form) ))
 
 (defmacro dbg->
-  [[name & subforms :as form] locals opts]
+  [[_ & subforms :as form] locals opts]
   `(dbg-base ~form ~locals ~opts
-     (~name ~@(mapcat (fn [subform] [subform `(ut/spy-first '~subform ~opts)])
-                      subforms) )))
+     (-> ~@(mapcat (fn [subform] [subform `(ut/spy-first '~subform)])
+                      subforms))))
 
 (defmacro dbg->>
-  [[name & subforms :as form] locals opts]
+  [[_ & subforms :as form] locals opts]
   `(dbg-base ~form ~locals ~opts
-     (~name ~@(mapcat (fn [subform] [subform `(ut/spy-last '~subform ~opts)])
+     (->> ~@(mapcat (fn [subform] [subform `(ut/spy-last '~subform)])
                       subforms)) ))
+
+(defmacro dbg-some->
+  [[_ first-form & subforms :as form] locals opts]
+  `(dbg-base ~form ~locals ~opts
+     (some-> (ut/spy ~first-form)
+             ~@(map (fn [subform] `(ut/spy-first2 ~subform))
+                      subforms) )))
+
+(defmacro dbg-some->>
+  [[_ first-form & subforms :as form] locals opts]
+  `(dbg-base ~form ~locals ~opts
+     (some->> (ut/spy ~first-form)
+              ~@(map (fn [subform] `(ut/spy-last2 ~subform))
+                      subforms) )))
+
+(defmacro dbg-cond->
+  [[_ first-form & subforms :as form] locals opts]
+  `(dbg-base ~form ~locals ~opts
+     (cond-> (ut/spy ~first-form)
+             ~@(mapcat (fn [[condition subform]]
+                         [`(ut/spy ~condition) `(ut/spy-first2 ~subform)])
+                       (partition 2 subforms) ))))
+
+(defmacro dbg-cond->>
+  [[_ first-form & subforms :as form] locals opts]
+  `(dbg-base ~form ~locals ~opts
+     (cond->> (ut/spy ~first-form)
+              ~@(mapcat (fn [[condition subform]]
+                          [`(ut/spy ~condition) `(ut/spy-last2 ~subform)])
+                        (partition 2 subforms)))))
 
 (defmacro dbg-comp
   [[_ & subforms :as form] locals opts]
@@ -66,10 +96,12 @@
 
 
 (def ^:private dbg*
-  {:->   '#{clojure.core/-> clojure.core/some->
-            cljs.core/->    cljs.core/some->}
-   :->>  '#{clojure.core/->> clojure.core/some->>
-            cljs.core/->>    cljs.core/some->>}
+  {:->   '#{clojure.core/-> cljs.core/->}
+   :->>  '#{clojure.core/->> cljs.core/->>}
+   :some-> '#{clojure.core/some-> cljs.core/some->}
+   :some->> '#{clojure.core/some->> cljs.core/some->>}
+   :cond-> '#{clojure.core/cond-> cljs.core/cond->}
+   :cond->> '#{clojure.core/cond->> cljs.core/cond->>}
    :comp '#{clojure.core/comp cljs.core/comp}
    :let  '#{clojure.core/let cljs.core/let}})
 
@@ -80,6 +112,10 @@
       (condp get ns-sym
         (:-> dbg*)   `(dbg-> ~form ~locals ~opts)
         (:->> dbg*)  `(dbg->> ~form ~locals ~opts)
+        (:some-> dbg*)  `(dbg-some-> ~form ~locals ~opts)
+        (:some->> dbg*) `(dbg-some->> ~form ~locals ~opts)
+        (:cond-> dbg*)  `(dbg-cond-> ~form ~locals ~opts)
+        (:cond->> dbg*) `(dbg-cond->> ~form ~locals ~opts)
         (:comp dbg*) `(dbg-comp ~form ~locals ~opts)
         (:let dbg*)  `(dbg-let ~form ~locals ~opts)
         `(dbg-others ~form ~locals ~opts) ))
