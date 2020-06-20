@@ -23,16 +23,16 @@
        ~form) ))
 
 (defmacro dbg->
-  [[_ & subforms :as form] locals opts]
+  [[name & subforms :as form] locals opts]
   `(dbg-base ~form ~locals ~opts
-     (-> ~@(mapcat (fn [subform] [subform `(ut/spy-first '~subform ~opts)])
-                   subforms) )))
+     (~name ~@(mapcat (fn [subform] [subform `(ut/spy-first '~subform ~opts)])
+                      subforms) )))
 
 (defmacro dbg->>
-  [[_ & subforms :as form] locals opts]
+  [[name & subforms :as form] locals opts]
   `(dbg-base ~form ~locals ~opts
-     (->> ~@(mapcat (fn [subform] [subform `(ut/spy-last '~subform ~opts)])
-                    subforms)) ))
+     (~name ~@(mapcat (fn [subform] [subform `(ut/spy-last '~subform ~opts)])
+                      subforms)) ))
 
 (defmacro dbg-comp
   [[_ & subforms :as form] locals opts]
