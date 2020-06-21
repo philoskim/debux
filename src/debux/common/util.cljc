@@ -183,7 +183,7 @@
 (defn remove-dbg-symbols [form]
   (loop [loc (sequential-zip form)]
     (let [node (z/node loc)]
-      ;(ut/d node)
+      ;(d node)
       (cond
         (z/end? loc) (z/root loc)
 
