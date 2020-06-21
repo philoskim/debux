@@ -3139,11 +3139,6 @@ Now you can temporarily turn off the debux macros by appending `pass:q[_]` after
 existing debux macro names or turn off the tagged literals by appending `pass:q[_]` after
 `#`.
 
-TIP: Actually, you can use `pass:q[-]`(hyphen) instead of `pass:q[_]`(underline) after the
-     existing debux macro names, because Clojure replace `pass:q[-]` with `pass:q[_]` at
-     compile time.
-
- 
 [cols="m,m,m,m", options="header", width=75%]
 |===
 
