@@ -3139,7 +3139,6 @@ Now you can temporarily turn off the debux macros by appending `pass:q[_]` after
 existing debux macro names or turn off the tagged literals by appending `pass:q[_]` after
 `#`.
 
- 
 [cols="m,m,m,m", options="header", width=75%]
 |===
 
