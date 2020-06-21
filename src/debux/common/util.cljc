@@ -1,5 +1,5 @@
 (ns debux.common.util
-  "Utilities common for clojure and clojurescript"
+  "Utilities common for Clojure and ClojureScript"
   (:require [clojure.string :as str]
             [clojure.pprint :as pp]
             [clojure.zip :as z]
@@ -337,18 +337,19 @@
 
 ;;; spy functions
 (defn spy-first
-  [result quoted-form]
+  [pre-result quoted-form & [opts]]
   (print-form-with-indent (form-header quoted-form))
-  (pprint-result-with-indent result)
-  result)
+  (pprint-result-with-indent pre-result)
+  pre-result)
 
 (defn spy-last
-  [quoted-form result]
+  [quoted-form pre-result & [opts]]
   (print-form-with-indent (form-header quoted-form))
-  (pprint-result-with-indent result)
-  result)
+  (pprint-result-with-indent pre-result)
+  pre-result)
 
-(defn spy-comp [quoted-form form opts]
+(defn spy-comp
+  [quoted-form form & [opts]]
   (fn [& arg]
     (binding [*indent-level* (inc *indent-level*)]
       (let [result (apply form arg)]
@@ -374,8 +375,7 @@
 
 (defmacro spy-last2
   [form pre-result]
-  `(let [result#  (->> ~pre-result ~form)]
+  `(let [result# (->> ~pre-result ~form)]
      (print-form-with-indent (form-header '~form))
      (pprint-result-with-indent result#)
      result#))
-

@@ -108,18 +108,18 @@
 
 ;;; spy functions
 #?(:cljs
-   (def spy-first
-     (fn [result quoted-form {:keys [msg style js] :as opts}]
-       (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
-       (clog-result-with-indent result js)
-       result) ))
+   (defn spy-first
+     [result quoted-form {:keys [msg style js] :as opts}]
+     (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
+     (clog-result-with-indent result js)
+     result))
 
 #?(:cljs
-   (def spy-last
-     (fn [quoted-form {:keys [msg style js] :as opts} result]
-       (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
-       (clog-result-with-indent result js)
-       result) ))
+   (defn spy-last
+     [quoted-form {:keys [msg style js] :as opts} result]
+     (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
+     (clog-result-with-indent result js)
+     result))
 
 #?(:cljs
    (defn spy-comp
@@ -130,3 +130,29 @@
            (clog-form-with-indent (form-header quoted-form msg) (or style :debug))
            (clog-result-with-indent result js)
            result) ))))
+
+
+;;; spy macros
+#?(:clj
+   (defmacro spy
+     [form {:keys [msg style js] :as opts}]
+     `(let [result# ~form]
+        (clog-form-with-indent (form-header '~form ~msg) (or ~style :debug))
+        (clog-result-with-indent result# ~js)
+        result#) ))
+
+#?(:clj
+   (defmacro spy-first2
+     [pre-result form {:keys [msg style js] :as opts}]
+     `(let [result# (-> ~pre-result ~form)]
+        (clog-form-with-indent (form-header '~form ~msg) (or ~style :debug))
+        (clog-result-with-indent result# ~js)
+        result#) ))
+
+#?(:clj
+  (defmacro spy-last2
+    [form {:keys [msg style js] :as opts} pre-result]
+    `(let [result# (->> ~pre-result ~form)]
+       (clog-form-with-indent (form-header '~form ~msg) (or ~style :debug))
+       (clog-result-with-indent result# ~js)
+       result#) ))

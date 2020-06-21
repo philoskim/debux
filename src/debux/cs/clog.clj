@@ -26,21 +26,58 @@
        ~form) ))
 
 (defmacro clog->
-  [[[name & subforms :as form] locals opts]
+  [[name & subforms :as form] locals opts]
   `(clog-base ~form ~locals ~opts
-     (~name ~@(mapcat (fn [subform] [subform `(cs.ut/spy-first '~subform ~opts)])
+     (~name ~@(mapcat (fn [subform]
+                        [subform `(cs.ut/spy-first '~subform ~opts)])
                       subforms) )))
 
 (defmacro clog->>
   [[name & subforms :as form] locals opts]
   `(clog-base ~form ~locals ~opts
-     (~name ~@(mapcat (fn [subform] [subform `(cs.ut/spy-last '~subform ~opts)])
+     (~name ~@(mapcat (fn [subform]
+                        [subform `(cs.ut/spy-last '~subform ~opts)])
                       subforms)) ))
+
+(defmacro clog-some->
+  [[_ first-form & subforms :as form] locals opts]
+  `(clog-base ~form ~locals ~opts
+     (some-> (cs.ut/spy ~first-form ~opts)
+             ~@(map (fn [subform]
+                      `(cs.ut/spy-first2 ~subform ~opts))
+                      subforms) )))
+
+(defmacro clog-some->>
+  [[_ first-form & subforms :as form] locals opts]
+  `(clog-base ~form ~locals ~opts
+     (some->> (cs.ut/spy ~first-form ~opts)
+              ~@(map (fn [subform]
+                       `(cs.ut/spy-last2 ~subform ~opts))
+                      subforms) )))
+
+(defmacro clog-cond->
+  [[_ first-form & subforms :as form] locals opts]
+  `(clog-base ~form ~locals ~opts
+     (cond-> (cs.ut/spy ~first-form ~opts)
+             ~@(mapcat (fn [[condition subform]]
+                         [`(cs.ut/spy ~condition ~opts)
+                          `(cs.ut/spy-first2 ~subform ~opts)])
+                       (partition 2 subforms) ))))
+
+(defmacro clog-cond->>
+  [[_ first-form & subforms :as form] locals opts]
+  `(clog-base ~form ~locals ~opts
+     (cond->> (cs.ut/spy ~first-form ~opts)
+              ~@(mapcat (fn [[condition subform]]
+                          [`(cs.ut/spy ~condition ~opts)
+                           `(cs.ut/spy-last2 ~subform ~opts)])
+                        (partition 2 subforms)))))
 
 (defmacro clog-comp
   [[_ & subforms :as form] locals opts]
   `(clog-base ~form ~locals ~opts
-     (comp ~@(map (fn [subform] `(cs.ut/spy-comp '~subform ~subform ~opts))
+     (comp ~@(map (fn [subform]
+                    `(cs.ut/spy-comp '~subform ~subform ~opts))
                   subforms) )))
 
 (defmacro clog-let
@@ -93,10 +130,14 @@
      result#))
 
 (def ^:private clog*
-  {:->   '#{cljs.core/->  cljs.core/some->}
-   :->>  '#{cljs.core/->> cljs.core/some->>}
-   :comp '#{clojure.core/comp cljs.core/comp}
-   :let  '#{clojure.core/let cljs.core/let}})
+  {:->   '#{cljs.core/->}
+   :->>  '#{cljs.core/->>}
+   :some->  '#{cljs.core/some->}
+   :some->> '#{cljs.core/some->>}
+   :cond->  '#{cljs.core/cond->}
+   :cond->> '#{cljs.core/cond->>}
+   :comp '#{cljs.core/comp}
+   :let  '#{cljs.core/let}})
 
 
 (defmacro clog
@@ -108,6 +149,10 @@
         (condp get ns-sym
           (:-> clog*)   `(clog-> ~form ~locals ~opts)
           (:->> clog*)  `(clog->> ~form ~locals ~opts)
+          (:some-> clog*)  `(clog-some-> ~form ~locals ~opts)
+          (:some->> clog*) `(clog-some->> ~form ~locals ~opts)
+          (:cond-> clog*)  `(clog-cond-> ~form ~locals ~opts)
+          (:cond->> clog*) `(clog-cond->> ~form ~locals ~opts)
           (:comp clog*) `(clog-comp ~form ~locals ~opts)
           (:let clog*)  `(clog-let ~form ~locals ~opts)
           `(clog-others ~form ~locals ~opts) )))
