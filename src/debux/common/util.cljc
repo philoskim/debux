@@ -171,9 +171,13 @@
 
 ;;; print
 (def dbg-symbols*
-  '#{dbg dbgn dbg_ dbgn_ debux.dbgn/d
+  '#{debux.dbgn/d
+     dbg dbgn dbg-last
+     dbg_ dbgn_ dbg-last_
      debux.core/dbg* debux.core/dbgn*
-     clog clogn clog_ clogn_ debux.cs.clogn/d
+     debux.cs.clogn/d
+     clog clogn clog-last
+     clog_ clogn_ clog-last_
      debux.cs.core/clog* debux.cs.core/clogn*})
 
 (defn remove-dbg-symbols [form]
