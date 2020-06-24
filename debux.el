@@ -1,6 +1,8 @@
 (defun debux-match-delete-word? (word)
   (let ((match-word))
-    (dolist (w '("(dbg " "(dbgn " "(clog " "(clogn ") match-word)
+    (dolist (w '("(dbg " "(dbgn " "(clog " "(clogn "
+                 "(dbg_ " "(dbgn_ " "(clog_ " "(clogn_ ")
+            match-word)
       (when (string= w word)
         (setq match-word w) ))))
 
