@@ -96,10 +96,25 @@
      (dbg-last "dbg-last example")
      (map str))
 
+;; some->, some->>
+(dbg (some-> {:a 1} :b inc))
 
-; (dbg (some-> {:a 1} :b inc))
+(dbg (some->> {:y 3 :x 5}
+              :y
+              (- 2)))
 
+;; cond->, cond->>
+(dbg (cond-> 1
+       true inc
+       false (* 42)
+       (= 2 2) (* 3)))
 
+(dbg (cond->> 1
+       true inc
+       false (- 42)
+       (= 2 2) (- 3)))
+
+;; let
 (dbg (let [a (take 5 (range))
            {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}
            [e f g & h] ["a" "b" "c" "d" "e"]]
@@ -107,6 +122,7 @@
 ; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 
 
+;; comp
 (def c (dbg (comp inc inc +)))
 (c 10 20)
 

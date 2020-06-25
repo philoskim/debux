@@ -44,3 +44,28 @@
                         :zip 63141}}})
 
 (dbg person :p #(get-in % [:employer :address :city]))
+
+;; :msg option
+(defn my-fn2 [thread-no]
+  (dbg (-> "a b c d"
+         .toUpperCase
+         (.replace "A" "X")
+         (.split " ")
+         first)
+       :msg (str "thread-no: " thread-no)))
+
+(future
+  (Thread/sleep 1000)
+  (my-fn2 1))
+
+(future
+  (Thread/sleep 1000)
+  (my-fn2 2))
+
+(future
+  (Thread/sleep 1000)
+  (my-fn2 3))
+
+(dbg (+ 10 20))
+
+(shutdown-agents)
