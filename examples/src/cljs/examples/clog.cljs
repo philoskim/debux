@@ -79,11 +79,25 @@
      (clog-last "clog-last example")
      (map str))
 
+;; some->, some->>
+(clog (some-> {:a 1} :b inc))
 
-;; some->
-; (clog (some-> {:a 1} :b inc))
+(clog (some->> {:y 3 :x 5}
+              (:y)
+              (- 2)))
 
+;; cond->, cond->>
+(clog (cond-> 1
+       true inc
+       false (* 42)
+       (= 2 2) (* 3)))
 
+(clog (cond->> 1
+       true inc
+       false (- 42)
+       (= 2 2) (- 3)))
+
+;; let
 (clog (let [a (take 5 (range))
            {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}
            [e f g & h] ["a" "b" "c" "d" "e"]]
@@ -91,5 +105,6 @@
 ; => [(0 1 2 3 4) 20 50 100 "a" "b" "c" ("d" "e")]
 
 
+;; comp
 (def c (clog (comp inc inc +)))
 (c 10 20)
