@@ -56,9 +56,12 @@ and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.7.3"]
+[philoskim/debux-stubs "0.7.4"]
 ....
 
+NOTE: Currently, the versions of `debux` and `debux-stubs` are mismatched, due to a bug
+      fix in `debux-stubs 0.7.3`. They will be matched again after the later versions.
+ 
 
 ## Recent change logs
 
