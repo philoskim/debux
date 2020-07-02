@@ -1,38 +1,20 @@
 (ns examples.lab
   (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
 
-(dbg (some-> {:a 1} :b inc))
 
-(dbg (some->> {:y 3 :x 5}
-              (:y)
-              (- 2)))
+(d/set-source-info-mode! false)
 
-(dbg (cond-> 1
-       true inc
-       false (* 42)
-       (= 2 2) (* 3)))
+(dbg (+ 2 3))
+(dbgn (* 10 (+ 2 3)))
 
-(dbg (cond->> 1
-       true inc
-       false (- 42)
-       (= 2 2) (- 3)))
+(clog (+ 2 3))
+(clogn (* 10 (+ 2 3)))
 
 
-(clog (some-> {:a 1} :b inc))
+(d/set-source-info-mode! true)
 
-(clog (some->> {:y 3 :x 5}
-              (:y)
-              (- 2)))
+(dbg (+ 20 30))
+(dbgn (* 10 (+ 2 3)))
 
-(clog (cond-> 1
-       true inc
-       false (* 42)
-       (= 2 2) (* 3)))
-
-(clog (cond->> 1
-       true inc
-       false (- 42)
-       (= 2 2) (- 3)))
-
-
-
+(clog (+ 20 30))
+(clogn (* 10 (+ 2 3)))

@@ -35,16 +35,21 @@
 ;;; config
 (def config*
   (atom {:debug-mode true
+         :source-info-mode true
+         :print-length 100
          :ns-blacklist nil
-         :ns-whitelist nil
-         :print-length 100} ))
-
-(defn set-print-length! [num]
-  (swap! config* assoc :print-length num)
-  nil)
+         :ns-whitelist nil} ))
 
 (defn set-debug-mode! [val]
   (swap! config* assoc :debug-mode val)
+  nil)
+
+(defn set-source-info-mode! [val]
+  (swap! config* assoc :source-info-mode val)
+  nil)
+
+(defn set-print-length! [num]
+  (swap! config* assoc :print-length num)
   nil)
 
 (defn set-ns-blacklist! [blacklist]
@@ -54,6 +59,7 @@
 (defn set-ns-whitelist! [whitelist]
   (swap! config* assoc :ns-whitelist whitelist)
   nil)
+
 
 (defn ns-match? [current-ns target-ns]
   (-> (re-pattern (str/escape target-ns {\. "\\." \* ".*"}))
@@ -216,8 +222,9 @@
 
 (defn print-title-with-indent
   [src-info title]
-  (doseq [line [src-info title]]
-    (println (prepend-bars-in-line line (dec *indent-level*))))
+  (when (:source-info-mode @config*)
+    (println (prepend-bars-in-line src-info (dec *indent-level*))))
+  (println (prepend-bars-in-line title (dec *indent-level*)))
   (flush))
 
 (defn print-form-with-indent

@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.7.3"]
+[philoskim/debux "0.7.5"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.7.3"]
+[philoskim/debux-stubs "0.7.5"]
 ....
 
 
@@ -64,6 +64,10 @@ and this to your *production* dependencies.
 
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
+
+
+* v0.7.5
+** `set-source-info-mode!` added.  See <<source-info-mode, here>> for the details.
 
 * v0.7.3
 ** `pass:q[some->]` and `pass:q[some->>]` support in `dbg` and `clog` added. See
@@ -108,7 +112,8 @@ file.
 .examples/core.cljs
 ....
 (ns examples.core
-  (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
+  (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break
+                                                clog_ clogn_ dbg_ dbgn_ break_]]))
 ....
 
 {empty} +
@@ -470,24 +475,26 @@ The thread macro `pass:q[cond->]` and `pass:q[cond->>]` are supported in `dbg` a
 [source]
 .Example 1
 ....
-(dbg (cond-> 10
-       true    inc
-       false   (* 42)
-       (= 5 5) (* 3)))
+(def a 10)
+
+(dbg (cond-> a
+       (even? a) inc
+       (= a 20)  (* 42)
+       (= 5 5)   (* 3)))
 ....
 
 [source]
 .REPL output
 ....
 {:ns examples.lab, :line 60}
-dbg: (cond-> 10 true inc false (* 42) (= 5 5) (* 3)) =>
-| 10 =>
+dbg: (cond-> a (even? a) inc (= a 20) (* 42) (= 5 5) (* 3)) =>
+| a =>
 |   10
-| true =>
+| (even? a) =>
 |   true
 | inc =>
 |   11
-| false =>
+| (= a 20) =>
 |   false
 | (= 5 5) =>
 |   true
@@ -499,24 +506,26 @@ dbg: (cond-> 10 true inc false (* 42) (= 5 5) (* 3)) =>
 [source]
 .Example 2
 ....
-(dbg (cond->> 10
-       true    inc
-       false   (- 42)
-       (= 2 2) (- 30)))
+(def b 10)
+
+(dbg (cond->> b
+       (even? b) inc
+       (= b 20)  (- 42)
+       (= 2 2)   (- 30)))
 ....
 
 [source]
 .REPL output
 ....
 {:ns examples.lab, :line 65}
-dbg: (cond->> 10 true inc false (- 42) (= 5 5) (- 30)) =>
-| 10 =>
+dbg: (cond->> b (even? b) inc (= b 20) (- 42) (= 5 5) (- 30)) =>
+| b =>
 |   10
-| true =>
+| (even? b) =>
 |   true
 | inc =>
 |   11
-| false =>
+| (= b 20) =>
 |   false
 | (= 5 5) =>
 |   true
@@ -2976,65 +2985,6 @@ dbg: (+ 1 2 (* 3 4)) =>
 --
 
 
-
-[[cljs-devtools]]
-## Support for `cljs-devtools`
-
-* The `clog`/`clogn` of `debux` supports
-  link:https://github.com/binaryage/cljs-devtools[cljs-devtools] since the version
-  `0.5.9`.
-+
-image::cljs-devtools.png[title="cljs-devtools printing example", width=700]
-
-* The <<two-libraries, *development*>> version `debux` library already includes the
-  version 1.0.0 of `cljs-devtools` on its dependencies. Therefore, you don't have to
-  include `cljs-devtools` on the `:dependencies` section of your project file.
-+
-NOTE: Of course, you can include a newer version of `devtools` on the `:dependencies`
-      section of your project file.
-+
-WARNING: Never use the *development* version `debux` in production. Instead, use the
-         *production* version `debux-stubs` in production. See the details
-         <<two-libraries, here>>.
-+
-So if you want to use `cljs-devtools` printing, install it via `:preloads` cljs compiler
-option like this, following
-link:https://github.com/binaryage/cljs-devtools/blob/master/docs/installation.md[cljs-devtools
-installition guide].
-+
-[listing]
-.project.clj
-----
-(defproject your-project  "0.1.0"
-  ,,,,,,
-  :cljsbuild {:builds [{:compiler {:preloads [devtools.preload]
-                                   ,,,,,,}}]})
-----
-+
-Or install it manually like this.
-+
-[listing]
-----
-(ns your-project.devtools
-  (:require [devtools.core :as devtools]))
-
-(devtools/install!)
-----
-
-* Don't forget to to turn on the Chrome DevTools' [Settings -- Preferences -- Console --
-  Enable custom formatters], before using `cljs-devtools` printing.
-+
-image::chrome-devtools-settings.png[title="Enable custom formatters on Chrome DevTools", width=850]
-
-* You should read
-  link:https://github.com/binaryage/cljs-devtools/blob/master/docs/faq.md#why-some-custom-formatters-were-not-rendered[Why
-  some custom formatters were not rendered?] before using cljs-devtools printing.
-
-* You can confiugre `cljs-devtools` in various ways as you like. See the details in
-  link:https://github.com/binaryage/cljs-devtools/blob/master/docs/configuration.md[cljs-devtools
-  configuration].
-
-
 [#dbg-last]
 ## `dbg-last`: Debugging inside the thread-last macro pass:q[`->>`]
 
@@ -3106,6 +3056,66 @@ NOTE: `dbg-prn` can be used inside the macros for Clojure.
 See the detailed explaination link:doc/macro-debugging-in-clojurescript.adoc[here].
 
 
+
+[[cljs-devtools]]
+## Support for `cljs-devtools`
+
+* The `clog`/`clogn` of `debux` supports
+  link:https://github.com/binaryage/cljs-devtools[cljs-devtools] since the version
+  `0.5.9`.
++
+image::cljs-devtools.png[title="cljs-devtools printing example", width=700]
+
+* The <<two-libraries, *development*>> version `debux` library already includes the
+  version 1.0.0 of `cljs-devtools` on its dependencies. Therefore, you don't have to
+  include `cljs-devtools` on the `:dependencies` section of your project file.
++
+NOTE: Of course, you can include a newer version of `devtools` on the `:dependencies`
+      section of your project file.
++
+WARNING: Never use the *development* version `debux` in production. Instead, use the
+         *production* version `debux-stubs` in production. See the details
+         <<two-libraries, here>>.
++
+So if you want to use `cljs-devtools` printing, install it via `:preloads` cljs compiler
+option like this, following
+link:https://github.com/binaryage/cljs-devtools/blob/master/docs/installation.md[cljs-devtools
+installition guide].
++
+[listing]
+.project.clj
+----
+(defproject your-project  "0.1.0"
+  ,,,,,,
+  :cljsbuild {:builds [{:compiler {:preloads [devtools.preload]
+                                   ,,,,,,}}]})
+----
++
+Or install it manually like this.
++
+[listing]
+----
+(ns your-project.devtools
+  (:require [devtools.core :as devtools]))
+
+(devtools/install!)
+----
+
+* Don't forget to to turn on the Chrome DevTools' [Settings -- Preferences -- Console --
+  Enable custom formatters], before using `cljs-devtools` printing.
++
+image::chrome-devtools-settings.png[title="Enable custom formatters on Chrome DevTools", width=850]
+
+* You should read
+  link:https://github.com/binaryage/cljs-devtools/blob/master/docs/faq.md#why-some-custom-formatters-were-not-rendered[Why
+  some custom formatters were not rendered?] before using cljs-devtools printing.
+
+* You can confiugre `cljs-devtools` in various ways as you like. See the details in
+  link:https://github.com/binaryage/cljs-devtools/blob/master/docs/configuration.md[cljs-devtools
+  configuration].
+
+
+
 ## `break` examples (CLJS only)
 
 ### `break` options
@@ -3164,8 +3174,53 @@ When using `break`, you can use `:if` like this.
 image:break-4.png[]
 
 
+[[source-info-mode]]
+## Turning off the source info line printing
+
+If you want to turn off the source info line printing in the `debux` macros, use
+`(set-source-info-mode! false)`. The `:ns` and `:line` source info line will not be
+printed.
+ 
+[source]
+....
+(set-source-info-mode! false)
+
+(dbg (+ 2 3))
+(dbgn (* 10 (+ 2 3)))
+
+(set-source-info-mode! true)
+
+(dbg (+ 20 30))
+(dbgn (* 10 (+ 2 3)))
+....
+
+[listing]
+.REPL output
+----
+dbg: (+ 2 3) =>
+|   5
+ 
+dbgn: (* 10 (+ 2 3)) =>
+| (+ 2 3) =>
+|   5
+| (* 10 (+ 2 3)) =>
+|   50
+ 
+{:ns examples.lab, :line 11}
+dbg: (+ 20 30) =>
+|   50
+ 
+{:ns examples.lab, :line 12}
+dbgn: (* 10 (+ 2 3)) =>
+| (+ 2 3) =>
+|   5
+| (* 10 (+ 2 3)) =>
+|   50
+----
+
+
 [[temporal-turn-off]]
-## How to turn off the debux macros temporarily
+## Turning off the debux macros temporarily
 
 You can temporarily turn off the debux macros by appending `pass:q[_]` after the existing
 debux macro names or turn off the tagged literals by appending `pass:q[_]` after `#`.
@@ -3190,7 +3245,7 @@ debux macro names or turn off the tagged literals by appending `pass:q[_]` after
 
 
 [[debux-config]]
-## How to configure *debux*
+## How to configure the namespaces to debug
 
 * When `(set-debug-mode! false)` is run, the effects of `set-ns-whitelist!` and
   `set-ns-blacklist!` will be ignored.
@@ -3329,7 +3384,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject examples "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.7.3"]]
+                 [philoskim/debux "0.7.5"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]
