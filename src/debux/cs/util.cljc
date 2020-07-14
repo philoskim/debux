@@ -70,8 +70,9 @@
 #?(:cljs
    (defn clog-title
      [src-info title form-style]
-     (.log js/console
-           (ut/prepend-bars-in-line src-info (dec ut/*indent-level*)))
+     (when (:source-info-mode @ut/config*)
+       (.log js/console
+             (ut/prepend-bars-in-line src-info (dec ut/*indent-level*)) ))
      (.log js/console
            (ut/prepend-bars-in-line title (dec ut/*indent-level*))
            (:title @style*)
