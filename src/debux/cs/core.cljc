@@ -10,10 +10,13 @@
 
 #?(:cljs (enable-console-print!))
 
-(def set-print-length! ut/set-print-length!)
-
 (defmacro set-debug-mode! [val]
   `(ut/set-debug-mode! ~val))
+
+(defmacro set-source-info-mode! [val]
+  `(ut/set-source-info-mode! ~val))
+
+(def set-print-length! ut/set-print-length!)
 
 (defmacro set-ns-whitelist! [whitelist]
   `(ut/set-ns-whitelist! ~whitelist))

@@ -6,9 +6,11 @@
             [debux.common.util :as ut] ))
 
 ;;; config APIs
-(def set-print-length! ut/set-print-length!)
-
 (def set-debug-mode! ut/set-debug-mode!)
+
+(def set-source-info-mode! ut/set-source-info-mode!)
+
+(def set-print-length! ut/set-print-length!)
 
 (defmacro set-ns-blacklist! [blacklist]
   `(ut/set-ns-blacklist! ~blacklist))
