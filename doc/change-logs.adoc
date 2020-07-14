@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.7.5
+** `set-source-info-mode!` added.
+
 * v0.7.3
 ** `pass:[some->]` and `pass:[some->>]` support in `dbg` and `clog` added.
 ** `pass:[cond->]` and `pass:[cond->>]` support in `dbg` and `clog` added.
