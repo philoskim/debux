@@ -3,6 +3,10 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.7.6
+** Bumps `binaryage/devtools 1.0.2`
+** Matching with the fixed version of `philoskim/debux-stubs 0.7.6`
+
 * v0.7.5
 ** `set-source-info-mode!` added.
 

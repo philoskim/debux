@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.7.5"]
+[philoskim/debux "0.7.6"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.7.5"]
+[philoskim/debux-stubs "0.7.6"]
 ....
 
 
@@ -65,6 +65,10 @@ and this to your *production* dependencies.
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
+
+* v0.7.6
+** Bumps `binaryage/devtools 1.0.2`
+** Matched: the fixed version of `philoskim/debux-stubs 0.7.6`
 
 * v0.7.5
 ** `set-source-info-mode!` added.  See <<source-info-mode, here>> for the details.
@@ -3384,7 +3388,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject examples "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.7.5"]]
+                 [philoskim/debux "0.7.6"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]
