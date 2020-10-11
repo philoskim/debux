@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.7.7
+** Bug fixed: link:https://github.com/philoskim/debux/pull/20[pull request] merged. 
+
 * v0.7.6
 ** Bumps `binaryage/devtools 1.0.2`
 **  Version matching with the fixed version of `philoskim/debux-stubs 0.7.6`
