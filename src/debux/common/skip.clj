@@ -107,7 +107,9 @@
 (defn- process-for-binding [[binding form]]
   (if (keyword? binding)
     (case binding
-      :let `[~binding (ms/o-skip [(ms/skip ~(first form)) ~(second form)])]
+      :let `[~binding (ms/o-skip ~(->> (partition 2 form)
+                                       (mapcat process-let-binding)
+                                       vec))]
       [binding form])
     `[(ms/skip ~binding) ~form] ))
 
