@@ -3074,15 +3074,11 @@ See the detailed explaination link:doc/macro-debugging-in-clojurescript.adoc[her
 image::cljs-devtools.png[title="cljs-devtools printing example", width=700]
 
 * The <<two-libraries, *development*>> version `debux` library already includes the
-  version 1.0.0 of `cljs-devtools` on its dependencies. Therefore, you don't have to
+  version 1.0.2 of `cljs-devtools` on its dependencies. Therefore, you don't have to
   include `cljs-devtools` on the `:dependencies` section of your project file.
 +
 NOTE: Of course, you can include a newer version of `devtools` on the `:dependencies`
       section of your project file.
-+
-WARNING: Never use the *development* version `debux` in production. Instead, use the
-         *production* version `debux-stubs` in production. See the details
-         <<two-libraries, here>>.
 +
 So if you want to use `cljs-devtools` printing, install it via `:preloads` cljs compiler
 option like this, following
@@ -3107,6 +3103,10 @@ Or install it manually like this.
 
 (devtools/install!)
 ----
+
+* `shadow-cljs` uses `cljs-devtools` by default. Accordingly, you will see the the
+   printing result of `debux` in the style of `cljs-devtools`. So you have to turn on the
+   following requirement as well.
 
 * Don't forget to to turn on the Chrome DevTools' [Settings -- Preferences -- Console --
   Enable custom formatters], before using `cljs-devtools` printing.
