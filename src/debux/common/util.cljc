@@ -38,7 +38,8 @@
          :source-info-mode true
          :print-length 100
          :ns-blacklist nil
-         :ns-whitelist nil} ))
+         :ns-whitelist nil
+         :cljs-devtools nil} ))
 
 (defn set-debug-mode! [val]
   (swap! config* assoc :debug-mode val)
@@ -58,6 +59,10 @@
 
 (defn set-ns-whitelist! [whitelist]
   (swap! config* assoc :ns-whitelist whitelist)
+  nil)
+
+(defn set-cljs-devtools! [bool]
+  (swap! config* assoc :cljs-devtools bool)
   nil)
 
 

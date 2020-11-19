@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.7.7"]
+[philoskim/debux "0.7.8"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.7.7"]
+[philoskim/debux-stubs "0.7.8"]
 ....
 
 
@@ -65,6 +65,10 @@ and this to your *production* dependencies.
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
+* v0.7.8
+** `set-cljs-devtools!` added. See the details <<set-cljs-devtools, here>>.
+** `cljs-devtools` dependency removed. _Debux_ no longer includes `cljs-devtools`
+   dependency.
 
 * v0.7.7
 ** Bug fixed: link:https://github.com/philoskim/debux/pull/20[pull request] merged. 
@@ -3073,21 +3077,21 @@ See the detailed explaination link:doc/macro-debugging-in-clojurescript.adoc[her
 +
 image::cljs-devtools.png[title="cljs-devtools printing example", width=700]
 
-* The <<two-libraries, *development*>> version `debux` library already includes the
-  version 1.0.0 of `cljs-devtools` on its dependencies. Therefore, you don't have to
-  include `cljs-devtools` on the `:dependencies` section of your project file.
+[[set-cljs-devtools]]
+* If you want to use `cljs-devtools` printing in _debux_,
+
+** firstly, call the `set-cljs-devtools!` function in your source code explicitly like
+   this.
 +
-NOTE: Of course, you can include a newer version of `devtools` on the `:dependencies`
-      section of your project file.
-+
-WARNING: Never use the *development* version `debux` in production. Instead, use the
-         *production* version `debux-stubs` in production. See the details
-         <<two-libraries, here>>.
-+
-So if you want to use `cljs-devtools` printing, install it via `:preloads` cljs compiler
-option like this, following
-link:https://github.com/binaryage/cljs-devtools/blob/master/docs/installation.md[cljs-devtools
-installition guide].
+[source]
+....
+(debux.cs.core/set-cljs-devtools! true)   ;; the default value is false
+....
+
+** secondly, install `cljs-devtools` via `:preloads` cljs compiler option like this,
+   following
+   link:https://github.com/binaryage/cljs-devtools/blob/master/docs/installation.md[cljs-devtools
+   installition guide].
 +
 [listing]
 .project.clj
@@ -3112,6 +3116,10 @@ Or install it manually like this.
   Enable custom formatters], before using `cljs-devtools` printing.
 +
 image::chrome-devtools-settings.png[title="Enable custom formatters on Chrome DevTools", width=850]
+
+* `shadow-cljs` uses `cljs-devtools` by default. Accordingly, you will see the printing
+   result of `debux` in the style of `cljs-devtools`. So you have to turn on the above
+   requirement in that case as well.
 
 * You should read
   link:https://github.com/binaryage/cljs-devtools/blob/master/docs/faq.md#why-some-custom-formatters-were-not-rendered[Why
@@ -3391,7 +3399,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject examples "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.7.7"]]
+                 [philoskim/debux "0.7.8"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

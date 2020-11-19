@@ -24,6 +24,9 @@
 (defmacro set-ns-blacklist! [blacklist]
   `(ut/set-ns-blacklist! ~blacklist))
 
+(defmacro set-cljs-devtools! [bool]
+  `(ut/set-debug-mode! ~bool))
+
 
 ;;; debugging APIs
 (defmacro dbg [form & opts]

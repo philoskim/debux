@@ -3,7 +3,7 @@
   (:require [clojure.string :as str]
             [cljs.analyzer.api :as ana]
             #?(:cljs [cljs.pprint :as pp])
-            #?(:cljs [devtools.formatters])
+            ;#?(:cljs [devtools.formatters])
             [debux.common.util :as ut] ))
 
 ;;; caching
@@ -90,7 +90,7 @@
      [result & [js-mode]]
      (let [pprint (str/trim (with-out-str (pp/pprint result)))
            prefix (str (ut/make-bars ut/*indent-level*) "  ")]
-       (if (devtools.formatters/installed?)
+       (if (:cljs-devtools @ut/config*)
          (.log js/console prefix result)
          (.log js/console (->> (str/split pprint #"\n")
                                (mapv #(str prefix %))
