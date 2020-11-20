@@ -106,7 +106,7 @@
                 recur)
 
             ((:fn-type (macro-types env)) sym)
-            (-> (z/replace loc (ut/d (sk/insert-skip-in-fn node)))
+            (-> (z/replace loc (sk/insert-skip-in-fn node))
                 z/next
                 recur)
 
