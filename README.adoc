@@ -3097,6 +3097,8 @@ image::cljs-devtools.png[title="cljs-devtools printing example", width=700]
 .project.clj
 ----
 (defproject your-project  "0.1.0"
+  :dependencies [[binaryage/devtools "1.0.2"]
+                 ,,,,,,]
   ,,,,,,
   :cljsbuild {:builds [{:compiler {:preloads [devtools.preload]
                                    ,,,,,,}}]})
