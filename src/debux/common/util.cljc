@@ -35,12 +35,13 @@
 ;;; config
 (def config*
   (atom {:debug-mode true
+         :debug-level 0
          :source-info-mode true
          :print-length 100
          :ns-blacklist nil
          :ns-whitelist nil
          :line-bullet "|"
-         :debug-level 0} ))
+         :cljs-devtools nil} ))
 
 (defn set-debug-mode! [val]
   (swap! config* assoc :debug-mode val)
@@ -69,6 +70,11 @@
 (defn set-line-bullet! [bullet]
   (swap! config* assoc :line-bullet bullet)
   nil)
+
+(defn set-cljs-devtools! [bool]
+  (swap! config* assoc :cljs-devtools bool)
+  nil)
+
 
 (defn ns-match? [current-ns target-ns]
   (-> (re-pattern (str/escape target-ns {\. "\\." \* ".*"}))

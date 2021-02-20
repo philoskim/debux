@@ -105,10 +105,11 @@
        result#) ))
 
 (defmacro clog-once
-  [form locals {:keys [msg n condition ns line style js once] :as opts}]
+  [form locals {:keys [level condition ns line msg n style js once] :as opts}]
   `(let [condition# ~condition
          result# ~form]
-     (when (and (or ~(not (contains? opts :condition))
+     (when (and (>= (or ~level 0) (:debug-level @ut/config*))
+                (or ~(not (contains? opts :condition))
                     condition#)
                 (cs.ut/changed? (str '~form " " '~(dissoc opts :ns :line))
                                 (str result#) ))

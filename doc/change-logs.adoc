@@ -3,6 +3,10 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.7.9
+** `set-debug-level!` added.
+** `set-line-bullet!` added.
+
 * v0.7.8
 ** `set-cljs-devtools!` added.
 ** `cljs-devtools` dependency removed. _Debux_ no longer includes `cljs-devtools`

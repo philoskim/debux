@@ -29,6 +29,9 @@
 
 (def set-line-bullet! ut/set-line-bullet!)
 
+(defmacro set-cljs-devtools! [bool]
+  `(ut/set-cljs-devtools! ~bool))
+
 
 ;;; debugging APIs
 (defmacro dbg [form & opts]

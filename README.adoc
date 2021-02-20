@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.7.8"]
+[philoskim/debux "0.7.9"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.7.8"]
+[philoskim/debux-stubs "0.7.9"]
 ....
 
 
@@ -64,6 +64,10 @@ and this to your *production* dependencies.
 
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
+
+* v0.7.9
+** `set-debug-level!` added. See the details <<set-debug-level, here>>.
+** `set-line-bullet!` added. See the details <<set-line-bullet, here>>.
 
 * v0.7.8
 ** `set-cljs-devtools!` added. See the details <<set-cljs-devtools, here>>.
@@ -2241,6 +2245,7 @@ dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first)   <thread
 | :locals or :l | O   |   O   |  O   |  O   |   X
 | :print  or :p | O   |   X   |  O   |  X   |   X
 | :dup          | X   |   0   |  X   |  0   |   X
+| :level        | O   |   O   |  O   |  O   |   X
 | :style  or :s | X   |   X   |  O   |  O   |   X
 | :once   or :o | X   |   X   |  O   |  X   |   X
 | :js           | X   |   X   |  O   |  O   |   X
@@ -2779,6 +2784,82 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 |   6
 ----
 
+[[set-debug-level]]
+### `:level` option
+
+You can set the debug level by using `set-debug-level!` and specify `:level` option as
+follows. You can specify debug levels with any positive integers as you like.
+
+[source]
+.Example 1
+....
+;; The default debug level is 0.
+(dbg (+ 10 20 5) :level 5)
+(dbg (+ 10 20 3) :level 3)
+(dbg (+ 10 20))
+....
+
+[listing]
+.REPL output
+----
+{:ns examples.lab, :line 18}
+dbg: (+ 10 20 5) =>
+|   35
+ 
+{:ns examples.lab, :line 19}
+dbg: (+ 10 20 3) =>
+|   33
+ 
+{:ns examples.lab, :line 20}
+dbg: (+ 10 20) =>
+|   30
+----
+
+---
+
+[source]
+.Example 2
+....
+(set-debug-level! 3)
+
+(dbg (+ 10 20 5) :level 5)
+(dbg (+ 10 20 3) :level 3)
+(dbg (+ 10 20))
+....
+
+[listing]
+.REPL output
+----
+{:ns examples.lab, :line 23}
+dbg: (+ 10 20 5) =>
+|   35
+ 
+{:ns examples.lab, :line 24}
+dbg: (+ 10 20 3) =>
+|   33
+----
+
+---
+
+[source]
+.Example 3
+....
+(set-debug-level! 5)
+
+(dbg (+ 10 20 5) :level 5)
+(dbg (+ 10 20 3) :level 3)
+(dbg (+ 10 20))
+....
+
+[listing]
+.REPL output
+----
+{:ns examples.lab, :line 28}
+dbg: (+ 10 20 5) =>
+|   35
+----
+
+
 [[style-option]]
 ### `:style` (or `:s`) option (CSS Styling: CLJS only)
 
@@ -3231,6 +3312,51 @@ dbgn: (* 10 (+ 2 3)) =>
 |   50
 ----
 
+[[set-line-bullet]]
+## Setting the line bullet
+
+You can change the default line bullet "`|`" by using `set-line-bullet!` as follows.
+
+[source]
+....
+(set-line-bullet! ";")
+(dbg (+ 20 30))
+(dbgn (* 10 (+ 2 3)))
+
+
+(set-line-bullet! " ")
+(dbg (+ 20 30))
+(dbgn (* 10 (+ 2 3)))
+....
+
+
+[listing]
+.REPL output
+----
+{:ns examples.lab, :line 11}
+dbg: (+ 20 30) =>
+;   50
+ 
+{:ns examples.lab, :line 12}
+dbgn: (* 10 (+ 2 3)) =>
+; (+ 2 3) =>
+;   5
+; (* 10 (+ 2 3)) =>
+;   50
+ 
+{:ns examples.lab, :line 17}
+dbg: (+ 20 30) =>
+    50
+ 
+{:ns examples.lab, :line 18}
+dbgn: (* 10 (+ 2 3)) =>
+  (+ 2 3) =>
+    5
+  (* 10 (+ 2 3)) =>
+    50
+----
+
+
 
 [[temporal-turn-off]]
 ## Turning off the debux macros temporarily
@@ -3397,7 +3523,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject examples "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.7.8"]]
+                 [philoskim/debux "0.7.9"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]
@@ -3574,6 +3700,6 @@ When you double-click on one of the open parentheses and the following string is
 
 
 ## License
-Copyright © 2015--2020 Young Tae Kim
+Copyright © 2015--2021 Young Tae Kim
 
 Distributed under the Eclipse Public License either version 1.0 or any later version.

@@ -60,3 +60,56 @@
      (filter odd?)
      (clog-last_ 5 "after filter")
      (map inc))
+
+
+
+;;; set-source-info-mode!
+(d/set-source-info-mode! false)
+
+(dbg (+ 2 3))
+(dbgn (* 10 (+ 2 3)))
+
+(clog (+ 2 3))
+(clogn (* 10 (+ 2 3)))
+
+
+(d/set-source-info-mode! true)
+
+(dbg (+ 20 30))
+(dbgn (* 10 (+ 2 3)))
+
+(clog (+ 20 30))
+(clogn (* 10 (+ 2 3)))
+
+
+;;; set-line-bullet!
+(d/set-line-bullet! ";")
+
+(dbg (+ 20 30))
+(dbgn (* 10 (+ 2 3)))
+
+(clog (+ 20 30))
+(clogn (* 10 (+ 2 3)))
+
+
+(d/set-line-bullet! " ")
+
+(dbg (+ 20 30))
+(dbgn (* 10 (+ 2 3)))
+
+(d/set-line-bullet! "|")
+
+
+;;; set-debug-level!
+(clog (+ 20 30))
+(clogn (* 10 (+ 2 3)))
+
+(d/set-debug-level! 5)
+
+(clog (+ 20 30) :level 5)
+(clog (+ 20 30) :level 3)
+(clog (+ 20 30))
+
+(clogn (* 10 (+ 2 3)) :level 5)
+(clogn (* 10 (+ 2 3)) :level 3)
+(clogn (* 10 (+ 2 3)))

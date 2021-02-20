@@ -3,7 +3,6 @@
   (:require [clojure.string :as str]
             [cljs.analyzer.api :as ana]
             #?(:cljs [cljs.pprint :as pp])
-            ;#?(:cljs [devtools.formatters])
             [debux.common.util :as ut] ))
 
 ;;; caching

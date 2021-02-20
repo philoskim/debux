@@ -14,13 +14,14 @@
 
 (def set-print-length! ut/set-print-length!)
 
+(def set-line-bullet! ut/set-line-bullet!)
+
+
 (defmacro set-ns-blacklist! [blacklist]
   `(ut/set-ns-blacklist! ~blacklist))
 
 (defmacro set-ns-whitelist! [whitelist]
   `(ut/set-ns-whitelist! ~whitelist))
-
-(def set-line-bullet! ut/set-line-bullet!)
 
 
 ;;; debugging APIs
