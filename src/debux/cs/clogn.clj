@@ -21,11 +21,12 @@
 
 (defmacro clogn
   "Console LOG every Nested forms of a form."
-  [form locals & [{:keys [msg n condition ns line style] :as opts}]]
+  [form locals & [{:keys [level condition ns line msg n style] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :print :once)
          condition#         ~condition]
-     (if (or ~(not (contains? opts :condition))
-             condition#)
+     (if (and (>= (or ~level 0) (:debug-level @ut/config*))
+              (or ~(not (contains? opts :condition))
+                  condition#))
        (let [src-info# (str (ut/src-info ~ns ~line))
              title# (str "%cclogn: %c " (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
                          " %c" (and ~msg (str "   <" ~msg ">"))  " =>")

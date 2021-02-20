@@ -13,6 +13,9 @@
 (defmacro set-debug-mode! [val]
   `(ut/set-debug-mode! ~val))
 
+(defmacro set-debug-level! [level]
+  `(ut/set-debug-level! ~level))
+
 (defmacro set-source-info-mode! [val]
   `(ut/set-source-info-mode! ~val))
 

@@ -286,13 +286,14 @@
 ;;; dbgn
 (defmacro dbgn
   "DeBuG every Nested forms"
-  [form locals & [{:keys [msg n condition ns line] :as opts}]]
+  [form locals & [{:keys [level condition ns line msg n] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(if (ut/cljs-env? &env)
                                (dissoc opts :print :style :js :once)
                                opts)
          condition#         ~condition]
-     (if (or ~(not (contains? opts :condition))
-             condition#)
+     (if (and (>= (or ~level 0) (:debug-level @ut/config*))
+              (or ~(not (contains? opts :condition))
+                  condition#))
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [src-info# (str (ut/src-info ~ns ~line))
                title# (str "dbgn: " (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))

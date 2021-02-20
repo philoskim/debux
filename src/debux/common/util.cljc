@@ -39,10 +39,15 @@
          :print-length 100
          :ns-blacklist nil
          :ns-whitelist nil
-         :line-bullet "|"} ))
+         :line-bullet "|"
+         :debug-level 0} ))
 
 (defn set-debug-mode! [val]
   (swap! config* assoc :debug-mode val)
+  nil)
+
+(defn set-debug-level! [level]
+  (swap! config* assoc :debug-level level)
   nil)
 
 (defn set-source-info-mode! [val]
@@ -300,6 +305,9 @@
 
         (= :line fst)
         (recur (nnext opts) (assoc acc :line snd))
+
+        (= :level fst)
+        (recur (nnext opts) (assoc acc :level snd))
 
 
         ;;; for clojureScript only

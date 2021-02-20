@@ -4,10 +4,11 @@
             [debux.cs.util :as cs.ut] ))
 
 (defmacro clog-base
-  [form locals {:keys [msg n condition ns line style] :as opts} body]
+  [form locals {:keys [level condition ns line msg n style] :as opts} body]
   `(let [condition# ~condition]
-     (if (or ~(not (contains? opts :condition))
-             condition#)
+     (if (and (>= (or ~level 0) (:debug-level @ut/config*))
+              (or ~(not (contains? opts :condition))
+                  condition#))
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [src-info# (str (ut/src-info ~ns ~line))
                title# (str "%cclog: %c " (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
