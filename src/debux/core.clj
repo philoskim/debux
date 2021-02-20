@@ -18,6 +18,8 @@
 (defmacro set-ns-whitelist! [whitelist]
   `(ut/set-ns-whitelist! ~whitelist))
 
+(def set-line-bullet! ut/set-line-bullet!)
+
 
 ;;; debugging APIs
 (def locking* (Object.))

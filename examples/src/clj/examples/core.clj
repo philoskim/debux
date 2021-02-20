@@ -11,6 +11,8 @@
 
   ;; You should require dynamically the namespaces that you want to laod
   ;; if you want to use set-ns-blacklist! or set-ns-whitelist!.
+  (d/set-line-bullet! ";")
+
   ;(require 'examples.common)
   ;(require 'examples.dbg)
   ;(require 'examples.dbgn)

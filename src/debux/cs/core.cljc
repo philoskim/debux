@@ -24,8 +24,7 @@
 (defmacro set-ns-blacklist! [blacklist]
   `(ut/set-ns-blacklist! ~blacklist))
 
-(defmacro set-cljs-devtools! [bool]
-  `(ut/set-debug-mode! ~bool))
+(def set-line-bullet! ut/set-line-bullet!)
 
 
 ;;; debugging APIs

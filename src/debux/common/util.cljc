@@ -39,7 +39,7 @@
          :print-length 100
          :ns-blacklist nil
          :ns-whitelist nil
-         :cljs-devtools nil} ))
+         :line-bullet "|"} ))
 
 (defn set-debug-mode! [val]
   (swap! config* assoc :debug-mode val)
@@ -61,10 +61,9 @@
   (swap! config* assoc :ns-whitelist whitelist)
   nil)
 
-(defn set-cljs-devtools! [bool]
-  (swap! config* assoc :cljs-devtools bool)
+(defn set-line-bullet! [bullet]
+  (swap! config* assoc :line-bullet bullet)
   nil)
-
 
 (defn ns-match? [current-ns target-ns]
   (-> (re-pattern (str/escape target-ns {\. "\\." \* ".*"}))
@@ -210,31 +209,28 @@
     (str (.substring s 0 70) " ...")
     s))
 
-(defn- make-bars-
-  [times]
-  (apply str (repeat times "|")))
+(defn make-bullets
+  [indent-level]
+  (apply str (repeat indent-level (:line-bullet @config*))))
 
-(def make-bars (memoize make-bars-))
-
-
-(defn prepend-bars
+(defn prepend-bullets
   [line indent-level]
-  (str (make-bars indent-level) " " line))
+  (str (make-bullets indent-level) " " line))
 
-(defn prepend-bars-in-line
+(defn prepend-bullets-in-line
   [line indent-level]
-  (str (make-bars indent-level) line))
+  (str (make-bullets indent-level) line))
 
 (defn print-title-with-indent
   [src-info title]
   (when (:source-info-mode @config*)
-    (println (prepend-bars-in-line src-info (dec *indent-level*))))
-  (println (prepend-bars-in-line title (dec *indent-level*)))
+    (println (prepend-bullets-in-line src-info (dec *indent-level*))))
+  (println (prepend-bullets-in-line title (dec *indent-level*)))
   (flush))
 
 (defn print-form-with-indent
   [form]
-  (println (prepend-bars form *indent-level*))
+  (println (prepend-bullets form *indent-level*))
   (flush))
 
 (defn form-header [form & [msg]]
@@ -246,8 +242,8 @@
 (defn pprint-locals-with-indent
   [result]
   (let [pprint (str/trim (with-out-str (pp/pprint result)))
-        prefix (str (make-bars *indent-level*) "   ")]
-    (println (prepend-bars ":locals =>" *indent-level*))
+        prefix (str (make-bullets *indent-level*) "   ")]
+    (println (prepend-bullets ":locals =>" *indent-level*))
     (println (->> (str/split pprint #"\n")
                   (mapv #(str prefix %))
                   (str/join "\n")))
@@ -256,7 +252,7 @@
 (defn pprint-result-with-indent
   [result]
   (let [pprint (str/trim (with-out-str (pp/pprint result)))
-        prefix (str (make-bars *indent-level*) "   ")]
+        prefix (str (make-bullets *indent-level*) "   ")]
     (println (->> (str/split pprint #"\n")
                   (mapv #(str prefix %))
                   (str/join "\n")))

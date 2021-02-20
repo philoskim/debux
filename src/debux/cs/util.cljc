@@ -72,9 +72,9 @@
      [src-info title form-style]
      (when (:source-info-mode @ut/config*)
        (.log js/console
-             (ut/prepend-bars-in-line src-info (dec ut/*indent-level*)) ))
+             (ut/prepend-bullets-in-line src-info (dec ut/*indent-level*)) ))
      (.log js/console
-           (ut/prepend-bars-in-line title (dec ut/*indent-level*))
+           (ut/prepend-bullets-in-line title (dec ut/*indent-level*))
            (:title @style*)
            (get-style form-style)
            (:normal @style*) )))
@@ -82,14 +82,14 @@
 #?(:cljs
    (defn clog-form-with-indent
      [form style]
-     (.log js/console (ut/prepend-bars form ut/*indent-level*)
+     (.log js/console (ut/prepend-bullets form ut/*indent-level*)
            (get-style style) (:normal @style*) )))
 
 #?(:cljs
    (defn clog-result-with-indent
      [result & [js-mode]]
      (let [pprint (str/trim (with-out-str (pp/pprint result)))
-           prefix (str (ut/make-bars ut/*indent-level*) "  ")]
+           prefix (str (ut/make-bullets ut/*indent-level*) "  ")]
        (if (:cljs-devtools @ut/config*)
          (.log js/console prefix result)
          (.log js/console (->> (str/split pprint #"\n")
@@ -102,7 +102,7 @@
 #?(:cljs
    (defn clog-locals-with-indent
      [result style & [js-mode]]
-     (.log js/console (ut/prepend-bars "%c :locals %c =>" ut/*indent-level*)
+     (.log js/console (ut/prepend-bullets "%c :locals %c =>" ut/*indent-level*)
                       (get-style style) (:normal @style*))
      (clog-result-with-indent result js-mode)))
 
