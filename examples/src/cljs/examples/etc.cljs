@@ -101,15 +101,26 @@
 
 
 ;;; set-debug-level!
+;; default debug level is `0`.
 (clog (+ 20 30))
 (clogn (* 10 (+ 2 3)))
+
+
+(d/set-debug-level! 3)
+(clog (+ 20 30))
+(clog (+ 20 30) :level 3)
+(clog (+ 20 30) :level 5)
+
+(clogn (* 10 (+ 2 3)))
+(clogn (* 10 (+ 2 3)) :level 3)
+(clogn (* 10 (+ 2 3)) :level 5)
+
 
 (d/set-debug-level! 5)
-
-(clog (+ 20 30) :level 5)
-(clog (+ 20 30) :level 3)
 (clog (+ 20 30))
+(clog (+ 20 30) :level 3)
+(clog (+ 20 30) :level 5)
 
-(clogn (* 10 (+ 2 3)) :level 5)
-(clogn (* 10 (+ 2 3)) :level 3)
 (clogn (* 10 (+ 2 3)))
+(clogn (* 10 (+ 2 3)) :level 3)
+(clogn (* 10 (+ 2 3)) :level 5)

@@ -66,20 +66,14 @@ NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.7.9
-** `set-debug-level!` added. See the details <<set-debug-level, here>>.
+** `set-debug-level!` and `:level` option added. See the details <<set-debug-level,
+   here>>.
 ** `set-line-bullet!` added. See the details <<set-line-bullet, here>>.
 
 * v0.7.8
 ** `set-cljs-devtools!` added. See the details <<set-cljs-devtools, here>>.
 ** `cljs-devtools` dependency removed. _Debux_ no longer includes `cljs-devtools`
    dependency.
-
-* v0.7.7
-** Bug fixed: link:https://github.com/philoskim/debux/pull/20[pull request] merged. 
-
-* v0.7.6
-** Bumps `binaryage/devtools 1.0.2`
-** Version matching with the fixed version of `philoskim/debux-stubs 0.7.6`
 
 * v0.7.5
 ** `set-source-info-mode!` added.  See <<source-info-mode, here>> for the details.
@@ -103,10 +97,6 @@ https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 ** Tagged literals (`#d/dbg`, `#d/dbgn`, `#d/clog`, `#d/clogn`) added. So you don't have
    to wrap the form by the parentheses any more, if you want. See <<tagged-literals,
    here>> for the details.
-
-* v0.6.6
-** `:locals` option added. See <<local-option, here>> and
-   link:https://github.com/philoskim/debux/issues/19[#issue 19] for the details.
 
 
 ## How to use
@@ -2794,25 +2784,25 @@ follows. You can specify debug levels with any positive integers as you like.
 .Example 1
 ....
 ;; The default debug level is 0.
-(dbg (+ 10 20 5) :level 5)
-(dbg (+ 10 20 3) :level 3)
 (dbg (+ 10 20))
+(dbg (+ 10 20 3) :level 3)
+(dbg (+ 10 20 5) :level 5)
 ....
 
 [listing]
 .REPL output
 ----
 {:ns examples.lab, :line 18}
-dbg: (+ 10 20 5) =>
-|   35
- 
+dbg: (+ 10 20) =>
+|   30
+
 {:ns examples.lab, :line 19}
 dbg: (+ 10 20 3) =>
 |   33
- 
+
 {:ns examples.lab, :line 20}
-dbg: (+ 10 20) =>
-|   30
+dbg: (+ 10 20 5) =>
+|   35
 ----
 
 ---
@@ -2822,21 +2812,21 @@ dbg: (+ 10 20) =>
 ....
 (set-debug-level! 3)
 
-(dbg (+ 10 20 5) :level 5)
-(dbg (+ 10 20 3) :level 3)
 (dbg (+ 10 20))
+(dbg (+ 10 20 3) :level 3)
+(dbg (+ 10 20 5) :level 5)
 ....
 
 [listing]
 .REPL output
 ----
-{:ns examples.lab, :line 23}
-dbg: (+ 10 20 5) =>
-|   35
- 
-{:ns examples.lab, :line 24}
+{:ns examples.lab, :line 19}
 dbg: (+ 10 20 3) =>
 |   33
+
+{:ns examples.lab, :line 20}
+dbg: (+ 10 20 5) =>
+|   35
 ----
 
 ---
@@ -2846,15 +2836,15 @@ dbg: (+ 10 20 3) =>
 ....
 (set-debug-level! 5)
 
-(dbg (+ 10 20 5) :level 5)
-(dbg (+ 10 20 3) :level 3)
 (dbg (+ 10 20))
+(dbg (+ 10 20 3) :level 3)
+(dbg (+ 10 20 5) :level 5)
 ....
 
 [listing]
 .REPL output
 ----
-{:ns examples.lab, :line 28}
+{:ns examples.lab, :line 20}
 dbg: (+ 10 20 5) =>
 |   35
 ----
