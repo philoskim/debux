@@ -30,6 +30,7 @@
 
 ;;; dynamic vars
 (def ^:dynamic *indent-level* 0)
+(def ^:dynamic *debug-level* 0)
 
 
 ;;; config

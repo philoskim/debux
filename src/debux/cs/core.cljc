@@ -94,6 +94,10 @@
         opts (butlast args)]
     `(clog ~form ~@opts)))
 
+(defmacro with-level [debug-level & forms]
+  `(binding [ut/*debug-level* ~debug-level]
+     ~@forms))
+
 
 ;;; tag literals #d/dbg, #d/dbgn, #d/clog and #d/clogn
 (defmacro dbg* [form meta]

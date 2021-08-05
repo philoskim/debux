@@ -4,7 +4,8 @@
 (defmacro dbg-base
   [form locals {:keys [level condition ns line msg n] :as opts} body]
   `(let [condition# ~condition]
-     (if (and (>= (or ~level 0) (:debug-level @ut/config*))
+     (if (and (>= (or ~level 0) (or ut/*debug-level*
+                                    (:debug-level @ut/config*) ))
               (or ~(not (contains? opts :condition))
                   condition#))
        (binding [ut/*indent-level* (inc ut/*indent-level*)]

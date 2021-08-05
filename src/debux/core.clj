@@ -35,7 +35,8 @@
     ;(ut/d (meta &form))
     `(if (ut/debug-enabled? ~ns)
        (locking locking*
-         (dbg/dbg ~form (zipmap '~local-ks [~@local-ks]) ~(ut/parse-opts opts')))
+         (dbg/dbg ~form (zipmap '~local-ks [~@local-ks])
+                  ~(ut/parse-opts opts')))
        ~form)))
 
 (defmacro dbgn [form & opts]
@@ -45,7 +46,8 @@
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
        (locking locking*
-         (dbgn/dbgn ~form (zipmap '~local-ks [~@local-ks]) ~(ut/parse-opts opts')))
+         (dbgn/dbgn ~form (zipmap '~local-ks [~@local-ks])
+                    ~(ut/parse-opts opts')))
        ~form)))
 
 (defmacro dbg-last
@@ -53,6 +55,10 @@
   (let [form (last args)
         opts (butlast args)]
     `(dbg ~form ~@opts) ))
+
+(defmacro with-level [debug-level & forms]
+  `(binding [ut/*debug-level* ~debug-level]
+     ~@forms))
 
 (defn dbg-prn [& args]
   (binding [*out* *err*]
