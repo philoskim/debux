@@ -65,6 +65,10 @@ and this to your *production* dependencies.
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
+* v0.7.10
+** `set-debug-level!` removed. Instead, use `with-level` macro. See the details
+   <<with-level, here>>.
+
 * v0.7.9
 ** `set-debug-level!` and `:level` option added. See the details <<set-debug-level,
    here>>.
@@ -2774,11 +2778,13 @@ dbgn: (loop [acc 1 n 3] (if (zero? n) acc (recur (* acc n) (dec n)))) =>
 |   6
 ----
 
-[[set-debug-level]]
+[[with-level]]
 ### `:level` option
 
-You can set the debug level by using `set-debug-level!` and specify `:level` option as
-follows. You can specify debug levels with any positive integers as you like.
+You can set the debug level by using `with-level` macro and specify `:level` option as
+follows. You can specify the debug levels with any positive numbers including the floating
+point numbers. The `with-level` macro uses a dynamic var of Clojure internally, so you can
+nest `with-level` macros to whatever level you want.
 
 [source]
 .Example 1
@@ -2805,48 +2811,54 @@ dbg: (+ 10 20 5) =>
 |   35
 ----
 
----
-
 [source]
 .Example 2
 ....
-(set-debug-level! 3)
-
-(dbg (+ 10 20))
-(dbg (+ 10 20 3) :level 3)
-(dbg (+ 10 20 5) :level 5)
+(with-level 3
+  (dbg (+ 10 20))
+  (dbg (+ 10 20 3) :level 3)
+  (dbg (+ 10 20 5) :level 5))
 ....
 
 [listing]
 .REPL output
 ----
-{:ns examples.lab, :line 19}
+{:ns examples.lab, :line 12}
 dbg: (+ 10 20 3) =>
 |   33
-
-{:ns examples.lab, :line 20}
+ 
+{:ns examples.lab, :line 13}
 dbg: (+ 10 20 5) =>
 |   35
 ----
-
----
 
 [source]
 .Example 3
 ....
-(set-debug-level! 5)
+(defn my-add [a b]
+  (dbg (+ a b) :level 2))
 
-(dbg (+ 10 20))
-(dbg (+ 10 20 3) :level 3)
-(dbg (+ 10 20 5) :level 5)
+(defn my-sub [a b]
+  (dbg (- a b) :level 3))
+
+(with-level 3
+  (dbg (my-add 10 20))
+  (dbg (my-sub 100 10))
+
+  (with-level 0
+    (dbg (* 10 2))))
 ....
 
 [listing]
 .REPL output
 ----
-{:ns examples.lab, :line 20}
-dbg: (+ 10 20 5) =>
-|   35
+ {:ns examples.lab, :line 20}
+dbg: (- a b) =>
+|   90
+
+{:ns examples.lab, :line 27}
+dbg: (* 10 2) =>
+|   20
 ----
 
 
