@@ -60,19 +60,3 @@
 
 (set-line-bullet! "|")
 
-
-;;; set-debug-level!
-;; default debug level is `0`.
-(dbg (+ 10 20))
-(dbg (+ 10 20 3) :level 3)
-(dbg (+ 10 20 5) :level 5)
-
-(set-debug-level! 3)
-(dbg (+ 10 20))
-(dbg (+ 10 20 3) :level 3)
-(dbg (+ 10 20 5) :level 5)
-
-(set-debug-level! 5)
-(dbg (+ 10 20))
-(dbg (+ 10 20 3) :level 3)
-(dbg (+ 10 20 5) :level 5)

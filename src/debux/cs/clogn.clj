@@ -24,8 +24,7 @@
   [form locals & [{:keys [level condition ns line msg n style] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(dissoc opts :print :once)
          condition#         ~condition]
-     (if (and (>= (or ~level 0)  (or ut/*debug-level*
-                                     (:debug-level @ut/config*) ))
+     (if (and (>= (or ~level 0) ut/*debug-level*)
               (or ~(not (contains? opts :condition))
                   condition#))
        (let [src-info# (str (ut/src-info ~ns ~line))

@@ -36,7 +36,6 @@
 ;;; config
 (def config*
   (atom {:debug-mode true
-         :debug-level 0
          :source-info-mode true
          :print-length 100
          :ns-blacklist nil
@@ -46,10 +45,6 @@
 
 (defn set-debug-mode! [val]
   (swap! config* assoc :debug-mode val)
-  nil)
-
-(defn set-debug-level! [level]
-  (swap! config* assoc :debug-level level)
   nil)
 
 (defn set-source-info-mode! [val]

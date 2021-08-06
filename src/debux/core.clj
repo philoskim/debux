@@ -8,8 +8,6 @@
 ;;; config APIs
 (def set-debug-mode! ut/set-debug-mode!)
 
-(def set-debug-level! ut/set-debug-level!)
-
 (def set-source-info-mode! ut/set-source-info-mode!)
 
 (def set-print-length! ut/set-print-length!)
