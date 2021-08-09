@@ -265,6 +265,25 @@
                   (str/join "\n")))
     (flush) ))
 
+;; print xform
+(defn print-xform-header-with-indent
+  [form indent-level]
+  (println (prepend-bullets form indent-level))
+  (flush))
+
+(defn pprint-xform-with-indent
+  [mark input-or-output indent-level]
+  (let [pprint (str/trim (with-out-str (pp/pprint input-or-output)))
+        bullets (make-bullets (or indent-level 1))
+        prefix1 (str bullets mark " ")
+        prefix2 (str bullets "  ")]
+    (println (->> (str/split pprint #"\n")
+                  (map-indexed #(if (zero? %1)
+                                  (str prefix1 %2)
+                                  (str prefix2 %2)))
+                  (str/join "\n")))
+    (flush) ))
+
 (defn insert-blank-line []
   #?(:clj (do (println " ") (flush))
      :cljs (.log js/console " ") ))
@@ -401,3 +420,22 @@
      (print-form-with-indent (form-header '~form))
      (pprint-result-with-indent result#)
      result#))
+
+(defn print-xform [quoted-xform indent-level]
+  (fn [rf]
+    (fn ([] (rf))
+      ([result] (rf result))
+      ([result input]
+       #_(when indent-level
+         (print-xform-header-with-indent quoted-xform indent-level))
+       (pprint-xform-with-indent ">" input indent-level)
+       (let [output (rf result input)]
+         (pprint-xform-with-indent"<" output indent-level)
+         (when (or (nil? indent-level)
+                   (= 1 indent-level))
+           (insert-blank-line))
+         output) ))))
+
+(defmacro spy-xform
+  [xform & [indent-level]]
+  `(print-xform '~xform ~indent-level))

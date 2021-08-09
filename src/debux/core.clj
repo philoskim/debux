@@ -1,6 +1,7 @@
 (ns debux.core
   (:require [debux.dbg :as dbg]
             [debux.dbgn :as dbgn]
+            [debux.dbgt :as dbgt]
             [debux.cs.core :as cs]
             [debux.macro-types :as mt]
             [debux.common.util :as ut] ))
@@ -45,6 +46,17 @@
     `(if (ut/debug-enabled? ~ns)
        (locking locking*
          (dbgn/dbgn ~form (zipmap '~local-ks [~@local-ks])
+                    ~(ut/parse-opts opts')))
+       ~form)))
+
+(defmacro dbgt [form & opts]
+  (let [ns (str *ns*)
+        line (:line (meta &form))
+        local-ks (keys &env)
+        opts' (ut/prepend-src-info opts ns line)]
+    `(if (ut/debug-enabled? ~ns)
+       (locking locking*
+         (dbgt/dbgt ~form (zipmap '~local-ks [~@local-ks])
                     ~(ut/parse-opts opts')))
        ~form)))
 
