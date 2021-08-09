@@ -266,11 +266,6 @@
     (flush) ))
 
 ;; print xform
-(defn print-xform-header-with-indent
-  [form indent-level]
-  (println (prepend-bullets form indent-level))
-  (flush))
-
 (defn pprint-xform-with-indent
   [mark input-or-output indent-level]
   (let [pprint (str/trim (with-out-str (pp/pprint input-or-output)))
@@ -283,6 +278,7 @@
                                   (str prefix2 %2)))
                   (str/join "\n")))
     (flush) ))
+
 
 (defn insert-blank-line []
   #?(:clj (do (println " ") (flush))
@@ -426,13 +422,10 @@
     (fn ([] (rf))
       ([result] (rf result))
       ([result input]
-       #_(when indent-level
-         (print-xform-header-with-indent quoted-xform indent-level))
        (pprint-xform-with-indent ">" input indent-level)
        (let [output (rf result input)]
          (pprint-xform-with-indent"<" output indent-level)
-         (when (or (nil? indent-level)
-                   (= 1 indent-level))
+         (when (or (nil? indent-level) (= 1 indent-level))
            (insert-blank-line))
          output) ))))
 

@@ -3,7 +3,7 @@
                                                 clog_ clogn_ clog-last_
                                                 dbg dbgn dbg-last
                                                 dbg_ dbgn_ dbg-last_
-                                                break break_]]))
+                                                break break_ with-level]]))
 
 ;; tagged literals
 #d/dbg (+ 1 2 #d/dbg (* 3 4))
@@ -98,3 +98,42 @@
 (dbgn (* 10 (+ 2 3)))
 
 (d/set-line-bullet! "|")
+
+
+;; The default debug level is 0.
+(dbg (+ 10 20))
+(dbg (+ 10 20 3) :level 3)
+(dbg (+ 10 20 5) :level 5)
+
+(with-level 3
+  (dbg (+ 10 20))
+  (dbg (+ 10 20 3) :level 3)
+  (dbg (+ 10 20 5) :level 5))
+
+
+(defn my-add [a b]
+  (dbg (+ a b) :level 2))
+
+(defn my-sub [a b]
+  (dbg (- a b) :level 3))
+
+(with-level 3
+  (dbg (my-add 10 20))
+  (dbg (my-sub 100 10))
+
+  (with-level 0
+    (dbg (* 10 2))))
+
+
+(defn my-add2 [a b]
+  (clog (+ a b) :level 2))
+
+(defn my-sub2 [a b]
+  (clog (- a b) :level 3))
+
+(with-level 3
+  (clog (my-add 10 20))
+  (clog (my-sub 100 10))
+
+  (with-level 0
+    (clog (* 10 2))))

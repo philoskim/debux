@@ -2,4 +2,8 @@
 
 (use 'debux.core)
 
-(transduce (comp (debug) (map inc) (debug) (filter odd?)) conj (range 10))
+(transduce (dbgt (filter odd?))
+           conj (range 5))
+
+(transduce (dbgt (comp (map inc) (filter odd?)))
+           conj (range 5))

@@ -2,8 +2,10 @@
   #?(:cljs (:require-macros debux.core
                             debux.dbg
                             debux.dbgn
+                            debux.dbgt
                             debux.cs.clog
                             debux.cs.clogn
+                            debux.cs.clogt
                             debux.cs.macro-types))
   (:require [debux.common.util :as ut]
             [debux.cs.util :as cs.ut] ))
@@ -57,6 +59,19 @@
                        ~(ut/parse-opts opts'))
       ~form)))
 
+(defmacro dbgt [form & opts]
+  (let [ns (str *ns*)
+        line (:line (meta &form))
+        local-ks (if (ut/cljs-env? &env)
+                   (keys (:locals &env))
+                   (keys &env))
+        opts' (ut/prepend-src-info opts ns line)]
+   `(if (ut/debug-enabled? ~ns)
+      (debux.dbgt/dbgt ~form
+                       (zipmap '~local-ks [~@local-ks])
+                       ~(ut/parse-opts opts'))
+      ~form)))
+
 (defmacro clog [form & opts]
   (let [ns (str *ns*)
         line (:line (meta &form))
@@ -75,6 +90,17 @@
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
        (debux.cs.clogn/clogn ~form
+                             (zipmap '~local-ks [~@local-ks])
+                             ~(ut/parse-opts opts'))
+       ~form)))
+
+(defmacro clogt [form & opts]
+  (let [ns (str *ns*)
+        line (:line (meta &form))
+        local-ks (keys (:locals &env))
+        opts' (ut/prepend-src-info opts ns line)]
+    `(if (ut/debug-enabled? ~ns)
+       (debux.cs.clogt/clogt ~form
                              (zipmap '~local-ks [~@local-ks])
                              ~(ut/parse-opts opts'))
        ~form)))
