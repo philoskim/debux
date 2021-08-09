@@ -3,8 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
-* v0.7.10
-** `set-debug-level!` is removed. Instead, use `with-level` macro.
+* v0.8.0
+** `dbgt` and `clogt` macros for debugging transducers added.
+** `set-debug-level!` removed. Instead, use `with-level` macro.
 
 * v0.7.9
 ** `set-debug-level!` added.

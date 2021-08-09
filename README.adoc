@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.7.9"]
+[philoskim/debux "0.8.0"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.7.9"]
+[philoskim/debux-stubs "0.8.0"]
 ....
 
 
@@ -65,7 +65,9 @@ and this to your *production* dependencies.
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
-* v0.7.10
+* v0.8.0
+** `dbgt` and `clogt` macros for debugging transducers added.  See the details
+   <<dbgt, here>>.
 ** `set-debug-level!` removed. Instead, use `with-level` macro. See the details
    <<with-level, here>>.
 
@@ -2221,28 +2223,111 @@ dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first)   <thread
 |   "X"
 ----
 
+[[dbgt]]
+## `dbgt` examples
+
+NOTE: The features of `clogt` are almost the same as those of `dbgt`.
+
+`dbgt` and `clogt` macros are for debugging transducers.
+
+Special thanks to
+link:https://github.com/green-coder/transducer-exercises/blob/master/solution/debug.clj[Vincent
+Cantin] for the idea and inspiration for my writing these macros.
+
+
+### Debugging a single transducer
+
+[source]
+.Example
+....
+(transduce (dbgt (filter odd?))
+           conj (range 5))
+....
+
+[listing]
+.REPL output
+----
+{:ns examples.lab, :line 5}
+dbgt: (filter odd?)
+|> 0
+|< []
+ 
+|> 1
+|< [1]
+ 
+|> 2
+|< [1]
+ 
+|> 3
+|< [1 3]
+ 
+|> 4
+|< [1 3]
+----
+
+### .Debugging composed transducers
+
+[source]
+.Example
+....
+(transduce (dbgt (comp (map inc) (filter odd?)))
+           conj (range 5))
+....
+
+[listing]
+.REPL output
+----
+{:ns examples.lab, :line 8}
+dbgt: (comp (map inc) (filter odd?))
+|> 0
+||> 1
+||< [1]
+|< [1]
+ 
+|> 1
+||> 2
+||< [1]
+|< [1]
+ 
+|> 2
+||> 3
+||< [1 3]
+|< [1 3]
+ 
+|> 3
+||> 4
+||< [1 3]
+|< [1 3]
+ 
+|> 4
+||> 5
+||< [1 3 5]
+|< [1 3 5]
+----
+
+
 
 ## Various options
 
 * The various options can be added and combined in any order after the form.
 
-[cols="^1m,^1m,^1m,^1m,^1m,^1m", options="header"]
+[cols="^1m,^1m,^1m,^1m,^1m,^1m,^1m,^1m", options="header"]
 .*debux* macro options
 |===
 
-| Optio      ns | dbg | dbgn | clog | clogn | break
+| Optio      ns | dbg | dbgn | clog | clogn | dbgt | clogt | break
 
-| string        | O   |   O   |  O   |  O   |   O
-| :msg or :m    | O   |   O   |  O   |  O   |   X
-| number        | O   |   O   |  O   |  O   |   X
-| :if           | O   |   O   |  O   |  O   |   O
-| :locals or :l | O   |   O   |  O   |  O   |   X
-| :print  or :p | O   |   X   |  O   |  X   |   X
-| :dup          | X   |   0   |  X   |  0   |   X
-| :level        | O   |   O   |  O   |  O   |   X
-| :style  or :s | X   |   X   |  O   |  O   |   X
-| :once   or :o | X   |   X   |  O   |  X   |   X
-| :js           | X   |   X   |  O   |  O   |   X
+| string        | O   |   O   |  O   |  O   |   O  |   O   |   O
+| :msg or :m    | O   |   O   |  O   |  O   |   O  |   O   |   X
+| number        | O   |   O   |  O   |  O   |   X  |   X   |   X
+| :if           | O   |   O   |  O   |  O   |   O  |   O   |   O
+| :locals or :l | O   |   O   |  O   |  O   |   X  |   X   |   X
+| :print  or :p | O   |   X   |  O   |  X   |   X  |   X   |   X
+| :dup          | X   |   0   |  X   |  0   |   X  |   X   |   X
+| :level        | O   |   O   |  O   |  O   |   O  |   O   |   X  
+| :style  or :s | X   |   X   |  O   |  O   |   X  |   O   |   X
+| :once   or :o | X   |   X   |  O   |  X   |   X  |   X   |   X
+| :js           | X   |   X   |  O   |  O   |   X  |   X   |   X
 
 |===
 
@@ -2988,10 +3073,9 @@ image::clog-js.png[title=":js option example", width=800]
 
 
 [[tagged-literals]]
-## Tagged literals: `#d/dbg`, `#d/dbgn`, `#d/clog`, `#d/clogn`
+## Tagged literals: `#d/dbg`, `#d/dbgn`, `#d/dbgt`,`#d/clog`, `#d/clogn`, `#d/clogt`
 
-If you don't use the above options at all, you can use the tagged literals: `#d/dbg`,
-`#d/dbgn`, `#d/clog`, `#d/clogn`. They behave exactly in the same way as their
+If you don't use the above options at all, you can use the tagged literals: `#d/dbg`, `#d/dbgn`, `#d/dbgt`,`#d/clog`, `#d/clogn`, `#d/clogt`. They behave exactly in the same way as their
 counterparts `dbg`, `dbgn`, `clog`, `clogn`. So in the _no options_ case, you don't have
 to wrap the form by the parentheses any more, if you want.
 
@@ -3373,11 +3457,13 @@ debux macro names or turn off the tagged literals by appending `pass:q[_]` after
 
 | dbg       | dbg_                  | #d/dbg          | #_d/dbg
 | dbgn      | dbgn_                 | #d/dbgn         | #_d/dbgn
+| dbgt      | dbgt_                 | #d/dbgt         | #_d/dbgt
 | dbg-prn   | dbg-prn_              |                 |
 | dbg-last  | dbg-last_             |                 |
 
 | clog      | clog_                 | #d/clog         | #_d/clog
 | clogn     | clogn_                | #d/clogn        | #_d/clogn
+| clogt     | clogt_                | #d/clogt        | #_d/clogt
 | clog-last | clog-last_            |                 |
 
 | break     | break_                |                 |
@@ -3525,7 +3611,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject examples "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.7.9"]]
+                 [philoskim/debux "0.8.0"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

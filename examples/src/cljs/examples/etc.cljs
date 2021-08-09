@@ -3,6 +3,7 @@
                                                 clog_ clogn_ clog-last_
                                                 dbg dbgn dbg-last
                                                 dbg_ dbgn_ dbg-last_
+                                                dbgt dbgt_ clogt clogt_
                                                 break break_ with-level]]))
 
 ;; tagged literals
@@ -100,6 +101,7 @@
 (d/set-line-bullet! "|")
 
 
+;;; debug level
 ;; The default debug level is 0.
 (dbg (+ 10 20))
 (dbg (+ 10 20 3) :level 3)
@@ -137,3 +139,18 @@
 
   (with-level 0
     (clog (* 10 2))))
+
+
+;;; dbgt/dlogt for transducers
+(transduce (dbgt (filter even?))
+           conj (range 5))
+
+(transduce (dbgt (comp (map inc) (filter even?)))
+           conj (range 5))
+
+
+(transduce (clogt (filter even?) :js)
+           conj (range 5))
+
+(transduce (clogt (comp (map inc) (filter even?)))
+           conj (range 5))

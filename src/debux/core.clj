@@ -98,16 +98,32 @@
            (dbgn/dbgn ~form {} ~(ut/parse-opts opts)))
          ~form) )))
 
+(defmacro dbgt* [form meta]
+  (let [ns (str *ns*)
+        line (:line meta)
+        opts [:ns ns :line line]]
+    (if (ut/cljs-env? &env)
+      `(cs/dbgt* ~form ~meta)
+      `(if (ut/debug-enabled? ~ns)
+         (locking locking*
+           (dbgt/dbgt ~form {} ~(ut/parse-opts opts)))
+         ~form) )))
+
 (defn dbg-tag [form]
   `(dbg* ~form ~(meta form)))
 
 (defn dbgn-tag [form]
   `(dbgn* ~form ~(meta form)))
 
+(defn dbgt-tag [form]
+  `(dbgt* ~form ~(meta form)))
+
 
 ;;; turn-off versions
 (defmacro dbg_ [form & opts] form)
 (defmacro dbgn_ [form & opts] form)
+(defmacro dbgt_ [form & opts] form)
+
 (defn dbg-prn_ [& args])
 (defmacro dbg-last_ [& args] (last args))
 

@@ -61,6 +61,7 @@
 (set-line-bullet! "|")
 
 
+;;; debug level
 ;; The default debug level is 0.
 (dbg (+ 10 20))
 (dbg (+ 10 20 3) :level 3)
@@ -85,3 +86,10 @@
   (with-level 0
     (dbg (* 10 2))))
 
+
+;;; dbgt for transducers
+(transduce (dbgt (filter odd?))
+           conj (range 10))
+
+(transduce (dbgt (comp (map inc) (filter odd?)))
+           conj (range 5))

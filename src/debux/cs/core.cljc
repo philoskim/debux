@@ -139,6 +139,15 @@
        (debux.dbgn/dbgn ~form {} ~(ut/parse-opts opts))
        ~form)))
 
+(defmacro dbgt* [form meta]
+  (let [ns (str *ns*)
+        line (:line meta)
+        opts [:ns ns :line line]]
+    `(if (ut/debug-enabled? ~ns)
+       (debux.dbgt/dbgt ~form {} ~(ut/parse-opts opts))
+       ~form)))
+
+
 (defmacro clog* [form meta]
   (let [ns (str *ns*)
         line (:line meta)
@@ -155,11 +164,22 @@
        (debux.cs.clogn/clogn ~form {} ~(ut/parse-opts opts))
        ~form)))
 
+(defmacro clogt* [form meta]
+  (let [ns (str *ns*)
+        line (:line meta)
+        opts [:ns ns :line line]]
+    `(if (ut/debug-enabled? ~ns)
+       (debux.cs.clogt/clogt ~form {} ~(ut/parse-opts opts))
+       ~form)))
+
 (defn clog-tag [form]
   `(clog* ~form ~(meta form)))
 
 (defn clogn-tag [form]
   `(clogn* ~form ~(meta form)))
+
+(defn clogt-tag [form]
+  `(clogt* ~form ~(meta form)))
 
 
 (defmacro break [& opts]
@@ -170,10 +190,12 @@
 ;;; turn-off versions
 (defmacro dbg_ [form & opts] form)
 (defmacro dbgn_ [form & opts] form)
+(defmacro dbgt_ [form & opts] form)
 (defmacro dbg-last_ [& args] (last args))
 
 (defmacro clog_ [form & opts] form)
 (defmacro clogn_ [form & opts] form)
+(defmacro clogt_ [form & opts] form)
 (defmacro clog-last_ [& args] (last args))
 
 (defmacro break_ [& opts])

@@ -9,7 +9,7 @@
            conj (range 5))
 
 
-(transduce (clogt (filter even?))
+(transduce (clogt (filter even?) :js)
            conj (range 5))
 
 (transduce (clogt (comp (map inc) (filter even?)))
