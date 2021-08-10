@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.8.1
+** `dbgt` and `clogt` macro bugs fixed.
+
 * v0.8.0
 ** `dbgt` and `clogt` macros for debugging transducers added.
 ** `set-debug-level!` removed. Instead, use `with-level` macro.

@@ -189,13 +189,15 @@
 ;;; print
 (def dbg-symbols*
   '#{debux.dbgn/d
-     dbg dbgn dbg-last
-     dbg_ dbgn_ dbg-last_
+     dbg dbgn dbgt dbg-last dbg-prn
+     dbg_ dbgn_ dbgt_ dbg-last_ dbg-prn_
      debux.core/dbg* debux.core/dbgn*
+     debux.core/dbgt*
      debux.cs.clogn/d
-     clog clogn clog-last
-     clog_ clogn_ clog-last_
-     debux.cs.core/clog* debux.cs.core/clogn*})
+     clog clogn clogt clog-last
+     clog_ clogn_ clogt_ clog-last_
+     debux.cs.core/clog* debux.cs.core/clogn*
+     debux.cs.core/clogt*})
 
 (defn remove-dbg-symbols [form]
   (loop [loc (sequential-zip form)]
@@ -418,16 +420,22 @@
      result#))
 
 (defn print-xform [quoted-xform indent-level]
-  (fn [rf]
-    (fn ([] (rf))
-      ([result] (rf result))
-      ([result input]
-       (pprint-xform-with-indent ">" input indent-level)
-       (let [output (rf result input)]
-         (pprint-xform-with-indent"<" output indent-level)
-         (when (or (nil? indent-level) (= 1 indent-level))
-           (insert-blank-line))
-         output) ))))
+  (let [print-length *print-length*
+        debug-level *debug-level*]
+    (fn [rf]
+      (fn ([] (rf))
+        ([result] (rf result))
+        ([result input]
+         ;; transducers seem to work in another threads,
+         ;; so dynamic vars have to be reset here.
+         (binding [*print-length* print-length
+                   *debug-level* debug-level]
+           (pprint-xform-with-indent ">" input indent-level)
+           (let [output (rf result input)]
+             (pprint-xform-with-indent"<" output indent-level)
+             (when (or (nil? indent-level) (= 1 indent-level))
+               (insert-blank-line))
+             output) ))))))
 
 (defmacro spy-xform
   [xform & [indent-level]]

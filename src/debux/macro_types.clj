@@ -31,10 +31,10 @@
          :skip-form-itself-type
          `#{catch definline definterface defprotocol defrecord
             deftype finally gen-class gen-interface
-            debux.core/dbg debux.core/dbgn
-            debux.core/dbg* debux.core/dbgn*
-            debux.cs.core/clog debux.cs.core/clogn
-            debux.cs.core/clog* debux.cs.core/clogn*}
+            debux.core/dbg debux.core/dbgn debux.core/dbgt
+            debux.core/dbg* debux.core/dbgn* debux.core/dbgt*
+            debux.cs.core/clog debux.cs.core/clogn debux.cs.core/clogt
+            debux.cs.core/clog* debux.cs.core/clogn* debux.cs.core/clogt*}
 
          :expand-type
          `#{clojure.core/.. -> ->> doto cond-> cond->> condp import

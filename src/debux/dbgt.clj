@@ -7,7 +7,8 @@
      (if (and (>= (or ~level 0) ut/*debug-level*)
               (or ~(not (contains? opts :condition))
                   condition#))
-       (binding [ut/*indent-level* (inc ut/*indent-level*)]
+       (binding [ut/*indent-level* (inc ut/*indent-level*)
+                 *print-length* (or ~n (:print-length @ut/config*))]
          (let [src-info# (str (ut/src-info ~ns ~line))
                title# (str "dbgt: " (ut/truncate (pr-str '~form))
                            (and ~msg (str "   <" ~msg ">")))
@@ -18,9 +19,7 @@
            (when ~(:locals opts)
              (ut/pprint-locals-with-indent locals#)
              (ut/insert-blank-line))
-
-           (binding [*print-length* (or ~n (:print-length @ut/config*))]
-             ~body) ))
+            ~body))
        ~form) ))
 
 (defmacro dbg-xform
@@ -49,9 +48,10 @@
 
 (comment
 
-(dbgt (map inc) {} {:ns "ns" :line 12})
-(transduce (dbgt (filter even?) {} {:ns "ns" :line 12})
+(dbgt (map inc) {} {:ns "ns" :line 12 :n 2})
+(transduce (dbgt (filter even?) {} {:ns "ns" :line 12 :n 2})
            conj (range 10))
+(dbg-xform (map inc) {} {:ns "ns", :line 12, :n 2})
 
 (dbgt (comp (map inc) (filter odd?)) {} {:ns "ns" :line 12})
 (transduce (dbgt (comp (map inc) (filter even?)) {} {:ns "ns" :line 12})
