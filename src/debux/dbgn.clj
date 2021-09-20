@@ -253,6 +253,7 @@
          form#   '~(ut/remove-dbg-symbols form)
          result# ~form]
      (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result#))
+       (swap! ut/result* #((fnil conj []) % {:form form# :result result# :level ut/*indent-level*}))
        (ut/print-form-with-indent (ut/form-header form# (:msg opts#)))
        (binding [*print-length* n#]
          (ut/pprint-result-with-indent result#) ))
@@ -291,6 +292,7 @@
                                (dissoc opts :print :style :js :once)
                                opts)
          condition#         ~condition]
+     (reset! ut/result* [])
      (if (and (>= (or ~level 0) ut/*debug-level*)
               (or ~(not (contains? opts :condition))
                   condition#))
@@ -298,7 +300,9 @@
          (let [src-info# (str (ut/src-info ~ns ~line))
                title# (str "dbgn: " (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
                            (and ~msg (str "   <" ~msg ">"))  " =>")
-               locals# ~locals]
+               locals# ~locals
+               save# {:form '~(ut/remove-dbg-symbols form) :level (dec ut/*indent-level*)}]
+           (swap! ut/result* #(conj % save#))
            (ut/insert-blank-line)
            (ut/print-title-with-indent src-info# title#)
 
@@ -306,10 +310,13 @@
              (ut/pprint-locals-with-indent locals#)
              (ut/insert-blank-line))
 
-           ~(-> (if (ut/include-recur? form)
-                  (sk/insert-o-skip-for-recur form &env)
-                  form)
-                (insert-skip &env)
-                (insert-d 'debux.dbgn/d &env)
-                remove-skip) ))
+           (let [result#
+                 ~(-> (if (ut/include-recur? form)
+                        (sk/insert-o-skip-for-recur form &env)
+                        form)
+                      (insert-skip &env)
+                      (insert-d 'debux.dbgn/d &env)
+                      remove-skip)]
+            ((:user-call @ut/config*) @ut/result*)
+            result# )))
        ~form) ))
