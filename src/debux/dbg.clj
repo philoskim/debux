@@ -11,10 +11,7 @@
          (let [src-info# (str (ut/src-info ~ns ~line))
                title# (str "dbg: " (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
                            (and ~msg (str "   <" ~msg ">")) " =>")
-               locals# ~locals
-               save# {:form '~(ut/remove-dbg-symbols form) :level (dec ut/*indent-level*)}]
-          ;;  (swap! ut/result* #(assoc-in % [0 :form] '~(ut/remove-dbg-symbols form)))
-           (swap! ut/result* #(conj % save#))
+               locals# ~locals]
            (ut/insert-blank-line)
            (ut/print-title-with-indent src-info# title#)
 
@@ -23,9 +20,7 @@
              (ut/insert-blank-line))
 
            (binding [*print-length* (or ~n (:print-length @ut/config*))]
-             (let [result# ~body]
-               (swap! ut/result* #(assoc-in % [(.indexOf % save#) :result] result#))
-               result#)) ))
+             ~body) ))
        ~form) ))
 
 (defmacro dbg->
@@ -95,8 +90,6 @@
   [form locals opts]
   `(dbg-base ~form ~locals ~opts
      (let [result# ~form]
-       (print "running result")
-       (swap! ut/result* #(conj % {:result result#}))
        (if-let [print# ~(:print opts)]
          (ut/pprint-result-with-indent (print# result#))
          (ut/pprint-result-with-indent result#))
@@ -113,8 +106,6 @@
    :comp '#{clojure.core/comp cljs.core/comp}
    :let  '#{clojure.core/let cljs.core/let}})
 
-
-
 (defmacro dbg
   [form locals & [{:as opts}]]
   (if (list? form)
@@ -127,7 +118,6 @@
         (:cond-> dbg*)  `(dbg-cond-> ~form ~locals ~opts)
         (:cond->> dbg*) `(dbg-cond->> ~form ~locals ~opts)
         (:comp dbg*) `(dbg-comp ~form ~locals ~opts)
-        (:let dbg*)  `(do (reset! ut/result* []) (dbg-let ~form ~locals ~opts) ((:user-call @ut/config*) @ut/result*))
-        `(dbg-others ~form ~locals ~opts) )
-      )
+        (:let dbg*)  `(dbg-let ~form ~locals ~opts)
+        `(dbg-others ~form ~locals ~opts) ))
     `(dbg-others ~form ~locals ~opts) ))

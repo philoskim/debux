@@ -6,7 +6,6 @@
 /pom.xml
 /pom.xml.asc
 figwheel_server.log
-.calva/
 
 /examples/target
 /examples/pom.xml

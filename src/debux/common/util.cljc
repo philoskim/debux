@@ -6,8 +6,6 @@
             [clojure.walk :as walk]
             [cljs.analyzer.api :as ana] ))
 
-(def result* (atom  {}))
-
 ;;; For internal debugging
 (defmacro d
   "The internal macro to debug dbg macros."
@@ -43,12 +41,7 @@
          :ns-blacklist nil
          :ns-whitelist nil
          :line-bullet "|"
-         :user-call identity
          :cljs-devtools nil} ))
-
-(defn user-callback! [val]
-  (swap! config* assoc :user-call val)
-  nil)
 
 (defn set-debug-mode! [val]
   (swap! config* assoc :debug-mode val)
@@ -384,9 +377,6 @@
 ;;; spy functions
 (defn spy-first
   [pre-result quoted-form & [opts]]
-  ;; (swap! result* #(update-in % [*indent-level* :result] (fnil conj []) pre-result))
-  ;; (swap! result* #(update-in % [*indent-level* :form] (fnil conj []) quote-vals))
-  (swap! result* #((fnil conj []) %  {:form quoted-form :result pre-result :level *indent-level*}))
   (print-form-with-indent (form-header quoted-form))
   (pprint-result-with-indent pre-result)
   pre-result)
