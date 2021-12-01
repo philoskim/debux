@@ -34,6 +34,7 @@
     (apply vary-meta obj merge metamaps)
     (catch Exception e obj)))
 
+;; borrowed from cider-nrepl
 (defn- walk-indexed
   "Walk through form calling (f coor element).
   The value of coor is a vector of indices representing element's
@@ -103,14 +104,15 @@
   (let [ns (str *ns*)
         line (:line (meta &form))
         local-ks (keys &env)
-        _ (print (meta (tag-form-recursively form)))
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
        (locking locking*
          (dbgn/dbgn ~(tag-form-recursively form) (zipmap '~local-ks [~@local-ks])
                     ~(ut/parse-opts opts')))
        ~form)))
-(defn dbgn-f [form]
+(defn dbgn-f 
+  "Function version of the macro, mostly as a way to to make optional dependencies work"
+  [form]
   `(dbgn ~form))
 
 (defmacro dbgt [form & opts]

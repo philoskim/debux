@@ -42,6 +42,7 @@
          :print-length 100
          :ns-blacklist nil
          :ns-whitelist nil
+         :use-result-atom false
          :line-bullet "|"
          :user-call identity
          :cljs-devtools nil} ))
@@ -55,6 +56,10 @@
 
 (defn reset-result []
   (reset! result* []))
+
+(defn set-use-result-atom! [val]
+  (swap! config* assoc :use-result-atom val)
+  nil)
 
 (defn set-debug-mode! [val]
   (swap! config* assoc :debug-mode val)
@@ -390,9 +395,8 @@
 ;;; spy functions
 (defn spy-first
   [pre-result quoted-form & [opts]]
-  ;; (swap! result* #(update-in % [*indent-level* :result] (fnil conj []) pre-result))
-  ;; (swap! result* #(update-in % [*indent-level* :form] (fnil conj []) quote-vals))
-  (swap! result* #((fnil conj []) %  {:form quoted-form :result pre-result :level *indent-level*}))
+  (when (:use-result-atom @config*)
+    (swap! result* #((fnil conj []) %  {:form quoted-form :result pre-result :level *indent-level*})))
   (print-form-with-indent (form-header quoted-form))
   (pprint-result-with-indent pre-result)
   pre-result)
@@ -458,7 +462,9 @@
   `(print-xform '~xform ~indent-level))
 
 (defn trace! [form coor result]
-  (swap! result* #((fnil conj []) % {:form form :coordinate (::coor coor) :result result :id (gensym "")})))
+  (when (:use-result-atom @config*)
+    (swap! result* #((fnil conj []) % {:form form :coordinate (::coor coor) :result result :id (gensym "")}))))
 
 (defn trace-binding! [binding result coor]
-  (swap! result* #((fnil conj []) % {:binding binding :coordinate (::coor coor) :result result :id (gensym "")})))
+  (when (:use-result-atom @config*)
+    (swap! result* #((fnil conj []) % {:binding binding :coordinate (::coor coor) :result result :id (gensym "")}))))

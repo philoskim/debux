@@ -297,7 +297,6 @@
                                opts)
          condition#         ~condition]
      (reset! ut/result* [])
-    ;;  (reset! ut/result* {})
      (if (and (>= (or ~level 0) ut/*debug-level*)
               (or ~(not (contains? opts :condition))
                   condition#))
@@ -308,8 +307,7 @@
                locals# ~locals
                id# ~(hash form)
                save# {:form '~(ut/remove-dbg-symbols form) :level (dec ut/*indent-level*) :form-id id#}]
-          ;;  (swap! ut/result* #(conj % save#))
-          ;;  (swap! ut/result* assoc id [save#])
+
            (ut/insert-blank-line)
            (ut/print-title-with-indent src-info# title#)
 
@@ -324,6 +322,5 @@
                       (insert-skip &env)
                       (insert-d 'debux.dbgn/d &env)
                       remove-skip)]
-             (println "dbgn result:" @ut/result* result#)
              result#)))
        ~form) ))
