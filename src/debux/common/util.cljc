@@ -50,6 +50,12 @@
   (swap! config* assoc :user-call val)
   nil)
 
+(defn read-result []
+  result*)
+
+(defn reset-result []
+  (reset! result* []))
+
 (defn set-debug-mode! [val]
   (swap! config* assoc :debug-mode val)
   nil)
@@ -450,3 +456,9 @@
 (defmacro spy-xform
   [xform & [indent-level]]
   `(print-xform '~xform ~indent-level))
+
+(defn trace! [form coor result]
+  (swap! result* #((fnil conj []) % {:form form :coordinate (::coor coor) :result result :id (gensym "")})))
+
+(defn trace-binding! [binding result coor]
+  (swap! result* #((fnil conj []) % {:binding binding :coordinate (::coor coor) :result result :id (gensym "")})))

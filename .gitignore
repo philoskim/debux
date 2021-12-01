@@ -7,6 +7,11 @@
 /pom.xml.asc
 figwheel_server.log
 .calva/
+.portal/
+.lsp/
+.lh/
+.cpcache/
+.clj-kondo/
 
 /examples/target
 /examples/pom.xml
