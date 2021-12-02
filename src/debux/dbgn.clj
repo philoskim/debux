@@ -110,9 +110,13 @@
                 z/next
                 recur)
 
-            (or ((:let-type (macro-types env)) sym)
-                ((:loop-type (macro-types env)) sym))
+            ((:let-type (macro-types env)) sym)
             (-> (z/replace loc (sk/insert-skip-in-let node))
+                z/next
+                recur)
+
+            ((:loop-type (macro-types env)) sym)
+            (-> (z/replace loc (sk/insert-skip-in-loop node))
                 z/next
                 recur)
 
@@ -180,7 +184,7 @@
             ((:expand-type (macro-types env)) sym)
             (-> (z/replace loc (if (ut/cljs-env? env)
                                  (analyzer/macroexpand-1 env node)
-                                 (macroexpand-1 node) ))
+                                 (macroexpand-1 node)))
                 recur)
 
             ((:dot-type (macro-types env)) sym)
@@ -189,7 +193,7 @@
                 recur)
 
             :else
-            (recur (z/next loc)) ))
+            (recur (z/next loc))))
 
         :else (recur (z/next loc)) ))))
 
@@ -253,10 +257,10 @@
          form#   '~(ut/remove-dbg-symbols form)
          result# ~form]
      (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result#))
-       (swap! ut/result* #((fnil conj []) % {:form form# :result result# :level ut/*indent-level*}))
+       (ut/trace! form# (meta form#) result#)
        (ut/print-form-with-indent (ut/form-header form# (:msg opts#)))
        (binding [*print-length* n#]
-         (ut/pprint-result-with-indent result#) ))
+         (ut/pprint-result-with-indent result#)))
      result#))
 
 
@@ -301,8 +305,9 @@
                title# (str "dbgn: " (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
                            (and ~msg (str "   <" ~msg ">"))  " =>")
                locals# ~locals
-               save# {:form '~(ut/remove-dbg-symbols form) :level (dec ut/*indent-level*)}]
-           (swap! ut/result* #(conj % save#))
+               id# ~(hash form)
+               save# {:form '~(ut/remove-dbg-symbols form) :level (dec ut/*indent-level*) :form-id id#}]
+
            (ut/insert-blank-line)
            (ut/print-title-with-indent src-info# title#)
 
@@ -317,6 +322,5 @@
                       (insert-skip &env)
                       (insert-d 'debux.dbgn/d &env)
                       remove-skip)]
-            ((:user-call @ut/config*) @ut/result*)
-            result# )))
+             result#)))
        ~form) ))

@@ -21,10 +21,13 @@
 ;;; :defn-type
 (defn- insert-indent-info
   [form]
-  `((ms/skip binding) (ms/skip [ut/*indent-level* (inc ut/*indent-level*)])
-      (ms/skip (reset! (:evals ~'+debux-dbg-opts+) {}))
-      (ms/skip (ut/insert-blank-line))
-       ~@form))
+  `((ms/skip binding)
+    (ms/skip [ut/*indent-level* (inc ut/*indent-level*)])
+    (ms/skip (reset! (:evals ~'+debux-dbg-opts+) {}))
+    (ms/skip (ut/insert-blank-line))
+    (ms/o-skip (let [result# ~@form]
+                 (ms/skip ((:user-call @ut/config*) @ut/result*))
+                 (ms/skip result#)))))
 
 (defn- insert-skip-in-prepost [prepost]
   `(ms/skip ~prepost))
@@ -72,7 +75,11 @@
 
 ;;; :let-type
 (defn- process-let-binding [[binding form]]
-   [`(ms/skip ~binding) form])
+   [`(ms/skip ~binding) form
+    `(ms/skip ~'_) `(ms/skip (ut/trace-binding! '~binding ~binding (meta '~binding)))])
+
+(defn- process-binding [[binding form]]
+  [`(ms/skip ~binding) form])
 
 (defn insert-skip-in-let
   [[name bs & body]]
@@ -82,6 +89,15 @@
     (list* name `(ms/o-skip ~bs')
            `(ms/skip (ut/insert-blank-line))
            body) ))
+
+(defn insert-skip-in-loop
+  [[name bs & body]]
+  (let [bs' (->> (partition 2 bs)
+                 (mapcat process-binding)
+                 vec)]
+    (list* name `(ms/o-skip ~bs')
+           `(ms/skip (ut/insert-blank-line))
+           body)))
 
 (defn insert-skip-in-if-let
   [[name bs & body]]
@@ -108,7 +124,7 @@
   (if (keyword? binding)
     (case binding
       :let `[:let (ms/o-skip ~(->> (partition 2 form)
-                                   (mapcat process-let-binding)
+                                   (mapcat process-binding)
                                    vec))]
       [binding form])
     `[(ms/skip ~binding) ~form] ))
