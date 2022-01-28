@@ -14,3 +14,10 @@
 
 (transduce (clogt (comp (map inc) (filter even?)))
            conj (range 5))
+
+
+(defn f []
+  (let [add (fn [a b] (+ a b))]
+    (clogn (add (* 10 20) 100))))
+
+(f)

@@ -157,7 +157,7 @@
    (defn- ns-symbol-for-cljs [sym env]
      (if-let [meta (ana/resolve env sym)]
        ;; normal symbol
-       (if (= (:op meta) :local)
+       (if (:local meta)
          sym
          (let [[ns name] (str/split (str (:name meta)) #"/")]
           ;; The special symbol `.` must be handled in the following special symbol part.

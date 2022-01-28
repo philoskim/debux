@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.8.2
+** A bug fixed: pull request #26
+
 * v0.8.1
 ** `dbgt` and `clogt` macro bugs fixed.
 
