@@ -20,3 +20,5 @@ figwheel_server.log
 *#
 .#*
 
+.cache
+.lein-failures

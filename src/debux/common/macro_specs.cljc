@@ -1,7 +1,8 @@
 (ns debux.common.macro-specs
   "clojure.core macro specs which are minified, simplified and modified."
   (:require [clojure.spec.alpha :as s]
-            [clojure.future :refer :all] ))
+            #?@(:bb []
+                :default [[clojure.future :refer :all]]) ))
 
 (declare skip o-skip a-skip)
 ; skip => full skip

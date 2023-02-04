@@ -1,7 +1,8 @@
 (ns debux.cs.util
   "Utilities for clojurescript only"
   (:require [clojure.string :as str]
-            [cljs.analyzer.api :as ana]
+            #?@(:bb []
+                :default [[cljs.analyzer.api :as ana]])
             #?(:cljs [cljs.pprint :as pp])
             [debux.common.util :as ut] ))
 
