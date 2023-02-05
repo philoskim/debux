@@ -1,11 +1,17 @@
 (ns debux.dbgn
   (:require [clojure.zip :as z]
-            [cljs.analyzer :as analyzer]
             [debux.common.macro-specs :as ms]
             [debux.common.skip :as sk]
             [debux.common.util :as ut]
-            [debux.macro-types :as mt]
-            [debux.cs.macro-types :as cs.mt] ))
+            [debux.cs.macro-types :as cs.mt]
+            [debux.macro-types :as mt]))
+
+(defmacro if-bb [then else]
+  (if (System/getProperty "babashka.version")
+    then else))
+
+(if-bb nil
+  (require '[cljs.analyzer :as analyzer]))
 
 ;;; Basic strategy for dbgn
 
@@ -178,9 +184,11 @@
                 recur)
 
             ((:expand-type (macro-types env)) sym)
-            (-> (z/replace loc (if (ut/cljs-env? env)
-                                 (analyzer/macroexpand-1 env node)
-                                 (macroexpand-1 node) ))
+            (-> (z/replace loc (if-bb (macroexpand-1 node)
+                                 (if (ut/cljs-env? env)
+                                   #_:clj-kondo/ignore ;; analyzer conditionally loaded
+                                   (analyzer/macroexpand-1 env node)
+                                   (macroexpand-1 node) )))
                 recur)
 
             ((:dot-type (macro-types env)) sym)
