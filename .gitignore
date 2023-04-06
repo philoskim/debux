@@ -3,6 +3,8 @@
 .nrepl-port
 .nrepl-history
 .lein-repl-history
+.lsp
+.clj-kondo
 /pom.xml
 /pom.xml.asc
 figwheel_server.log
