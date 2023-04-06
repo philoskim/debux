@@ -1,0 +1,8 @@
+;; shadow-cljs configuration
+{:source-paths ["src/cljs" "src/cljc"]
+ :dependencies [[philoskim/debux "0.8.2"]]
+ :dev-http {8080 "resources/public"}
+ :builds {:test {:target :browser
+                 :output-dir "resources/public/js"
+                 :asset-path "/js"
+                 :modules {:main {:init-fn examples.core/init}} }}}

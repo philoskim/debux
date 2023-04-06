@@ -5,14 +5,15 @@
 .lein-repl-history
 .lsp
 .clj-kondo
+.DS_Store
+.shadow-cljs
 /pom.xml
 /pom.xml.asc
-figwheel_server.log
 
 /examples/target
 /examples/pom.xml
+/examples/node_modules
 /examples/resources/public/js
-/examples/figwheel_server.log
 /examples/.rebel_readline_history
 /examples/.lein-repl-history
 

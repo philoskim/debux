@@ -11,14 +11,4 @@
                  ["target"
                   "resources/public/js/out"
                   "resources/public/js/app.js"
-                  "resources/public/js/app.js.map"]
-  :cljsbuild {:builds [{:id "dev"
-                        :source-paths ["src/cljs" "src/cljc"]
-                        :figwheel true
-                        :compiler {:main examples.core
-                                   :preloads [examples.preload #_devtools.preload]
-                                   :asset-path "js/out"
-                                   :output-to "resources/public/js/app.js"
-                                   :output-dir "resources/public/js/out"
-                                   :source-map true
-                                   :optimizations :none} }]})
+                  "resources/public/js/app.js.map"])

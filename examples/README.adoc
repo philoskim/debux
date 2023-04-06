@@ -16,11 +16,12 @@ $ lein run
 
 [listing]
 ----
-$ lein clean
-$ lein figwheel
+$ yarn install
+$ yarn clean
+$ yarn test
 ----
 
-. Open the URL http://localhost:3449/ in your browser.
+. Open the URL http://localhost:8080/ in your browser.
 
 . Open the DevTool's console widnow by pressing <Ctrl-Shift-I> in case of Google Chrome
   and you will see the evaluated results of the examples.

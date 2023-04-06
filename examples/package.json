@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "devDependencies": {
+    "shadow-cljs": "2.16.5"
+  },
+  "scripts": {
+    "test": "npx shadow-cljs watch test",
+    "clean": "rm -rf resources/public/js"
+  }
+}

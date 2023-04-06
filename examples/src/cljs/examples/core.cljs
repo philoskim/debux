@@ -10,3 +10,5 @@
             ;examples.lab
 ))
 
+(defn init [])
+
