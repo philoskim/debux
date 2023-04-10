@@ -28,7 +28,8 @@
 
 (defmacro dbg [form & opts]
   (let [ns (str *ns*)
-        line (:line (meta &form))
+        line (or (:line (meta &form))
+                 (ut/get-line-number opts))
         local-ks (keys &env)
         opts' (ut/prepend-src-info opts ns line)]
     ;(ut/d (meta &form))
@@ -40,7 +41,8 @@
 
 (defmacro dbgn [form & opts]
   (let [ns (str *ns*)
-        line (:line (meta &form))
+        line (or (:line (meta &form))
+                 (ut/get-line-number opts))
         local-ks (keys &env)
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
@@ -51,7 +53,8 @@
 
 (defmacro dbgt [form & opts]
   (let [ns (str *ns*)
-        line (:line (meta &form))
+        line (or (:line (meta &form))
+                 (ut/get-line-number opts))
         local-ks (keys &env)
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)

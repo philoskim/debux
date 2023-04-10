@@ -1,6 +1,5 @@
 # Debux examples project
 :source-language: clojure
-:source-highlighter: coderay
 :sectnums:
 
 ## Running examples in Clojure
@@ -17,6 +16,7 @@ $ lein run
 [listing]
 ----
 $ yarn install
+
 $ yarn clean
 $ yarn test
 ----

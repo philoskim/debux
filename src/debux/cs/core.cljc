@@ -35,7 +35,8 @@
 ;;; debugging APIs
 (defmacro dbg [form & opts]
   (let [ns (str *ns*)
-        line (:line (meta &form))
+        line (or (:line (meta &form))
+                 (ut/get-line-number opts))
         local-ks (if (ut/cljs-env? &env)
                    (keys (:locals &env))
                    (keys &env))
@@ -48,7 +49,8 @@
 
 (defmacro dbgn [form & opts]
   (let [ns (str *ns*)
-        line (:line (meta &form))
+        line (or (:line (meta &form))
+                 (ut/get-line-number opts))
         local-ks (if (ut/cljs-env? &env)
                    (keys (:locals &env))
                    (keys &env))
@@ -61,7 +63,8 @@
 
 (defmacro dbgt [form & opts]
   (let [ns (str *ns*)
-        line (:line (meta &form))
+        line (or (:line (meta &form))
+                 (ut/get-line-number opts))
         local-ks (if (ut/cljs-env? &env)
                    (keys (:locals &env))
                    (keys &env))
@@ -74,7 +77,8 @@
 
 (defmacro clog [form & opts]
   (let [ns (str *ns*)
-        line (:line (meta &form))
+        line (or (:line (meta &form))
+                 (ut/get-line-number opts))
         local-ks (keys (:locals &env))
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
@@ -85,7 +89,8 @@
 
 (defmacro clogn [form & opts]
   (let [ns (str *ns*)
-        line (:line (meta &form))
+        line (or (:line (meta &form))
+                 (ut/get-line-number opts))
         local-ks (keys (:locals &env))
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)
@@ -96,7 +101,8 @@
 
 (defmacro clogt [form & opts]
   (let [ns (str *ns*)
-        line (:line (meta &form))
+        line (or (:line (meta &form))
+                 (ut/get-line-number opts))
         local-ks (keys (:locals &env))
         opts' (ut/prepend-src-info opts ns line)]
     `(if (ut/debug-enabled? ~ns)

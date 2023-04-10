@@ -18,10 +18,20 @@
 (defmacro current-ns []
   (str *ns*))
 
+(defn get-line-number [opts]
+  (some (fn [[fst snd]]
+          (when (= :line fst)
+            snd))
+        (partition 2 1 opts) ))
+
 (defn prepend-src-info [opts ns line]
   (cond->> opts
-    ns (concat [:ns ns])
-    line (concat [:line line])))
+    ns
+    (concat [:ns ns])
+
+    (and line
+         (not (get-line-number opts)))
+    (concat [:line line]) ))
 
 (defn src-info [ns line]
   (cond-> {:ns (symbol ns)}
