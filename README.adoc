@@ -3322,7 +3322,7 @@ debux.electric namespace:
   dbg, dbgn, dbgt, dbg-last, dbg_, dbgn_, dbgt_, dbg-last_
 
 ;;; The client side macros for Electric
-debux.cs.electric namespace
+debux.cs.electric namespace:
   clog, clogn, clogt, clog-last, clog_, clogn_, clogt_, clog-last_
   dbg, dbgn, dbgt, dbg-last, dbg_, dbgn_, dbgt_, dbg-last_
 ----
@@ -3365,11 +3365,6 @@ debux.cs.electric namespace
                    (swap! !x not)))
       (dom/text "toggle client/server"))))
 ....
-
-
-
-
-
 
 
 ## `break` examples (CLJS only)
@@ -3864,6 +3859,6 @@ When you double-click on one of the open parentheses and the following string is
 
 
 ## License
-Copyright © 2015--2022 Young Tae Kim
+Copyright © 2015--2023 Young Tae Kim
 
 Distributed under the Eclipse Public License either version 1.0 or any later version.

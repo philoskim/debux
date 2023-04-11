@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.8.3
+** Electric support added
+
 * v0.8.2
 ** A bug fixed: pull request #26
 
@@ -23,7 +26,7 @@
    dependency.
 
 * v0.7.7
-** Bug fixed: link:https://github.com/philoskim/debux/pull/20[pull request] merged. 
+** Bug fixed: link:https://github.com/philoskim/debux/pull/20[pull request] merged.
 
 * v0.7.6
 ** Bumps `binaryage/devtools 1.0.2`
@@ -74,7 +77,7 @@
    readability.
 
 * v0.6.1
-** The namespace and line number of the source code are printed as well in the debux macros.   
+** The namespace and line number of the source code are printed as well in the debux macros.
 
 * v0.6.0
 ** Changed: _number_ option of *debux* macros is now applied to not only `seq` data type
@@ -149,7 +152,7 @@
 ** The following missing macros of `cljs.core` are added.
 *** `:skip-form-itself-type`
 +
-`goog-define` `import-macros` `js-comment` `js-inline-comment` `require` `require-macros` 
+`goog-define` `import-macros` `js-comment` `js-inline-comment` `require` `require-macros`
 `simple-benchmark`  `specify` `specify!` `use` `use-macros`
 
 *** `:skip-arg-1-type`
@@ -164,7 +167,7 @@
 ** Added: `set-debug-mode!` is added.
 ** Added: `set-ns-whitelist!` and `set-ns-blacklist!` are added.
 
-* v0.4.3 
+* v0.4.3
 ** Changed: The same duplicate evaluated results are not printed by default.
 ** Enhanced: The readability is enhanced for the looping constructs such as `map`,
    `reduce`, `for`, `loop`, and so on by inserting a blank line whenever iteration
@@ -199,7 +202,7 @@
 *** Refer to http://blog.fikesfarm.com/posts/2017-07-29-improved-function-printing.html?utm_source=dlvr.it[here] for details.
 
 * v0.3.9
-** Fixed: The error in debugging `doseq` is removed. 
+** Fixed: The error in debugging `doseq` is removed.
 ** Changed: The number option applies only to `seq` data type, not to vectors, maps, or sets.
 
 * v0.3.8
