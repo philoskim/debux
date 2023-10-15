@@ -1,6 +1,7 @@
 (ns debux.macro-types
   (:require [clojure.set :as set]
-            [debux.common.util :as ut] ))
+            [debux.common.util :as ut]
+            [debux.dbg :as d]))
 
 (def macro-types*
   (atom {:def-type `#{def defonce}
@@ -49,7 +50,11 @@
 (defmacro register-macros! [macro-type new-symbols]
   (-> (swap! macro-types* update macro-type
              #(merge-symbols % new-symbols))
-      ut/quote-vals))
+      ut/quote-vals)
+  (when (= macro-type :let-type)
+    (-> (swap! d/dbg-macro-types* update :let
+               #(merge-symbols % new-symbols))
+        ut/quote-vals)))
 
 (defmacro show-macros
   ([] (ut/quote-vals @macro-types*))
