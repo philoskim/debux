@@ -17,9 +17,15 @@
 /examples/.rebel_readline_history
 /examples/.lein-repl-history
 
+/.idea/
+/*.iml
+
 /resources/public/js/
 
 *~
 *#
 .#*
 
+.cache
+.lein-failures
+/.cpcache/

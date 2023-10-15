@@ -3,8 +3,7 @@
   (:require [clojure.string :as str]
             [clojure.pprint :as pp]
             [clojure.zip :as z]
-            [clojure.walk :as walk]
-            [cljs.analyzer.api :as ana] ))
+            [clojure.walk :as walk]))
 
 ;;; For internal debugging
 (defmacro d
@@ -175,7 +174,7 @@
 
 #?(:clj
    (defn- ns-symbol-for-cljs [sym env]
-     (if-let [meta (ana/resolve env sym)]
+     (if-let [meta ((requiring-resolve 'cljs.analyzer.api/resolve) env sym)]
        ;; normal symbol
        (if (:local meta)
          sym

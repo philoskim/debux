@@ -1,6 +1,5 @@
 (ns debux.dbgn
   (:require [clojure.zip :as z]
-            [cljs.analyzer :as analyzer]
             [debux.common.macro-specs :as ms]
             [debux.common.skip :as sk]
             [debux.common.util :as ut]
@@ -179,8 +178,9 @@
 
             ((:expand-type (macro-types env)) sym)
             (-> (z/replace loc (if (ut/cljs-env? env)
-                                 (analyzer/macroexpand-1 env node)
-                                 (macroexpand-1 node) ))
+                                 #_:clj-kondo/ignore ;; analyzer conditionally loaded
+                                 ((requiring-resolve 'cljs.analyzer/macroexpand-1) env node)
+                                 (macroexpand-1 node)))
                 recur)
 
             ((:dot-type (macro-types env)) sym)
