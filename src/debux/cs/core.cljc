@@ -31,6 +31,9 @@
 (defmacro set-cljs-devtools! [bool]
   `(ut/set-cljs-devtools! ~bool))
 
+(defmacro set-tap-output! [bool]
+  `(ut/set-tap-output! ~bool))
+
 
 ;;; debugging APIs
 (defmacro dbg [form & opts]

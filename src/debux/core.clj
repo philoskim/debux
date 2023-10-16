@@ -22,6 +22,8 @@
 (defmacro set-ns-whitelist! [whitelist]
   `(ut/set-ns-whitelist! ~whitelist))
 
+(defmacro set-tap-output! [bool]
+  `(ut/set-tap-output! ~bool))
 
 ;;; debugging APIs
 (def locking* (Object.))

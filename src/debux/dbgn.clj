@@ -1,6 +1,5 @@
 (ns debux.dbgn
   (:require [clojure.zip :as z]
-            [cljs.analyzer :as analyzer]
             [debux.common.macro-specs :as ms]
             [debux.common.skip :as sk]
             [debux.common.util :as ut]
@@ -179,8 +178,9 @@
 
             ((:expand-type (macro-types env)) sym)
             (-> (z/replace loc (if (ut/cljs-env? env)
-                                 (analyzer/macroexpand-1 env node)
-                                 (macroexpand-1 node) ))
+                                 #_:clj-kondo/ignore ;; analyzer conditionally loaded
+                                 ((requiring-resolve 'cljs.analyzer/macroexpand-1) env node)
+                                 (macroexpand-1 node)))
                 recur)
 
             ((:dot-type (macro-types env)) sym)
@@ -255,7 +255,9 @@
      (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result#))
        (ut/print-form-with-indent (ut/form-header form# (:msg opts#)))
        (binding [*print-length* n#]
-         (ut/pprint-result-with-indent result#) ))
+         (ut/pprint-result-with-indent result#))
+       (when (:tap-output @ut/config*)
+         (ut/tap-data form# result# ut/*indent-level* (:msg opts#))))
      result#))
 
 
@@ -296,9 +298,11 @@
                   condition#))
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [src-info# (str (ut/src-info ~ns ~line))
-               title# (str "dbgn: " (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
-                           (and ~msg (str "   <" ~msg ">"))  " =>")
-               locals# ~locals]
+               title#    (str (when-not (:tap-output @ut/config*) "dbgn: ")
+                              (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
+                              (and ~msg (str "   <" ~msg ">"))
+                              (when-not (:tap-output @ut/config*) " =>"))
+               locals#   ~locals]
            (ut/insert-blank-line)
            (ut/print-title-with-indent src-info# title#)
 

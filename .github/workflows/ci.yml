@@ -1,0 +1,26 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@10.1
+        with:
+          lein: 2.9.10
+          bb: latest
+
+      - name: Execute lein tests
+        run: lein test
+
+      - name: Execute babashka tests
+        run: bb test:bb

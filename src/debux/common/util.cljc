@@ -3,8 +3,7 @@
   (:require [clojure.string :as str]
             [clojure.pprint :as pp]
             [clojure.zip :as z]
-            [clojure.walk :as walk]
-            [cljs.analyzer.api :as ana] ))
+            [clojure.walk :as walk]))
 
 ;;; For internal debugging
 (defmacro d
@@ -37,9 +36,14 @@
   (cond-> {:ns (symbol ns)}
     line (merge {:line line})))
 
+(comment
+  (defn src-info+tap-data [tap-data opts]
+    (merge (select-keys [:ns :line :msg] opts)
+           tap-data)))
+
 
 ;;; dynamic vars
-(def ^:dynamic *indent-level* 0)
+(def ^:dynamic *indent-level* 1)
 (def ^:dynamic *debug-level* 0)
 
 
@@ -51,7 +55,8 @@
          :ns-blacklist nil
          :ns-whitelist nil
          :line-bullet "|"
-         :cljs-devtools nil} ))
+         :cljs-devtools nil
+         :tap-output false}))
 
 (defn set-debug-mode! [val]
   (swap! config* assoc :debug-mode val)
@@ -79,6 +84,10 @@
 
 (defn set-cljs-devtools! [bool]
   (swap! config* assoc :cljs-devtools bool)
+  nil)
+
+(defn set-tap-output! [bool]
+  (swap! config* assoc :tap-output bool)
   nil)
 
 
@@ -165,7 +174,7 @@
 
 #?(:clj
    (defn- ns-symbol-for-cljs [sym env]
-     (if-let [meta (ana/resolve env sym)]
+     (if-let [meta ((requiring-resolve 'cljs.analyzer.api/resolve) env sym)]
        ;; normal symbol
        (if (:local meta)
          sym
@@ -242,11 +251,31 @@
   [line indent-level]
   (str (make-bullets indent-level) line))
 
+(defn tap-data
+  ([tap-map]
+   (->> tap-map
+        (merge {:form nil
+                :result nil
+                :indent-level 0
+                :info nil})
+        tap>))
+  ([form result]
+   (tap-data form result *indent-level* nil))
+  ([form result indent-level]
+   (tap-data form result indent-level nil))
+  ([form result indent-level info]
+   (tap> {:form form
+          :result result
+          :indent-level indent-level
+          :info info})))
+
 (defn print-title-with-indent
   [src-info title]
   (when (:source-info-mode @config*)
     (println (prepend-bullets-in-line src-info (dec *indent-level*))))
   (println (prepend-bullets-in-line title (dec *indent-level*)))
+  (when (:tap-output @config*)
+    (tap-data nil nil (dec *indent-level*) title))
   (flush))
 
 (defn print-form-with-indent
@@ -268,7 +297,9 @@
     (println (->> (str/split pprint #"\n")
                   (mapv #(str prefix %))
                   (str/join "\n")))
-    (flush) ))
+    (when (:tap-output @config*)
+      (tap-data nil result *indent-level* ":locals"))
+    (flush)))
 
 (defn pprint-result-with-indent
   [result]
@@ -340,6 +371,9 @@
         (= :level fst)
         (recur (nnext opts) (assoc acc :level snd))
 
+        (= :simple fst)
+        (recur (next opts) (assoc acc :simple true))
+
 
         ;;; for clojureScript only
         (= :js fst)
@@ -391,12 +425,16 @@
   [pre-result quoted-form & [opts]]
   (print-form-with-indent (form-header quoted-form))
   (pprint-result-with-indent pre-result)
+  (when (:tap-output @config*)
+    (tap-data quoted-form pre-result))
   pre-result)
 
 (defn spy-last
   [quoted-form pre-result & [opts]]
   (print-form-with-indent (form-header quoted-form))
   (pprint-result-with-indent pre-result)
+  (when (:tap-output @config*)
+    (tap-data quoted-form pre-result))
   pre-result)
 
 (defn spy-comp
@@ -406,22 +444,28 @@
       (let [result (apply form arg)]
         (print-form-with-indent (form-header quoted-form))
         (pprint-result-with-indent result)
-        result) )))
+        (when (:tap-output @config*)
+          (tap-data quoted-form result))
+        result))))
 
 
 ;;; spy macros
 (defmacro spy
   [form]
   `(let [result# ~form]
-    (print-form-with-indent (form-header '~form))
-    (pprint-result-with-indent result#)
-    result#))
+     (print-form-with-indent (form-header '~form))
+     (pprint-result-with-indent result#)
+     (when (:tap-output @config*)
+       (tap-data '~form result#))
+     result#))
 
 (defmacro spy-first2
   [pre-result form]
   `(let [result# (-> ~pre-result ~form)]
      (print-form-with-indent (form-header '~form))
      (pprint-result-with-indent result#)
+     (when (:tap-output @config*)
+       (tap-data '~form result#))
      result#))
 
 (defmacro spy-last2
@@ -429,6 +473,8 @@
   `(let [result# (->> ~pre-result ~form)]
      (print-form-with-indent (form-header '~form))
      (pprint-result-with-indent result#)
+     (when (:tap-output @config*)
+       (tap-data '~form result#))
      result#))
 
 (defn print-xform [quoted-xform indent-level]
