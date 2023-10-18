@@ -12,7 +12,7 @@ this library to debug my own Clojure(Script) code and to analyze other developer
 
 ## Prerequisites
 
-* clojure 1.8.0 or later
+* clojure 1.10.0 or later (since debux 0.9.0)
 * clojurescript 1.10.238 or later
 
 
@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.8.3"]
+[philoskim/debux "0.9.0"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.8.3"]
+[philoskim/debux-stubs "0.9.0"]
 ....
 
 
@@ -64,6 +64,22 @@ and this to your *production* dependencies.
 
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
+
+* v0.9.0
++
+All the new features of this version are thanks to the link:https://github.com/philoskim/debux/pull/31[pull request] of
+link:https://github.com/gnl[George Lipov]. Thanks a lot again!
+
+** The minimum version of Clojure is upgraded from 1.8.0 to 1.10.0
+** ClojureScript dependency in Clojure removed.
+** `bb` (Babashka for Clojure) support added.  See the details <<babashka, here>>.
+*** `nbb` (Babashka for Node) is not supported yet.
+
+** `tap>` support added. See the details <<tap-output, here>>.
+*** `set-tap-output!` function added.
+*** `set-date-time-fn!` function added.
+
+** `:simple` option added.  See the details <<simple-option, here>>.
 
 * v0.8.3
 ** link:https://github.com/hyperfiddle/electric[Electric] support added. See the details
@@ -604,6 +620,34 @@ dbg: (comp inc inc +) =>
 | inc =>
 |   32
 ....
+
+[[simple-option]]
+### Want to see only the final result of the above macros?
+
+For example, if you want to see only the final result of the `pass:q[->]`,
+Put the option `:simple` like this.
+
+[source]
+....
+(dbg (-> "a b c d"
+         .toUpperCase
+         (.replace "A" "X")
+         (.split " ")
+         first)
+     :simple)
+;=> "X"
+....
+
+.REPL output
+[listing]
+----
+{:ns examples.demo, :line 18}
+dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>
+|   "X"
+----
+
+This option apliies to  (`pass:q[->]`, `pass:q[->>]`, `pass:q[some->]`,
+`pass:q[some->>]`, `pass:q[cond->]`, `pass:q[cond->>]`, `let`, `comp`).
 
 
 [[dbgn-examples]]
@@ -2335,9 +2379,11 @@ dbgt: (comp (map inc) (filter odd?))
 | :print  or :p | O   |   X   |  O   |  X   |   X  |   X   |   X
 | :dup          | X   |   0   |  X   |  0   |   X  |   X   |   X
 | :level        | O   |   O   |  O   |  O   |   O  |   O   |   X
+| :simple       | O   |   X   |  O   |  X   |   X  |   X   |   X
 | :style  or :s | X   |   X   |  O   |  O   |   X  |   O   |   X
 | :once   or :o | X   |   X   |  O   |  X   |   X  |   X   |   X
 | :js           | X   |   X   |  O   |  O   |   X  |   X   |   X
+
 
 |===
 
@@ -2957,6 +3003,25 @@ dbg: (* 10 2) =>
 ----
 
 
+[[simple-option]]
+### `:simple` option
+
+[source]
+.example/core.cljs
+....
+(ns example.core
+  (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
+
+(clog (repeat 5 "x") "5 times repeat")
+(clogn (repeat 5 (repeat 5 "x")) "25 times repeat")
+....
+
+
+### `:simple` option
+
+See the details <<simple-option, here>>.
+
+
 [[style-option]]
 ### `:style` (or `:s`) option (CSS Styling: CLJS only)
 
@@ -3245,6 +3310,103 @@ See the detailed explaination link:doc/macro-debugging-in-clojurescript.adoc[her
 
 
 
+[[tap-output]]
+## Support for `tap>` added
+
+Only `dbg`, `dbgn` and `dbgt` will call the functions registered by `add-tag`,
+using `tap>` function internally.
+
+[cols="^2m,^1m,^1m,^1m,^1m,^1m,^1m, options="header"]
+|===
+|                 | dbg | dbgn | clog | clogn | dbgt | clogt
+
+| set-tap-output! | O   |   O   |  X   |  X   |   O  |   X
+|===
+
+
+The following is an example of using `tap>` support in Debux.
+
+[source]
+.events/tap-output.clj
+....
+(ns examples.tap-output
+  (:require [debux.tap-output :as d]
+            [java-time.api :as jt])
+  (:gen-class))
+
+(defn log [x]
+    (spit "event.log" (str x \newline) :append true))
+
+(defn my-date-time []
+  (->> (jt/local-date-time)
+       (jt/format :iso-date-time) ))
+
+
+(defn -main []
+  (println "\nRunning debux examples...\n")
+
+  ;; add log function to tap
+  (add-tap log)
+
+  ;; For example, if you want to log the results of dbg/dbgn/dbgt
+  ;; Firstly, run set-tap-output! function like this.
+  (d/set-tap-output! true)
+
+  ;; Optionally run set-date-time-fn! like this.
+  ;; This will add :time info to the src-info line additionally.
+  (d/set-date-time-fn! my-date-time)
+
+  (d/dbg (+ 10 20))
+  (d/dbgn (+ 10 (* 2 3)))
+  (transduce (dbgt (comp (map inc) (filter odd?)))
+             conj (range 5)))
+....
+
+`event.log` file will have the follwing logs.
+
+[listing]
+.examples/event.log
+----
+{:ns examples.tap-output, :line 30, :time "2023-10-18T20:40:56.183613"}
+dbg: (+ 10 20) =>
+|   30
+
+{:ns examples.tap-output, :line 31, :time "2023-10-18T20:40:56.191472"}
+dbgn: (+ 10 (* 2 3)) =>
+| (* 2 3) =>
+|   6
+| (+ 10 (* 2 3)) =>
+|   16
+
+{:ns examples.tap-output, :line 32, :time "2023-10-18T20:40:56.192775"}
+dbgt: (comp (map inc) (filter odd?))
+|> 0
+||> 1
+||< [1]
+|< [1]
+
+|> 1
+||> 2
+||< [1]
+|< [1]
+
+|> 2
+||> 3
+||< [1 3]
+|< [1 3]
+
+|> 3
+||> 4
+||< [1 3]
+|< [1 3]
+
+|> 4
+||> 5
+||< [1 3 5]
+|< [1 3 5]
+----
+
+
 [[cljs-devtools]]
 ## Support for `cljs-devtools` added
 
@@ -3303,6 +3465,25 @@ image::chrome-devtools-settings.png[title="Enable custom formatters on Chrome De
 * You can confiugre `cljs-devtools` in various ways as you like. See the details in
   link:https://github.com/binaryage/cljs-devtools/blob/master/docs/configuration.md[cljs-devtools
   configuration].
+
+
+[[babashka]]
+## Support for `bb` (Babashka for Clojure) added.
+
+The running exampls is under the `examples` subproject folder of this project.
+
+[source]
+.examples/bb.edn
+....
+{:paths ["src/clj"]
+ :deps {philoskim/debux {:mvn/version "0.9.0"} }}
+....
+
+[listing]
+----
+# run in the `examples` subproject root folder
+examples> bb -m examples.bb-run
+----
 
 
 [[electric]]
@@ -3680,9 +3861,9 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 .project.clj
 ....
 (defproject examples "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.8.3"]]
+                 [philoskim/debux "0.9.0"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

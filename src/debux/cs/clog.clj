@@ -144,7 +144,9 @@
 
 (defmacro clog
   [form locals & [{:keys [once] :as opts}]]
-  (if (list? form)
+  (if (or (not (list? form))
+          (:simple opts))
+    `(clog-others ~form ~locals ~opts)
     (if once
       `(clog-once ~form ~locals ~opts)
       (let [ns-sym (ut/ns-symbol (first form) &env)]
@@ -157,5 +159,4 @@
           (:cond->> clog*) `(clog-cond->> ~form ~locals ~opts)
           (:comp clog*) `(clog-comp ~form ~locals ~opts)
           (:let clog*)  `(clog-let ~form ~locals ~opts)
-          `(clog-others ~form ~locals ~opts) )))
-    `(clog-others ~form ~locals ~opts) ))
+          `(clog-others ~form ~locals ~opts) )))))
