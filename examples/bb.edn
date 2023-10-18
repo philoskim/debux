@@ -1,0 +1,3 @@
+{:paths ["src/clj"]
+ :deps {medley/medley {:mvn/version "1.3.0"}
+        philoskim/debux {:mvn/version "0.9.0"} }}

@@ -25,3 +25,12 @@ $ yarn test
 
 . Open the DevTool's console widnow by pressing <Ctrl-Shift-I> in case of Google Chrome
   and you will see the evaluated results of the examples.
+
+
+## Running examples in Babashka
+
+[listing]
+----
+$ bb -m examples.core
+----
+

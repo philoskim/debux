@@ -1,6 +1,6 @@
 (ns examples.dbg
-  (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn dbg-last break]]))
-
+  (:require [debux.cs.core :as d
+             :refer-macros [clog clogn dbg dbgn dbg-last break]]))
 
 ;;;; dbg examples
 
