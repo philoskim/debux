@@ -1,6 +1,5 @@
 {:deps {philoskim/debux {:local/root "."}}
  :tasks
-
  {test:bb
   {:doc "Run babashka tests"
    :extra-deps {eftest/eftest {:mvn/version "0.6.0"}}
