@@ -2,17 +2,17 @@
   (:require [debux.common.util :as ut]))
 
 (defmacro dbg-base
-  [form locals {:keys [level condition ns line msg n] :as opts} body]
+  [form locals {:keys [level condition ns line msg n tap-output] :as opts} body]
   `(let [condition# ~condition]
      (if (and (>= (or ~level 0) ut/*debug-level*)
               (or ~(not (contains? opts :condition))
                   condition#))
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [src-info# (str (ut/src-info ~ns ~line))
-               title# (str (when-not (:tap-output @ut/config*) "dbg: ")
+               title# (str "dbg: "
                            (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
                            (and ~msg (str "   <" ~msg ">"))
-                           (when-not (:tap-output @ut/config*) " =>"))
+                           " =>")
                locals# ~locals]
            (ut/insert-blank-line)
            (ut/print-title-with-indent src-info# title#)
@@ -88,26 +88,16 @@
        (let [result# (do ~@subforms)]
          (binding [ut/*indent-level* (dec ut/*indent-level*)]
            (ut/pprint-result-with-indent result#)
-           (when (:tap-output @ut/config*)
-             (ut/tap-data " " result#)))
-         result#))))
-
+         result#)))))
 
 (defmacro dbg-others
   [form locals opts]
   `(dbg-base ~form ~locals ~opts
      (let [result# ~form]
-       (binding [ut/*indent-level* (dec ut/*indent-level*)]
-         (if-let [print# ~(:print opts)]
-           (let [printed-result# (print# result#)]
-             (ut/pprint-result-with-indent printed-result#)
-             (when (:tap-output @ut/config*)
-               (ut/tap-data nil printed-result#)))
-           (do (ut/pprint-result-with-indent result#)
-               (when (:tap-output @ut/config*)
-                 (ut/tap-data nil result#)))))
-       result#)))
-
+       (if-let [print# ~(:print opts)]
+         (ut/pprint-result-with-indent (print# result#))
+         (ut/pprint-result-with-indent result#))
+       result#) ))
 
 (def dbg-macro-types*
   (atom {:-> '#{clojure.core/-> cljs.core/->}

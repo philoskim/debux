@@ -25,6 +25,10 @@
 (defmacro set-tap-output! [bool]
   `(ut/set-tap-output! ~bool))
 
+(defmacro set-date-time-fn! [date-time-fn]
+  `(ut/set-date-time-fn! ~date-time-fn))
+
+
 ;;; debugging APIs
 (def locking* (Object.))
 

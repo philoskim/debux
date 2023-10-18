@@ -255,9 +255,7 @@
      (when (or (:dup opts#) (ut/eval-changed? (:evals opts#) form# result#))
        (ut/print-form-with-indent (ut/form-header form# (:msg opts#)))
        (binding [*print-length* n#]
-         (ut/pprint-result-with-indent result#))
-       (when (:tap-output @ut/config*)
-         (ut/tap-data form# result# ut/*indent-level* (:msg opts#))))
+         (ut/pprint-result-with-indent result#) ))
      result#))
 
 
@@ -288,7 +286,7 @@
 ;;; dbgn
 (defmacro dbgn
   "DeBuG every Nested forms"
-  [form locals & [{:keys [level condition ns line msg n] :as opts}]]
+  [form locals & [{:keys [level condition ns line msg n tap-output] :as opts}]]
   `(let [~'+debux-dbg-opts+ ~(if (ut/cljs-env? &env)
                                (dissoc opts :print :style :js :once)
                                opts)
@@ -298,10 +296,10 @@
                   condition#))
        (binding [ut/*indent-level* (inc ut/*indent-level*)]
          (let [src-info# (str (ut/src-info ~ns ~line))
-               title#    (str (when-not (:tap-output @ut/config*) "dbgn: ")
+               title#    (str "dbgn: "
                               (ut/truncate (pr-str '~(ut/remove-dbg-symbols form)))
                               (and ~msg (str "   <" ~msg ">"))
-                              (when-not (:tap-output @ut/config*) " =>"))
+                              " =>")
                locals#   ~locals]
            (ut/insert-blank-line)
            (ut/print-title-with-indent src-info# title#)

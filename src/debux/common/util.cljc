@@ -6,7 +6,7 @@
             [clojure.walk :as walk]))
 
 ;;; For internal debugging
-(defmacro d
+(defmacro dbg_
   "The internal macro to debug dbg macros."
   [form]
   `(binding [*out* *err*]
@@ -14,6 +14,27 @@
        (println ">> dbg_:" (pr-str '~form) "=>\n" (pr-str return#) "<<")
        return#)))
 
+;;; dynamic vars
+(def ^:dynamic *indent-level* 0)
+(def ^:dynamic *debug-level* 0)
+
+;;; config
+(def config*
+  (atom {:debug-mode true
+         :source-info-mode true
+         :print-length 100
+         :ns-blacklist nil
+         :ns-whitelist nil
+         :line-bullet "|"
+         :cljs-devtools nil
+         :tap-output false
+         :date-time-fn nil}))
+
+(defn println-with-flush [s]
+  (println s)
+  (flush))
+
+;; src info
 (defmacro current-ns []
   (str *ns*))
 
@@ -33,30 +54,12 @@
     (concat [:line line]) ))
 
 (defn src-info [ns line]
-  (cond-> {:ns (symbol ns)}
-    line (merge {:line line})))
+  (let [date-time-fn (:date-time-fn @config*)]
+    (cond-> {:ns (symbol ns)}
+      line (assoc :line line)
 
-(comment
-  (defn src-info+tap-data [tap-data opts]
-    (merge (select-keys [:ns :line :msg] opts)
-           tap-data)))
+      date-time-fn (assoc :time (date-time-fn)) )))
 
-
-;;; dynamic vars
-(def ^:dynamic *indent-level* 1)
-(def ^:dynamic *debug-level* 0)
-
-
-;;; config
-(def config*
-  (atom {:debug-mode true
-         :source-info-mode true
-         :print-length 100
-         :ns-blacklist nil
-         :ns-whitelist nil
-         :line-bullet "|"
-         :cljs-devtools nil
-         :tap-output false}))
 
 (defn set-debug-mode! [val]
   (swap! config* assoc :debug-mode val)
@@ -88,6 +91,10 @@
 
 (defn set-tap-output! [bool]
   (swap! config* assoc :tap-output bool)
+  nil)
+
+(defn set-date-time-fn! [date-time-fn]
+  (swap! config* assoc :date-time-fn date-time-fn)
   nil)
 
 
@@ -251,64 +258,53 @@
   [line indent-level]
   (str (make-bullets indent-level) line))
 
-(defn tap-data
-  ([tap-map]
-   (->> tap-map
-        (merge {:form nil
-                :result nil
-                :indent-level 0
-                :info nil})
-        tap>))
-  ([form result]
-   (tap-data form result *indent-level* nil))
-  ([form result indent-level]
-   (tap-data form result indent-level nil))
-  ([form result indent-level info]
-   (tap> {:form form
-          :result result
-          :indent-level indent-level
-          :info info})))
-
 (defn print-title-with-indent
   [src-info title]
-  (when (:source-info-mode @config*)
-    (println (prepend-bullets-in-line src-info (dec *indent-level*))))
-  (println (prepend-bullets-in-line title (dec *indent-level*)))
-  (when (:tap-output @config*)
-    (tap-data nil nil (dec *indent-level*) title))
-  (flush))
+  (let [src-info' (prepend-bullets-in-line src-info (dec *indent-level*))
+        title' (prepend-bullets-in-line title (dec *indent-level*))]
+    (when (:source-info-mode @config*)
+      (println-with-flush src-info')
+      (when (:tap-output @config*)
+        (tap> src-info') ))
+    (println-with-flush title')
+    (when (:tap-output @config*)
+      (tap> title') )))
 
 (defn print-form-with-indent
   [form]
-  (println (prepend-bullets form *indent-level*))
-  (flush))
+  (let [form' (prepend-bullets form *indent-level*)]
+    (println-with-flush form')
+    (when (:tap-output @config*)
+      (tap> form') )))
 
 (defn form-header [form & [msg]]
   (str (truncate (pr-str form))
        (and msg (str "   <" msg ">"))
        " =>"))
 
-
 (defn pprint-locals-with-indent
   [result]
   (let [pprint (str/trim (with-out-str (pp/pprint result)))
-        prefix (str (make-bullets *indent-level*) "   ")]
-    (println (prepend-bullets ":locals =>" *indent-level*))
-    (println (->> (str/split pprint #"\n")
-                  (mapv #(str prefix %))
-                  (str/join "\n")))
+        prefix (str (make-bullets *indent-level*) "   ")
+        result' (str (prepend-bullets ":locals =>" *indent-level*)
+                     "\n"
+                     (->> (str/split pprint #"\n")
+                          (mapv #(str prefix %))
+                          (str/join "\n") ))]
+    (println-with-flush result')
     (when (:tap-output @config*)
-      (tap-data nil result *indent-level* ":locals"))
-    (flush)))
+      (tap> result') )))
 
 (defn pprint-result-with-indent
   [result]
   (let [pprint (str/trim (with-out-str (pp/pprint result)))
-        prefix (str (make-bullets *indent-level*) "   ")]
-    (println (->> (str/split pprint #"\n")
-                  (mapv #(str prefix %))
-                  (str/join "\n")))
-    (flush) ))
+        prefix (str (make-bullets *indent-level*) "   ")
+        result' (->> (str/split pprint #"\n")
+                     (mapv #(str prefix %))
+                     (str/join "\n"))]
+    (println-with-flush result')
+    (when (:tap-output @config*)
+      (tap> result') )))
 
 ;; print xform
 (defn pprint-xform-with-indent
@@ -316,18 +312,24 @@
   (let [pprint (str/trim (with-out-str (pp/pprint input-or-output)))
         bullets (make-bullets (or indent-level 1))
         prefix1 (str bullets mark " ")
-        prefix2 (str bullets "  ")]
-    (println (->> (str/split pprint #"\n")
-                  (map-indexed #(if (zero? %1)
-                                  (str prefix1 %2)
-                                  (str prefix2 %2)))
-                  (str/join "\n")))
-    (flush) ))
+        prefix2 (str bullets "  ")
+        xform (->> (str/split pprint #"\n")
+                   (map-indexed #(if (zero? %1)
+                                   (str prefix1 %2)
+                                   (str prefix2 %2)))
+                   (str/join "\n"))]
+    (println-with-flush xform)
+    (when (:tap-output @config*)
+      (tap> xform) )))
 
 
 (defn insert-blank-line []
-  #?(:clj (do (println " ") (flush))
-     :cljs (.log js/console " ") ))
+  #?(:clj (do (println-with-flush " ")
+              (when (:tap-output @config*)
+                (tap> " ") ))
+     :cljs (do (.log js/console " ")
+              (when (:tap-output @config*)
+                (tap> " ") ))))
 
 
 ;;; parse options
@@ -425,16 +427,12 @@
   [pre-result quoted-form & [opts]]
   (print-form-with-indent (form-header quoted-form))
   (pprint-result-with-indent pre-result)
-  (when (:tap-output @config*)
-    (tap-data quoted-form pre-result))
   pre-result)
 
 (defn spy-last
   [quoted-form pre-result & [opts]]
   (print-form-with-indent (form-header quoted-form))
   (pprint-result-with-indent pre-result)
-  (when (:tap-output @config*)
-    (tap-data quoted-form pre-result))
   pre-result)
 
 (defn spy-comp
@@ -444,8 +442,6 @@
       (let [result (apply form arg)]
         (print-form-with-indent (form-header quoted-form))
         (pprint-result-with-indent result)
-        (when (:tap-output @config*)
-          (tap-data quoted-form result))
         result))))
 
 
@@ -455,8 +451,6 @@
   `(let [result# ~form]
      (print-form-with-indent (form-header '~form))
      (pprint-result-with-indent result#)
-     (when (:tap-output @config*)
-       (tap-data '~form result#))
      result#))
 
 (defmacro spy-first2
@@ -464,8 +458,6 @@
   `(let [result# (-> ~pre-result ~form)]
      (print-form-with-indent (form-header '~form))
      (pprint-result-with-indent result#)
-     (when (:tap-output @config*)
-       (tap-data '~form result#))
      result#))
 
 (defmacro spy-last2
@@ -473,8 +465,6 @@
   `(let [result# (->> ~pre-result ~form)]
      (print-form-with-indent (form-header '~form))
      (pprint-result-with-indent result#)
-     (when (:tap-output @config*)
-       (tap-data '~form result#))
      result#))
 
 (defn print-xform [quoted-xform indent-level]
