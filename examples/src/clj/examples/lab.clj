@@ -2,11 +2,10 @@
 
 (use 'debux.core)
 
-;;; dbgt for transducers
-(transduce (dbgt (filter odd?))
-           conj (range 10))
+(dbg (-> "a b c d"
+         .toUpperCase
+         (.replace "A" "X")
+         (.split " ")
+         first)
+     :simple)
 
-(transduce (dbgt (comp (map inc) (filter odd?)))
-           conj (range 5))
-
-(dbg (range))

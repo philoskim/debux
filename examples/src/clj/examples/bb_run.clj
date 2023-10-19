@@ -20,7 +20,7 @@
   (d/set-tap-output! true)
   ;(d/set-date-time-fn! my-date-time)
 
-  ;(require 'examples.common)
+  (require 'examples.common)
   (require 'examples.dbg)
   (require 'examples.dbgn)
   (require 'examples.options)

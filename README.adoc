@@ -65,6 +65,10 @@ and this to your *production* dependencies.
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
+NOTE: The internal links in `*.adoc` in `github.com` doesn't work now. So read
+link:https://cljdoc.org/d/philoskim/debux/0.9.0/doc/readme#_recent_change_logs[CLJDOC]
+instead, if you want to.
+
 * v0.9.0
 +
 All the new features of this version are thanks to the link:https://github.com/philoskim/debux/pull/31[pull request] of
@@ -3001,20 +3005,6 @@ dbg: (- a b) =>
 dbg: (* 10 2) =>
 |   20
 ----
-
-
-[[simple-option]]
-### `:simple` option
-
-[source]
-.example/core.cljs
-....
-(ns example.core
-  (:require [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
-
-(clog (repeat 5 "x") "5 times repeat")
-(clogn (repeat 5 (repeat 5 "x")) "25 times repeat")
-....
 
 
 ### `:simple` option

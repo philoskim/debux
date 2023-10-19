@@ -4,8 +4,8 @@
             examples.clog
             examples.dbgn
             examples.dbg
-            examples.options
-            examples.etc
+            ; examples.options
+            ; examples.etc
             ;examples.demo
             ;examples.lab
 ))
