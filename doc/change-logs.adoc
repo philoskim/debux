@@ -3,6 +3,9 @@
 :source-highlighter: coderay
 :sectnums:
 
+* v0.9.1
+** `:simple` option deprecated. Instead, use `:final` or `:f` option.
+
 * v0.9.0
 +
 All the new features of this version are thanks to the link:https://github.com/philoskim/debux/pull/31[pull request] of
@@ -17,7 +20,7 @@ link:https://github.com/gnl[George Lipov]. Thanks a lot again!
 *** `set-tap-output!` function added.
 *** `set-date-time-fn!` function added.
 
-** `:final` option added.
+** `:simple` option added.
 
 * v0.8.3
 ** Electric support added

@@ -68,7 +68,7 @@ https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 * v0.9.1
 ** `:simple` option deprecated.
 +
-Instead, use `:fianl` or `:f` option. See the details <<final-option, here>>.
+Instead, use `:final` or `:f` option. See the details <<final-option, here>>.
 
 * v0.9.0
 +
@@ -597,7 +597,7 @@ dbg: (comp inc inc +) =>
 ### Want to see only the final result of the above macros?
 
 For example, if you want to see only the final result of the `pass:q[->]`,
-Put the option `:final` or `:f` like this.
+put the option `:final` or `:f` like this.
 
 [source]
 ....
@@ -2975,7 +2975,7 @@ dbg: (* 10 2) =>
 ----
 
 
-### `:final` option
+### `:final` (or `:f`) option
 
 See the details <<final-option, here>>.
 
