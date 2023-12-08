@@ -17,7 +17,7 @@ link:https://github.com/gnl[George Lipov]. Thanks a lot again!
 *** `set-tap-output!` function added.
 *** `set-date-time-fn!` function added.
 
-** `:simple` option added.
+** `:final` option added.
 
 * v0.8.3
 ** Electric support added

@@ -145,7 +145,7 @@
 (defmacro clog
   [form locals & [{:keys [once] :as opts}]]
   (if (or (not (list? form))
-          (:simple opts))
+          (:final opts))
     `(clog-others ~form ~locals ~opts)
     (if once
       `(clog-once ~form ~locals ~opts)

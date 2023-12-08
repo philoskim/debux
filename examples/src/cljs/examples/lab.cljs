@@ -6,5 +6,5 @@
          (.replace "A" "X")
          (.split " ")
          first)
-     :simple)
+     :final)
 

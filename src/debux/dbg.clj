@@ -119,7 +119,7 @@
 (defmacro dbg
   [form locals & [{:as opts}]]
   (if (or (not (list? form))
-          (:simple opts))
+          (:final opts))
     `(dbg-others ~form ~locals ~opts)
     (let [ns-sym (ut/ns-symbol (first form) &env)]
       (condp get ns-sym

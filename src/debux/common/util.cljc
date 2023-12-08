@@ -373,8 +373,8 @@
         (= :level fst)
         (recur (nnext opts) (assoc acc :level snd))
 
-        (= :simple fst)
-        (recur (next opts) (assoc acc :simple true))
+        (#{:final :f} fst)
+        (recur (next opts) (assoc acc :final true))
 
 
         ;;; for clojureScript only

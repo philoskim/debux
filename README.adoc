@@ -83,7 +83,7 @@ link:https://github.com/gnl[George Lipov]. Thanks a lot again!
 *** `set-tap-output!` function added.
 *** `set-date-time-fn!` function added.
 
-** `:simple` option added.  See the details <<simple-option, here>>.
+** `:final` option added.  See the details <<final-option, here>>.
 
 * v0.8.3
 ** link:https://github.com/hyperfiddle/electric[Electric] support added. See the details
@@ -625,11 +625,11 @@ dbg: (comp inc inc +) =>
 |   32
 ....
 
-[[simple-option]]
+[[final-option]]
 ### Want to see only the final result of the above macros?
 
 For example, if you want to see only the final result of the `pass:q[->]`,
-Put the option `:simple` like this.
+Put the option `:final` like this.
 
 [source]
 ....
@@ -638,7 +638,7 @@ Put the option `:simple` like this.
          (.replace "A" "X")
          (.split " ")
          first)
-     :simple)
+     :final)
 ;=> "X"
 ....
 
@@ -2383,7 +2383,7 @@ dbgt: (comp (map inc) (filter odd?))
 | :print  or :p | O   |   X   |  O   |  X   |   X  |   X   |   X
 | :dup          | X   |   0   |  X   |  0   |   X  |   X   |   X
 | :level        | O   |   O   |  O   |  O   |   O  |   O   |   X
-| :simple       | O   |   X   |  O   |  X   |   X  |   X   |   X
+| :final  or :f | O   |   X   |  O   |  X   |   X  |   X   |   X
 | :style  or :s | X   |   X   |  O   |  O   |   X  |   O   |   X
 | :once   or :o | X   |   X   |  O   |  X   |   X  |   X   |   X
 | :js           | X   |   X   |  O   |  O   |   X  |   X   |   X
@@ -3007,9 +3007,9 @@ dbg: (* 10 2) =>
 ----
 
 
-### `:simple` option
+### `:final` option
 
-See the details <<simple-option, here>>.
+See the details <<final-option, here>>.
 
 
 [[style-option]]

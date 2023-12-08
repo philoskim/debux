@@ -93,3 +93,50 @@
 
 (transduce (dbgt (comp (map inc) (filter odd?)))
            conj (range 5))
+
+
+;;; :final option
+(dbg (-> "a b c d"
+         .toUpperCase
+         (.replace "A" "X")
+         (.split " ")
+         first)
+     :final)
+
+(def c 5)
+
+(dbg (->> c (+ 3) (/ 2) (- 1)) :final)
+
+(dbg (some-> {:a 10}
+             :b
+             inc) :final)
+
+(dbg (some->> {:x 5 :y 10}
+              :y
+              (- 30)) :f)
+
+(def a 10)
+(dbg (cond-> a
+       (even? a) inc
+       (= a 20)  (* 42)
+       (= 5 5)   (* 3))
+     :final)
+
+(def b 10)
+(dbg (cond->> b
+       (even? b) inc
+       (= b 20)  (- 42)
+       (= 2 2)   (- 30))
+     :final)
+
+(dbg (let [a (take 5 (range))
+           {:keys [b c d] :or {d 10 b 20 c 30}} {:c 50 :d 100}
+           [e f g & h] ["a" "b" "c" "d" "e"]]
+        [a b c d e f g h])
+     :final)
+
+(def c
+  (dbg (comp inc inc +)))
+
+(c 10 20)
+; => 32
