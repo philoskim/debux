@@ -49,14 +49,14 @@ To include `debux` in your project for development, simply add the following to 
 
 [source]
 ....
-[philoskim/debux "0.9.0"]
+[philoskim/debux "0.9.1"]
 ....
 
 and this to your *production* dependencies.
 
 [source]
 ....
-[philoskim/debux-stubs "0.9.0"]
+[philoskim/debux-stubs "0.9.1"]
 ....
 
 
@@ -65,9 +65,10 @@ and this to your *production* dependencies.
 NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
-NOTE: The internal links in `*.adoc` in `github.com` doesn't work now. So read
-link:https://cljdoc.org/d/philoskim/debux/0.9.0/doc/readme#_recent_change_logs[CLJDOC]
-instead, if you want to.
+* v0.9.1
+** `:simple` option deprecated.
++
+Instead, use `:fianl` or `:f` option. See the details <<final-option, here>>.
 
 * v0.9.0
 +
@@ -83,7 +84,7 @@ link:https://github.com/gnl[George Lipov]. Thanks a lot again!
 *** `set-tap-output!` function added.
 *** `set-date-time-fn!` function added.
 
-** `:final` option added.  See the details <<final-option, here>>.
+** `:simple` option added.
 
 * v0.8.3
 ** link:https://github.com/hyperfiddle/electric[Electric] support added. See the details
@@ -100,39 +101,6 @@ link:https://github.com/gnl[George Lipov]. Thanks a lot again!
    <<dbgt, here>>.
 ** `set-debug-level!` removed. Instead, use `with-level` macro. See the details
    <<with-level, here>>.
-
-* v0.7.9
-** `set-debug-level!` and `:level` option added. See the details <<set-debug-level,
-   here>>.
-** `set-line-bullet!` added. See the details <<set-line-bullet, here>>.
-
-* v0.7.8
-** `set-cljs-devtools!` added. See the details <<set-cljs-devtools, here>>.
-** `cljs-devtools` dependency removed. _Debux_ no longer includes `cljs-devtools`
-   dependency.
-
-* v0.7.5
-** `set-source-info-mode!` added.  See <<source-info-mode, here>> for the details.
-
-* v0.7.3
-** `pass:q[some->]` and `pass:q[some->>]` support in `dbg` and `clog` added. See
-   <<some-threading-macros, here>> for the details.
-** `pass:q[cond->]` and `pass:q[cond->>]` support in `dbg` and `clog` added. See
-   <<cond-threading-macros, here>> for the details.
-
-* v0.7.1
-** The temporal _turn-off_ version of Debux macros added. See <<temporal-turn-off, here>>
-   for the details.
-** The safe debugging in multi-threads now supported. See
-<<safe-debugging-in-multi-threads , here>> for the example.
-
-** The `:msg` (or `:m`) option added for dynamic message creation. See <<msg-option,
-   here>> for the details.
-
-* v0.7.0
-** Tagged literals (`#d/dbg`, `#d/dbgn`, `#d/clog`, `#d/clogn`) added. So you don't have
-   to wrap the form by the parentheses any more, if you want. See <<tagged-literals,
-   here>> for the details.
 
 
 ## How to use
@@ -629,7 +597,7 @@ dbg: (comp inc inc +) =>
 ### Want to see only the final result of the above macros?
 
 For example, if you want to see only the final result of the `pass:q[->]`,
-Put the option `:final` like this.
+Put the option `:final` or `:f` like this.
 
 [source]
 ....
@@ -3466,7 +3434,7 @@ The running exampls is under the `examples` subproject folder of this project.
 .examples/bb.edn
 ....
 {:paths ["src/clj"]
- :deps {philoskim/debux {:mvn/version "0.9.0"} }}
+ :deps {philoskim/debux {:mvn/version "0.9.1"} }}
 ....
 
 [listing]
@@ -3853,7 +3821,7 @@ an example about running the link:https://github.com/bhauman/lein-figwheel[figwh
 (defproject examples "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [philoskim/debux "0.9.0"]]
+                 [philoskim/debux "0.9.1"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel  "0.5.10"]]
   :source-paths ["src/clj"]

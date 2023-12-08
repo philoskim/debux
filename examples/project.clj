@@ -3,7 +3,7 @@
                  [org.clojure/clojurescript "1.10.238"]
                  [org.clojure/core.async "0.3.465"]
                  [clojure.java-time "1.3.0"]
-                 [philoskim/debux "0.9.0"]]
+                 [philoskim/debux "0.9.1"]]
   :source-paths ["src/clj" "src/cljc"]
   :aot [examples.core]
   :main examples.core
