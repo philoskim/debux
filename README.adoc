@@ -66,9 +66,8 @@ NOTE: You can see _All change logs since v0.3.0_
 https://github.com/philoskim/debux/tree/master/doc/change-logs.adoc[here].
 
 * v0.9.1
-** `:simple` option deprecated.
-+
-Instead, use `:final` or `:f` option. See the details <<final-option, here>>.
+** `:simple` option deprecated. Instead, use `:final` (or `:f`) option.
+   See the details <<final-option, here>>.
 
 * v0.9.0
 +
@@ -618,8 +617,8 @@ dbg: (-> "a b c d" .toUpperCase (.replace "A" "X") (.split " ") first) =>
 |   "X"
 ----
 
-This option apliies to  (`pass:q[->]`, `pass:q[->>]`, `pass:q[some->]`,
-`pass:q[some->>]`, `pass:q[cond->]`, `pass:q[cond->>]`, `let`, `comp`).
+This option apliies to `pass:q[->]`, `pass:q[->>]`, `pass:q[some->]`,
+`pass:q[some->>]`, `pass:q[cond->]`, `pass:q[cond->>]`, `let`.
 
 
 [[dbgn-examples]]
@@ -3105,6 +3104,63 @@ objects returned by JavaScript interops in ClojureScript.
 image::clog-js.png[title=":js option example", width=800]
 
 
+## `break` examples (CLJS only)
+
+### `break` options
+
+You can use `break` to set the breakpoint in the source code like this. You can add string
+option for message, or `:if` option for conditional break.
+
+[source]
+....
+(break)
+(break "hello world")
+(break :if (> 10 20) "this will not be printed")
+(break :if (< 10 20) "10 is less than 20")
+....
+
+You can see the message in DevTools' console window.
+
+image:break-1.png[title="break examples", width=650]
+
+
+### Callstack, locals, etc
+
+After setting the breakpoint, you can inspect the callstack, locals, etc. in the browser's
+DevTools window.
+
+[source]
+....
+(defn my-fun2
+  [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
+  (break "in my-fun2")
+  (clog [a b c d e f g h]))
+
+(my-fun2 (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"])
+....
+
+You can see the message in DevTools' console window.
+
+image:break-2.png[width=750]
+
+
+### `:if` option example
+
+When using `break`, you can use `:if` like this.
+
+[source]
+....
+(defn my-fun3 []
+  (let [a 10
+        b 20]
+    (dotimes [i 1000]
+      (break :if (= i 999) "in my-fun3"))))
+
+(my-fun3)
+....
+
+image:break-4.png[]
+
 [[tagged-literals]]
 ## Tagged literals: `#d/dbg`, `#d/dbgn`, `#d/dbgt`,`#d/clog`, `#d/clogn`, `#d/clogt`
 
@@ -3505,63 +3561,6 @@ debux.cs.electric namespace:
       (dom/text "toggle client/server"))))
 ....
 
-
-## `break` examples (CLJS only)
-
-### `break` options
-
-You can use `break` to set the breakpoint in the source code like this. You can add string
-option for message, or `:if` option for conditional break.
-
-[source]
-....
-(break)
-(break "hello world")
-(break :if (> 10 20) "this will not be printed")
-(break :if (< 10 20) "10 is less than 20")
-....
-
-You can see the message in DevTools' console window.
-
-image:break-1.png[title="break examples", width=650]
-
-
-### Callstack, locals, etc
-
-After setting the breakpoint, you can inspect the callstack, locals, etc. in the browser's
-DevTools window.
-
-[source]
-....
-(defn my-fun2
-  [a {:keys [b c d] :or {d 10 b 20 c 30}} [e f g & h]]
-  (break "in my-fun2")
-  (clog [a b c d e f g h]))
-
-(my-fun2 (take 5 (range)) {:c 50 :d 100} ["a" "b" "c" "d" "e"])
-....
-
-You can see the message in DevTools' console window.
-
-image:break-2.png[width=750]
-
-
-### `:if` option example
-
-When using `break`, you can use `:if` like this.
-
-[source]
-....
-(defn my-fun3 []
-  (let [a 10
-        b 20]
-    (dotimes [i 1000]
-      (break :if (= i 999) "in my-fun3"))))
-
-(my-fun3)
-....
-
-image:break-4.png[]
 
 
 [[source-info-mode]]
@@ -3998,6 +3997,6 @@ When you double-click on one of the open parentheses and the following string is
 
 
 ## License
-Copyright © 2015--2023 Young Tae Kim
+Copyright © 2015--2024 Young Tae Kim
 
 Distributed under the Eclipse Public License either version 1.0 or any later version.
