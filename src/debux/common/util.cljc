@@ -241,9 +241,9 @@
         :else
         (recur (z/next loc)) ))))
 
-(defn truncate [^String s]
+(defn truncate [s]
   (if (> (count s) 70)
-    (str (.substring s 0 70) " ...")
+    (str (subs s 0 70) " ...")
     s))
 
 (defn make-bullets
