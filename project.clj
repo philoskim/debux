@@ -3,6 +3,7 @@
   :url "https://github.com/philoskim/debux"
   :license {:name "Eclipse Public License - v 1.0"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :global-vars {*warn-on-reflection* true}
   :dependencies [[org.clojure/clojure "1.10.0" :scope "provided"]
                  [org.clojure/clojurescript "1.10.238" :scope "provided"]]
   :source-paths ["src"])
