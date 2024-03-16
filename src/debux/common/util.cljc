@@ -243,7 +243,7 @@
 
 (defn truncate [s]
   (if (> (count s) 70)
-    (str (.substring s 0 70) " ...")
+    (str (subs s 0 70) " ...")
     s))
 
 (defn make-bullets
